@@ -6,6 +6,7 @@ def load(player):
     filename = get_full_path(player)
 
     if os.path.exists(filename):
+        num_lines = sum(1 for line in open(filename))
         with open(filename) as fin:  # fin = file input
             name = fin.readline().rstrip()
             weapon = fin.readline().rstrip()
@@ -18,7 +19,7 @@ def load(player):
             level = fin.readline().rstrip()
             placeholder = fin.readline().rstrip()  # to skip the "INV" - DO NOT REMOVE
             inventory = {}
-            for i in range(len(fin.readlines())-9):
+            for i in range(num_lines):
                 item = fin.readline().rstrip()
                 count = fin.readline().rstrip()
                 if item == "" or count == "":
