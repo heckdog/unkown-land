@@ -24,6 +24,14 @@ weapons = {"Sword": 70, "RPG": 5000, "Fists": 10}
 
 def battle(player, enemy):
     print("---{BATTLE START}---")
+    try:
+        if player.health > 0:
+            print("Battle Load successful.")
+        else:
+            print("ur dead lmao")
+    except TypeError:
+        print("Battle system currently down, sorry. Go nag the dev about it (For error reporting, its a 'TypeError')")
+        return "Broke"
     while enemy.health > 0 and player.health > 0:
         choice = input("\nA {} stands in your way. What do? \n[A]ttack [D]efend [S]pecial \n>>>".format(enemy.name)).lower().strip()
 
@@ -102,6 +110,8 @@ def battle_turtles(player, turtles):
             print("You have lost to {} turtles. Kinda sad really.".format(turtles))
             sleep(2)
             return False
+        if status == "Broke":
+            break
     print("You beat all {} of the turtles! Good Job!".format(turtles))
     player.quest = None
     player.completed += 1
