@@ -3,6 +3,7 @@
 from time import sleep
 import quests
 import data
+import shop
 import os
 
 # naming convention as follows:
@@ -36,10 +37,13 @@ class Player:
         self.xp = 0
         self.level = 1
         self.inventory = {"Test Item": 100, "bread": 1231}
+        self.money = 0
+
 
 # broken thing below
 # quest_dict = {"Clap the Dragon": quests.clap_the_dragon(player), "Mess with Turtles": quests.battle_turtles(player,5 )}
 # TODO: optimize how quests are run, bc the current system is not sustainable for long term
+
 
 def main():
     print_header()
@@ -47,9 +51,7 @@ def main():
     player = start()
     if not player:
         player = start_choice()
-    print("\nYou are {}, weilder of the {}. Your task is to {}. You have {}/{} HP".format(player.name, player.weapon,
-                                                                                        player.quest, player.health,
-                                                                                        player.max_health))
+    info(player)
     sleep(2)
     active = True
 
@@ -67,7 +69,7 @@ def main():
                     elif player.quest == "Dab on Turtles":
                         quests.battle_turtles(player, 5)
                 else:
-                    print("ok")
+                    print("ok then")
             else:
                 print("ok maybe next time")
         # Inventory Option
@@ -78,6 +80,9 @@ def main():
             else:
                 for item in player.inventory:
                     print("[*] {} ({})".format(item, player.inventory[item]))
+        # Shop Option
+        elif option == "shop":
+            shop.shop(player)
         # Exit Option
         elif option == "exit":
             print("See ya later!")
@@ -136,15 +141,17 @@ def menu():
     while valid:
         choice = input("\n----{MENU}----\n"
                        "What would you like to do?\n"
-                       "[Q]uest [I]nventory E[X]it\n"
-                       ">>>").lower()
+                       "[Q]uest [I]nventory [S]hop E[X]it\n"
+                       ">>>").lower().strip()
         if choice.find("q") != -1:
             return "quest"
-        elif choice.strip() == "exit" or choice.strip() == "x":
+        elif choice == "exit" or choice == "x":
             sure = input("Confirm Quit? (y/n)").lower()
             if sure.find("y") != -1:
                 print("Ok, see ya next time bruv.")
                 return "exit"
+        elif choice == "s" or choice == "shop" or choice == "store":
+            return "shop"
         elif choice.find("i") != -1:
             return "inventory"
 
@@ -159,10 +166,21 @@ def start():
         ask_name = input(">>>").strip()
         filepath = data.get_full_path(ask_name)
         if os.path.exists(filepath):
-            return data.load(ask_name)
+            loaded = data.load(ask_name)
+            if not loaded:  # if loading throws an error
+                return None
+            return loaded
         print("Save file not found: '{}' \nStarting New Game...".format(ask_name))
     else:
         return None
+
+
+def info(player):
+    print("\n----{INFO}----")
+    print("You are {}, wielder of the {}.".format(player.name, player.weapon))
+    print("Your current task is to {}".format(player.quest))
+    print("You have {}/{} HP and {}G".format(player.health, player.max_health, player.money))
+    print("LEVEL {} ({} XP)".format(player.level, player.xp))
 
 
 if __name__ == "__main__":
