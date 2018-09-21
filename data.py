@@ -5,33 +5,41 @@ def load(player):
     data = {}
     filename = get_full_path(player)
 
-    if os.path.exists(filename):
-        num_lines = sum(1 for line in open(filename))
-        with open(filename) as fin:  # fin = file input
-            name = fin.readline().rstrip()
-            weapon = fin.readline().rstrip()
-            quest = fin.readline().rstrip()
-            health = fin.readline().rstrip()
-            max_health = fin.readline().rstrip()
-            defence = fin.readline().rstrip()
-            xp = fin.readline().rstrip()
-            completed = fin.readline().rstrip()
-            level = fin.readline().rstrip()
-            placeholder = fin.readline().rstrip()  # to skip the "INV" - DO NOT REMOVE
-            inventory = {}
-            for i in range(num_lines):
-                item = fin.readline().rstrip()
-                count = fin.readline().rstrip()
-                if item == "" or count == "":
-                    break
-                inventory[item] = int(count)
+    try:
+        if os.path.exists(filename):
+            num_lines = sum(1 for line in open(filename))
+            with open(filename) as fin:  # fin = file input
+                name = fin.readline().rstrip()
+                weapon = fin.readline().rstrip()
+                quest = fin.readline().rstrip()
+                health = fin.readline().rstrip()
+                max_health = fin.readline().rstrip()
+                defence = fin.readline().rstrip()
+                xp = fin.readline().rstrip()
+                completed = fin.readline().rstrip()
+                level = fin.readline().rstrip()
+                money = fin.readline().rstrip()
+                placeholder = fin.readline().rstrip()  # to skip the "INV" - DO NOT REMOVE
+                inventory = {}
+                for i in range(num_lines):
+                    item = fin.readline().rstrip()
+                    count = fin.readline().rstrip()
+                    if item == "" or count == "":
+                        break
+                    inventory[item] = int(count)
 
-    loaded = Player(name, weapon, quest, health, max_health, defence)
-    loaded.xp = xp
-    loaded.completed = completed
-    loaded.level = level
-    loaded.inventory = inventory
-    return loaded
+        loaded = Player(name, weapon, quest, health, max_health, defence)
+        loaded.xp = int(xp)
+        loaded.completed = int(completed)
+        loaded.level = int(level)
+        loaded.money = int(money)
+        loaded.inventory = inventory
+        return loaded
+    except TypeError:
+        print("File failed to load! Threw a TypeError")
+        return None
+    except:
+        print("File failed to load! And the developer was too lazy to add any clause here so go ask him what broke. Leave a bug report on Github!")
 
 
 def load_version():
@@ -70,6 +78,7 @@ def save(player):
         fout.write("{}\n".format(player.completed))
         fout.write("{}\n".format(player.xp))
         fout.write("{}\n".format(player.level))
+        fout.write("{}\n".format(player.money))
         fout.write("INV\n")
         for item in player.inventory:
             fout.write(item + "\n")
