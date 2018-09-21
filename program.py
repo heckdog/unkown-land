@@ -9,7 +9,7 @@ import os
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.2.1 ({})".format(build))
+print("Version 0.3.0 ({})".format(build))
 data.save_version(build)
 
 """
