@@ -1,5 +1,6 @@
-#the store contents is housed all within this dict
+# the store contents is housed all within this dict
 store = {"bread": 20, "Test Item": 200, "Health Potion": 100}
+
 
 def shop(player):
     print("\n----{SHOP}----")
@@ -31,10 +32,14 @@ def shop(player):
                 if choice in player.inventory:  # if the item already exists in player inventory
                     player.inventory[choice] += amount  # set the items amount higher
                 else:  # else, if its a new item
-                    player.inventory.update({choice: amount}) # create it using this method. idk why it has to be this way, otherwise throws KeyError
+                    player.inventory.update({choice: amount})  # create it using this method. idk why it has to be this way, otherwise throws KeyError
             else:
                 print("ok then nvm u wont get it smh")
         else:
             print("\"{}\" is not one of my options u silly goose. Even if it was, you'd need to bring some cash.".format(choice))
+    elif option == "s" or option == "sell":
+        print("[Sell] is currently being worked on.")
+    elif option == "q" or option == "quest":
+        print("You would get a quest here whenever one gets coded.")
     else:
         print("lol not available rn sorry")

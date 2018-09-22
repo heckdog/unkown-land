@@ -9,7 +9,7 @@ import os
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.3.0 ({})".format(build))
+print("Version 0.3.1 ({})".format(build))
 data.save_version(build)
 
 """
@@ -78,7 +78,10 @@ def main():
             if not player.inventory:  # if nothing exists in the inventory
                 print("[*] Nothing!")
             else:
+                print("EQUIPPED WEAPON: {}".format(player.weapon))
                 for item in player.inventory:
+                    if item in quests.weapons:
+                        print("[W] {}".format(item))
                     print("[*] {} ({})".format(item, player.inventory[item]))
         # Shop Option
         elif option == "shop":
