@@ -2,7 +2,6 @@ import os
 
 
 def load(player):
-    data = {}
     filename = get_full_path(player)
 
     try:
@@ -28,7 +27,7 @@ def load(player):
                         break
                     inventory[item] = int(count)
 
-        loaded = Player(name, weapon, quest, health, max_health, defence)
+        loaded = Player(name, weapon, quest, int(health), int(max_health), int(defence))
         loaded.xp = int(xp)
         loaded.completed = int(completed)
         loaded.level = int(level)
@@ -38,8 +37,6 @@ def load(player):
     except TypeError:
         print("File failed to load! Threw a TypeError")
         return None
-    except:
-        print("File failed to load! And the developer was too lazy to add any clause here so go ask him what broke. Leave a bug report on Github!")
 
 
 def load_version():
