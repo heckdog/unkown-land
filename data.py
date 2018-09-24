@@ -84,6 +84,32 @@ def save(player):
     print("Saved!")
 
 
+def corrupt(player, filename):
+    filename = get_full_path(filename)
+    # debug code below - uncomment to use
+    # print("..... saving to: {}".format(filename))
+    # print(player)
+    # print("..... saving: {}".format(player.name))
+
+    with open(filename, "w") as fout:
+        fout.write("{}\n".format(player.name))
+        fout.write("{}\n".format(player.weapon))
+        fout.write("{}\n".format(player.quest))
+        fout.write("{}\n".format(player.health))
+        fout.write("{}\n".format(player.max_health))
+        fout.write("{}\n".format(player.defence))
+        fout.write("{}\n".format(player.completed))
+        fout.write("{}\n".format(player.xp))
+        fout.write("{}\n".format(player.level))
+        fout.write("{}\n".format(player.money))
+        fout.write("INV\n")
+        for item in player.inventory:
+            fout.write(item + "\n")
+            fout.write(str(player.inventory[item]) + "\n")
+
+    print("Saved!")
+
+
 def get_full_path(name):
     """
     This method takes a string "name" and returns the named file's filepath.
