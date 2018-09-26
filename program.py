@@ -4,12 +4,14 @@ from time import sleep
 import quests
 import data
 import shop
+import inventory
 import os
+from essentials import add_commas
 
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.3.1 ({})".format(build))
+print("Version 0.4.0 ({})".format(build))
 data.save_version(build)
 
 """
@@ -72,17 +74,11 @@ def main():
                     print("ok then")
             else:
                 print("ok maybe next time")
+
         # Inventory Option
         elif option == "inventory":
-            print("----{INVENTORY}----")
-            if not player.inventory:  # if nothing exists in the inventory
-                print("[*] Nothing!")
-            else:
-                print("EQUIPPED WEAPON: {}".format(player.weapon))
-                for item in player.inventory:
-                    if item in quests.weapons:
-                        print("[W] {}".format(item))
-                    print("[*] {} ({})".format(item, player.inventory[item]))
+            inventory.use_item(player)
+
         # Shop Option
         elif option == "shop":
             shop.shop(player)
@@ -105,7 +101,6 @@ def print_header():
 # TODO: rewrite this with better options/dialogue
 def start_choice():
 
-    # TODO: if the name is on the list of users, load that and skip this dialogue
     name = input("-Wuz yo name, nibba? \n>>>").strip()
     print("-Ah, so it is {}. Sounds pretty dumb but ok".format(name))
     sleep(2)
@@ -182,7 +177,7 @@ def info(player):
     print("\n----{INFO}----")
     print("You are {}, wielder of the {}.".format(player.name, player.weapon))
     print("Your current task is to {}".format(player.quest))
-    print("You have {}/{} HP and {}G".format(player.health, player.max_health, player.money))
+    print("You have {}/{} HP and {}G".format(player.health, player.max_health, add_commas(player.money)))
     print("LEVEL {} ({} XP)".format(player.level, player.xp))
 
 

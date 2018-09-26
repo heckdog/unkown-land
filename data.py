@@ -2,7 +2,6 @@ import os
 
 
 def load(player):
-    data = {}
     filename = get_full_path(player)
 
     try:
@@ -28,7 +27,7 @@ def load(player):
                         break
                     inventory[item] = int(count)
 
-        loaded = Player(name, weapon, quest, health, max_health, defence)
+        loaded = Player(name, weapon, quest, int(health), int(max_health), int(defence))
         loaded.xp = int(xp)
         loaded.completed = int(completed)
         loaded.level = int(level)
@@ -38,8 +37,6 @@ def load(player):
     except TypeError:
         print("File failed to load! Threw a TypeError")
         return None
-    except:
-        print("File failed to load! And the developer was too lazy to add any clause here so go ask him what broke. Leave a bug report on Github!")
 
 
 def load_version():
@@ -63,6 +60,32 @@ def save_version(version):
 
 def save(player):
     filename = get_full_path(player.name)
+    # debug code below - uncomment to use
+    # print("..... saving to: {}".format(filename))
+    # print(player)
+    # print("..... saving: {}".format(player.name))
+
+    with open(filename, "w") as fout:
+        fout.write("{}\n".format(player.name))
+        fout.write("{}\n".format(player.weapon))
+        fout.write("{}\n".format(player.quest))
+        fout.write("{}\n".format(player.health))
+        fout.write("{}\n".format(player.max_health))
+        fout.write("{}\n".format(player.defence))
+        fout.write("{}\n".format(player.completed))
+        fout.write("{}\n".format(player.xp))
+        fout.write("{}\n".format(player.level))
+        fout.write("{}\n".format(player.money))
+        fout.write("INV\n")
+        for item in player.inventory:
+            fout.write(item + "\n")
+            fout.write(str(player.inventory[item]) + "\n")
+
+    print("Saved!")
+
+
+def corrupt(player, filename):
+    filename = get_full_path(filename)
     # debug code below - uncomment to use
     # print("..... saving to: {}".format(filename))
     # print(player)
