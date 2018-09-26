@@ -28,7 +28,7 @@ def use_item(player):
             print("Equipped {}!").format(choice)
 
     elif choice in player.inventory:
-        use = input("Equip {}? \n>>>".format(choice)).strip().lower()
+        use = input("Use {}? \n>>>".format(choice)).strip().lower()
         if use == "y" or use.find("ye") != -1:
             player.inventory[choice] += -1
             print("Used one {}!").format(choice)
