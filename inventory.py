@@ -31,5 +31,5 @@ def use_item(player):
         use = input("Use {}? \n>>>".format(choice)).strip().lower()
         if use == "y" or use.find("ye") != -1:
             player.inventory[choice] += -1
-            print("Used one {}!").format(choice)
+            print("Used one {}!".format(choice))
 
