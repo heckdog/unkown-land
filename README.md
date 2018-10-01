@@ -1,4 +1,4 @@
-# unkownland
+# UNKOWNLAND
 Another quality text-based RPG. 
 
 # Running
