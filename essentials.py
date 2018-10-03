@@ -1,3 +1,6 @@
+weapons = ["Sword", "RPG", "Fists", "digional sword"]
+
+
 def add_commas(number):
     # variables
     count = 0

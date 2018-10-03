@@ -1,11 +1,12 @@
 from random import randint
 from time import sleep
+import inventory
 import data
 
-# not good to use here \/
-# from collections import namedtuple
-
+# below is deprecated
 # Enemy = namedtuple("Enemy", "name health max_health damage")
+
+
 class Enemy:
     def __init__(self, name, health, damage, xp):
         self.name = name
@@ -20,7 +21,7 @@ class Enemy:
 dragon = Enemy("Dragon", 8000, 20, 1000)
 
 
-weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "Glitch": 123918312}
+weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "Glitch": 123918312, "digional sword": 1000}
 
 
 def battle(player, enemy):
@@ -40,15 +41,18 @@ def battle(player, enemy):
         if choice == "a" or choice == "attack":
             # Player Turn
             dam = weapons[player.weapon]  # returns attack stats
-            dam += randint(dam, dam * 3)
+            dam += randint(0, dam)
+            # random crits
+            for i in range(3):
+                if randint(0,10) == 2:  # a ten percent chance
+                    dam += randint(dam * 2, dam * 3)
+                    print("CRITICAL HIT!")
             damage(enemy, dam)
             if enemy.health < 0:  # if you won
                 break
 
             # Enemy Turn
             damage(player, enemy.damage + randint(0, enemy.damage))
-
-
 
         # Defending
         elif choice == "d" or choice == "defend":
@@ -68,24 +72,22 @@ def battle(player, enemy):
 
         # Inventory
         elif choice == "i" or choice == "inventory":
-            print("----{INVENTORY}----")
-            if not player.inventory:  # if nothing exists in the inventory
-                print("[*] Nothing!")
-            else:
-                for item in player.inventory:
-                    print("[*] {} ({})".format(item, player.inventory[item]))
+            inventory.view_inventory(player)
 
         # Special
         elif choice == "s" or choice == "special":
             print("u aint no special snowflake and this is unfinished lol try again")
 
-        # Unknown
+        # Unknown Command
         else:
             print("'{}' not recognized, please try again.".format(choice))
+    # End sequence
     if enemy.health <= 0:
         xp_gain = enemy.xp + (randint(0, (enemy.xp/2)))  # Give player Enemy XP + up to 0.5x more
-        print("You have successfully defeated the {}! Gained {} XP".format(enemy.name, xp_gain))
+        money_gain = xp_gain * randint(2,3) + randint(1, 10)  # pseudo-random money based on enemy xp.
+        print("You have successfully defeated the {}! Gained {} XP and {}G".format(enemy.name, xp_gain, money_gain))
         player.xp += xp_gain
+        player.money += money_gain
         sleep(1)
         return "Won"
     elif player.health <= 0:

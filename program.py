@@ -4,13 +4,15 @@ from time import sleep
 import quests
 import data
 import shop
+import inventory
 import os
 from essentials import add_commas
 
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.3.1 ({})".format(build))
+print("Version 0.5.1 (Build {})".format(build))
+
 data.save_version(build)
 
 """
@@ -76,12 +78,7 @@ def main():
 
         # Inventory Option
         elif option == "inventory":
-            print("\n----{INVENTORY}----")
-            if not player.inventory:  # if nothing exists in the inventory
-                print("[*] Nothing!")
-            else:
-                for item in player.inventory:
-                    print("[*] {} ({})".format(item, add_commas(player.inventory[item])))
+            inventory.use_item(player)
 
         # Shop Option
         elif option == "shop":
@@ -105,7 +102,6 @@ def print_header():
 # TODO: rewrite this with better options/dialogue
 def start_choice():
 
-    # TODO: if the name is on the list of users, load that and skip this dialogue
     name = input("-Wuz yo name, nibba? \n>>>").strip()
     print("-Ah, so it is {}. Sounds pretty dumb but ok".format(name))
     sleep(2)
