@@ -5,11 +5,12 @@ import quests
 import data
 import shop
 import os
+from essentials import add_commas
 
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.3.0 ({})".format(build))
+print("Version 0.3.1 ({})".format(build))
 data.save_version(build)
 
 """
@@ -72,14 +73,16 @@ def main():
                     print("ok then")
             else:
                 print("ok maybe next time")
+
         # Inventory Option
         elif option == "inventory":
-            print("----{INVENTORY}----")
+            print("\n----{INVENTORY}----")
             if not player.inventory:  # if nothing exists in the inventory
                 print("[*] Nothing!")
             else:
                 for item in player.inventory:
-                    print("[*] {} ({})".format(item, player.inventory[item]))
+                    print("[*] {} ({})".format(item, add_commas(player.inventory[item])))
+
         # Shop Option
         elif option == "shop":
             shop.shop(player)
@@ -179,7 +182,7 @@ def info(player):
     print("\n----{INFO}----")
     print("You are {}, wielder of the {}.".format(player.name, player.weapon))
     print("Your current task is to {}".format(player.quest))
-    print("You have {}/{} HP and {}G".format(player.health, player.max_health, player.money))
+    print("You have {}/{} HP and {}G".format(player.health, player.max_health, add_commas(player.money)))
     print("LEVEL {} ({} XP)".format(player.level, player.xp))
 
 
