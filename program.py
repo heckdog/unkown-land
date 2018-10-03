@@ -11,7 +11,7 @@ from essentials import add_commas
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.4.0 ({})".format(build))
+print("Version 0.5.1 (Build {})".format(build))
 data.save_version(build)
 
 """

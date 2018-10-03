@@ -3,10 +3,10 @@ from time import sleep
 import inventory
 import data
 
-# not good to use here \/
-# from collections import namedtuple
-
+# below is deprecated
 # Enemy = namedtuple("Enemy", "name health max_health damage")
+
+
 class Enemy:
     def __init__(self, name, health, damage, xp):
         self.name = name
@@ -21,7 +21,7 @@ class Enemy:
 dragon = Enemy("Dragon", 8000, 20, 1000)
 
 
-weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "Glitch": 123918312}
+weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "Glitch": 123918312, "digional sword": 1000}
 
 
 def battle(player, enemy):
