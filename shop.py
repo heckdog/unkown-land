@@ -3,6 +3,7 @@ from time import sleep
 from inventory import view_inventory
 
 # the store contents is housed all within this dict
+
 store = {"bread": 20, "Test Item": 200, "Health Potion": 100}
 weapon_store = {"Sword": 100, "digional sword": 100000}
 
@@ -10,6 +11,7 @@ weapon_store = {"Sword": 100, "digional sword": 100000}
 def shop(player):
     print("\n----{SHOP}----")
     print("-Welcome to the Shop! Whatcha lookin' for?")
+
     if player.level >= 5:
         print("[B]uy [S]ell [L]eave [Q]uest")
     else:
@@ -49,13 +51,16 @@ def shop(player):
             if player.quest:
                 print("-Oh, ye already have a quest. '{}'. Come back once ye done that yeh?".format(player.quest))
             else:
+
                 print("-Aight lad, I've updated yer quest log for ye.")
                 player.quest = "Beat up the Developer"
         else:
             print("-Aight then lad, come again some other time. I'm sure he's still out and about, robbin me mates' stores or sum'n."
                   "\n-Keep yer eye out tho, who knows where 'eel turn up next, I tell ye.")
+            
     elif option == "q" or option == "quest":
         print("-What? Quest? What do you think, this is some kind of game? That's mad, lad.")
+
     else:
         print("lol not available rn sorry")
 

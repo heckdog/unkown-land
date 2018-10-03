@@ -12,6 +12,7 @@ from essentials import add_commas
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
 print("Version 0.5.1 (Build {})".format(build))
+
 data.save_version(build)
 
 """
