@@ -1,4 +1,6 @@
 weapons = ["Sword", "RPG", "Fists", "digional sword"]
+# below are health values of healing items
+health_items = {"bread": 15, "Apple": 20, "Test Food": 99, "Health Potion": 200}
 
 
 def add_commas(number):
