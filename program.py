@@ -27,6 +27,7 @@ print("does it continue tho")
 #  we are no longer using namedtuples they gay
 # Player = namedtuple("Player", "name weapon quest health max_health defence completed")
 
+
 # The Player Class
 class Player:
     def __init__(self, name, weapon, quest, health, defence):
