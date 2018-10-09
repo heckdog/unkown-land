@@ -11,7 +11,7 @@ from essentials import add_commas
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.5.1 (Build {})".format(build))
+print("Version 0.5.3 (Build {})".format(build))
 
 data.save_version(build)
 
@@ -72,6 +72,8 @@ def main():
                         quests.clap_the_dragon(player)
                     elif player.quest == "Dab on Turtles":
                         quests.battle_turtles(player, 5)
+                    elif player.quest == "Beat up the Developer":
+                        quests.beat_the_dev(player)
                 else:
                     print("ok then")
             else:
@@ -84,6 +86,10 @@ def main():
         # Shop Option
         elif option == "shop":
             shop.shop(player)
+
+        elif option == "player":
+            info(player)
+
         # Exit Option
         elif option == "exit":
             print("See ya later!")
@@ -141,7 +147,7 @@ def menu():
     while valid:
         choice = input("\n----{MENU}----\n"
                        "What would you like to do?\n"
-                       "[Q]uest [I]nventory [S]hop E[X]it\n"
+                       "[Q]uest [I]nventory [S]hop [P]layer E[X]it\n"
                        ">>>").lower().strip()
         if choice.find("q") != -1:
             return "quest"
@@ -152,6 +158,8 @@ def menu():
                 return "exit"
         elif choice == "s" or choice == "shop" or choice == "store":
             return "shop"
+        elif choice == "player" or choice == "p":
+            return "player"
         elif choice.find("i") != -1:
             return "inventory"
 
