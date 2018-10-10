@@ -72,7 +72,7 @@ def battle(player, enemy):
 
         # Inventory
         elif choice == "i" or choice == "inventory":
-            inventory.view_inventory(player)
+            inventory.use_item(player)
 
         # Special
         elif choice == "s" or choice == "special":
