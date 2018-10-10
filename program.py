@@ -11,7 +11,7 @@ from essentials import add_commas
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.5.3 (Build {})".format(build))
+print("Version 0.5.5 (Build {})".format(build))
 
 data.save_version(build)
 
@@ -74,10 +74,12 @@ def main():
                         quests.battle_turtles(player, 5)
                     elif player.quest == "Beat up the Developer":
                         quests.beat_the_dev(player)
+                    else:
+                        print("You don't have a quest!")
                 else:
-                    print("ok then")
+                    print("ok then be that way")
             else:
-                print("ok maybe next time")
+                print("Something went wrong. Either you said no or something broke lol.")
 
         # Inventory Option
         elif option == "inventory":
@@ -92,7 +94,7 @@ def main():
 
         # Exit Option
         elif option == "exit":
-            print("See ya later!")
+            # print("See ya later!")
             data.save(player)
             active = False
             #break
