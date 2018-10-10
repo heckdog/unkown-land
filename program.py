@@ -7,11 +7,12 @@ import shop
 import inventory
 import os
 from essentials import add_commas
+import world
 
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.5.6 (Build {})".format(build))
+print("Version 0.6.0 (Build {})".format(build))
 
 data.save_version(build)
 
@@ -91,6 +92,11 @@ def main():
 
         elif option == "player":
             info(player)
+
+        # World Option
+        # TODO: this needs a trigger, this code does nothing rn.
+        elif option == "world":
+            world.test_world(player)
 
         # Exit Option
         elif option == "exit":
