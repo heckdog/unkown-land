@@ -8,7 +8,7 @@ worlds = {"Test World": 0, "Start Town": 1}
 def select_world():
     active = True
     while active:
-        print("----{WORLD}----\nWhich world would you like to go to?")
+        print("\n----{WORLD}----\nWhich world would you like to go to?")
         for world in worlds:
             print("[{}] {}".format(worlds[world], world))
         choice = input(">>>")
