@@ -75,6 +75,8 @@ def main():
                         quests.battle_turtles(player, 5)
                     elif player.quest == "Beat up the Developer":
                         quests.beat_the_dev(player)
+                    elif player.quest == "Mess with Goblins":
+                        quests.mess_with_goblins(player)
                     else:
                         print("You don't have a quest!")
                 else:
@@ -94,9 +96,12 @@ def main():
             info(player)
 
         # World Option
-        # TODO: this needs a trigger, this code does nothing rn.
         elif option == "world":
-            world.test_world(player)
+            selection = world.select_world()
+            if selection == "Test World":
+                world.test_world(player)
+            elif selection == "Start Town":
+                world.start_world(player)
 
         # Exit Option
         elif option == "exit":
@@ -155,7 +160,7 @@ def menu():
     while valid:
         choice = input("\n----{MENU}----\n"
                        "What would you like to do?\n"
-                       "[Q]uest [I]nventory [S]hop [P]layer E[X]it\n"
+                       "[Q]uest [I]nventory [S]hop \n[P]layer [W]orld E[X]it\n"
                        ">>>").lower().strip()
         if choice.find("q") != -1:
             return "quest"
@@ -168,6 +173,8 @@ def menu():
             return "shop"
         elif choice == "player" or choice == "p":
             return "player"
+        elif choice == "world" or choice == "w":
+            return "world"
         elif choice.find("i") != -1:
             return "inventory"
 

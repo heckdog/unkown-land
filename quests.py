@@ -13,7 +13,7 @@ class Enemy:
         self.health = health
         self.max_health = health
         self.damage = damage
-        self.xp = xp
+        self.xp = int(xp)  # its an int to prevent other calculations from being floats idk why
 
 
 # ENEMIES: Go like Enemy(NAME, HEALTH, DAMAGE, XP)
@@ -78,12 +78,13 @@ def battle(player, enemy):
         elif choice == "s" or choice == "special":
             print("u aint no special snowflake and this is unfinished lol try again")
 
+        #TODO: add escape option with a 50/50 chance of working
         # Unknown Command
         else:
             print("'{}' not recognized, please try again.".format(choice))
     # End sequence
     if enemy.health <= 0:
-        xp_gain = enemy.xp + (randint(0, (enemy.xp/2)))  # Give player Enemy XP + up to 0.5x more
+        xp_gain = enemy.xp + int((randint(0, enemy.xp)/2))  # Give player Enemy XP + up to 0.5x more
         money_gain = xp_gain * randint(2,3) + randint(1, 10)  # pseudo-random money based on enemy xp.
         print("You have successfully defeated the {}! Gained {} XP and {}G".format(enemy.name, xp_gain, money_gain))
         player.xp += xp_gain
@@ -131,6 +132,25 @@ def battle_turtles(player, turtles):
     player.completed += 1
     player.xp += 100
     sleep(2)
+    return True
+
+
+def mess_with_goblins(player):
+    original_money = player.money
+    number = 0
+    while player.money <= (original_money + 400):
+        number += 1
+        goblin = Enemy("Goblin #{}".format(number), 100, 15, 50)  # change the last value to make this chalenge harder or easier
+        status = battle(player, goblin)
+        if status == "Lost":
+            print("Aw you lost to goblins boohoo. I've given you a bandaid tho so ur not dead yet.")
+            player.health = 20
+            return False
+    print("You beat {} Goblins! Look at you go! You got over 400G total from them. That'll teach em".format(number))
+    player.xp += 200
+    player.quest = None
+    player.completed += 1
+    sleep(1)
     return True
 
 
