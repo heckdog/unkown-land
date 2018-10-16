@@ -6,6 +6,7 @@ from inventory import view_inventory
 
 store = {"bread": 20, "Test Item": 200, "Health Potion": 100}
 weapon_store = {"Sword": 100, "digional sword": 100000}
+start = {"bread": 20, "Test Item": 150, "Health Potion": 100}
 
 
 def shop(player):
@@ -63,6 +64,37 @@ def shop(player):
 
     else:
         print("lol not available rn sorry")
+
+
+def start_store(player):
+    print("\n----{SHOP}----")
+    print("-Aye lad, welcome to me shop.")
+    print("[B]uy [S]ell [Q]uest")
+    option = input(">>>").lower().strip()
+    if option == "b" or option == "buy":
+        buy(player, start)
+    elif option == "s" or option == "sell":
+        sell(player, start, .7)
+    elif option == "q" or option == "quest":
+        if not player.quest:
+            print("-Eh, you want a quest?")
+            sleep(1)
+            print("-Well since you're new round here, I'll help ye out.")
+            sleep(2)
+            print("-See, these Goblins have been messing with me since 2 weeks ago. I bet they've got some Gold on em.")
+            sleep(2)
+            print("-Mess em up til ye got 400G. I've added a mission for ye. Good luck.")
+            player.quest = "Mess with Goblins"
+        else:
+            print("-You've already got a quest lad! {}".format(player.quest))
+            print("Want to remove this quest? (y/n)")
+            choice = input(">>>").lower().strip()
+            if choice == "y" or choice == "yes":
+                player.quest = None
+                print("Done!")
+            else:
+                print("Quest not changed.")
+
 
 
 def weapon_store(player):

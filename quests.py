@@ -1,4 +1,5 @@
 from random import randint
+import random
 from time import sleep
 import inventory
 import data
@@ -13,7 +14,12 @@ class Enemy:
         self.health = health
         self.max_health = health
         self.damage = damage
-        self.xp = xp
+        self.xp = int(xp)  # its an int to prevent other calculations from being floats idk why
+        self.doing = ["stands dreamily.",
+                      "dances furiously.",
+                      "stands in your way.",
+                      "looks ripe.",
+                      "smells bad."]
 
 
 # ENEMIES: Go like Enemy(NAME, HEALTH, DAMAGE, XP)
@@ -35,7 +41,8 @@ def battle(player, enemy):
         print("Battle system currently down, sorry. Go nag the dev about it (For error reporting, its a 'TypeError')")
         return "Broke"
     while enemy.health > 0 and player.health > 0:
-        choice = input("\nA {} stands in your way. What do? \n[A]ttack [I]nventory [D]efend [S]pecial \n>>>".format(enemy.name)).lower().strip()
+        status = random.choice(enemy.doing)
+        choice = input("\n{} {} What do? \n[A]ttack [I]nventory [D]efend [S]pecial [E]scape\n>>>".format(enemy.name, status)).lower().strip()
 
         # Attacking
         if choice == "a" or choice == "attack":
@@ -78,12 +85,19 @@ def battle(player, enemy):
         elif choice == "s" or choice == "special":
             print("u aint no special snowflake and this is unfinished lol try again")
 
+        # Escape
+        elif choice == "e" or "escape":
+            escape_number = randint(1,100)
+            if escape_number < 50:
+                print("You escaped from the {}".format(enemy.name))
+                return "Escaped"
+
         # Unknown Command
         else:
             print("'{}' not recognized, please try again.".format(choice))
     # End sequence
     if enemy.health <= 0:
-        xp_gain = enemy.xp + (randint(0, (enemy.xp/2)))  # Give player Enemy XP + up to 0.5x more
+        xp_gain = enemy.xp + int((randint(0, enemy.xp)/2))  # Give player Enemy XP + up to 0.5x more
         money_gain = xp_gain * randint(2,3) + randint(1, 10)  # pseudo-random money based on enemy xp.
         print("You have successfully defeated the {}! Gained {} XP and {}G".format(enemy.name, xp_gain, money_gain))
         player.xp += xp_gain
@@ -98,19 +112,20 @@ def battle(player, enemy):
         return None
 
 
-def damage(player, damage):
+def damage(player, dmg):
     hp = player.health
-    hp += -damage
+    hp += -dmg
     player.health = hp
-    print("{} took {} damage! HP: {}/{}".format(player.name, damage, player.health, player.max_health))
+    print("{} took {} damage! HP: {}/{}".format(player.name, dmg, player.health, player.max_health))
 
 
 def clap_the_dragon(player):
+    # THIS QUEST IS FAR FROM WORKING
     if player.quest == "Clap the Dragon":
         status = battle(player, dragon)
         if status == "Won":
             player.quest = None
-            player.completed += 1
+            player.completed.append("Clap the Dragon")
             player.xp += 300
 
 
@@ -124,17 +139,38 @@ def battle_turtles(player, turtles):
             print("You have lost to {} turtles. Kinda sad really.".format(turtles))
             sleep(2)
             return False
-        if status == "Broke":
+        if status == "Escaped":
             return False
     print("You beat all {} of the turtles! Good Job!".format(turtles))
     player.quest = None
-    player.completed += 1
+    player.completed.append("Dab on Turtles")
     player.xp += 100
     sleep(2)
     return True
 
 
-def beat_the_dev(player):
+def mess_with_goblins(player):
+    original_money = player.money
+    number = 0
+    while player.money <= (original_money + 400):
+        number += 1
+        goblin = Enemy("Goblin #{}".format(number), 100, 15, 50)  # change the last value to make this chalenge harder or easier
+        status = battle(player, goblin)
+        if status == "Lost":
+            print("Aw you lost to goblins boohoo. I've given you a bandaid tho so ur not dead yet.")
+            player.health = 20
+            return False
+        if status == "Escaped":
+            return False
+    print("You beat {} Goblins! Look at you go! You got over 400G total from them. That'll teach em".format(number))
+    player.xp += 200
+    player.quest = None
+    player.completed.append("Mess with Goblins")
+    sleep(1)
+    return True
+
+
+def beat_the_dev(player):  # fight is somewhat broke nibba
     dev = Enemy("Heckin-doggo", 9999999, 1, 50000)
     print("-Heh...")
     sleep(3)

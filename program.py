@@ -7,13 +7,15 @@ import shop
 import inventory
 import os
 from essentials import add_commas
+import world
 
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.5.6 (Build {})".format(build))
+print("Version 0.6.1 (Build {})".format(build))
 
-data.save_version(build)
+# uncomment this during development to increase build number. comment for full release
+# data.save_version(build)
 
 """
 def test():
@@ -37,11 +39,26 @@ class Player:
         self.health = health
         self.max_health = health
         self.defence = defence
-        self.completed = 0
+        self.completed = []
         self.xp = 0
         self.level = 1
-        self.inventory = {"Test Item": 100, "bread": 1231}
+        self.inventory = {"Test Item": 100, "bread": 3}
         self.money = 0
+        self.debugEnabled = False
+        # TODO: make self.completed be a list/dict once pickle is installed
+        # TODO: change all quest to add quest to completed list instead of completed number
+
+    def debug(self):
+        self.quest = input("Set new Quest: ")
+        self.money += int(input("Set Money: "))
+        self.health = 999
+        self.max_health = 999
+        self.level = int(input("Set level: "))
+        self.xp = int(input("Set XP:"))
+        choice = input("New Item? ")
+        amount = int(input("New Value? "))
+        self.inventory.update({choice: amount})
+        self.debugEnabled = True
 
 
 # broken thing below
@@ -74,6 +91,8 @@ def main():
                         quests.battle_turtles(player, 5)
                     elif player.quest == "Beat up the Developer":
                         quests.beat_the_dev(player)
+                    elif player.quest == "Mess with Goblins":
+                        quests.mess_with_goblins(player)
                     else:
                         print("You don't have a quest!")
                 else:
@@ -89,8 +108,21 @@ def main():
         elif option == "shop":
             shop.shop(player)
 
+        # Player Info
         elif option == "player":
             info(player)
+
+        # Debug mode
+        elif option == "debug":
+            player.debug()
+
+        # World Option
+        elif option == "world":
+            selection = world.select_world()
+            if selection == "Test World":
+                world.test_world(player)
+            elif selection == "Start Town":
+                world.start_world(player)
 
         # Exit Option
         elif option == "exit":
@@ -149,7 +181,7 @@ def menu():
     while valid:
         choice = input("\n----{MENU}----\n"
                        "What would you like to do?\n"
-                       "[Q]uest [I]nventory [S]hop [P]layer E[X]it\n"
+                       "[Q]uest [I]nventory [S]hop \n[P]layer [W]orld E[X]it\n"
                        ">>>").lower().strip()
         if choice.find("q") != -1:
             return "quest"
@@ -162,8 +194,12 @@ def menu():
             return "shop"
         elif choice == "player" or choice == "p":
             return "player"
+        elif choice == "world" or choice == "w":
+            return "world"
         elif choice.find("i") != -1:
             return "inventory"
+        elif choice == "debug mode":
+            return "debug"
 
 
 def start():
