@@ -1,5 +1,6 @@
 import os
-
+import pickle
+#TODO: find out how tf pickle works
 
 def load(player):
     filename = get_full_path(player)

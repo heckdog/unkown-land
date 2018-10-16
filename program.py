@@ -41,8 +41,10 @@ class Player:
         self.completed = 0
         self.xp = 0
         self.level = 1
-        self.inventory = {"Test Item": 100, "bread": 1231}
+        self.inventory = {"Test Item": 100, "bread": 3}
         self.money = 0
+        # TODO: make self.completed be a list/dict once pickle is installed
+        # TODO: change all quest to add quest to completed list instead of completed number
 
 
 # broken thing below
