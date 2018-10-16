@@ -49,10 +49,13 @@ def use_item(player):
             print("Used one {}. You feel strangely sad about losing it, as if it wasn't meant to be used up.".format(choice))
 
     # Empty Check
-    if player.inventory[choice] <= 0:
-        test = player.inventory.pop(choice, None)  # this gets rid of that option and returns None if an error
-        if not test:
-            print("You shouldn't see this text. If you do, line 57 under inventory.py went horribly wrong.")
+    try:
+        if player.inventory[choice] <= 0:
+            test = player.inventory.pop(choice, None)  # this gets rid of that option and returns None if an error
+            if not test:
+                print("You shouldn't see this text. If you do, line 57 under inventory.py went horribly wrong.")
+    except KeyError:
+        print("{} isn't in your inventory!".format(choice))
 
 
 

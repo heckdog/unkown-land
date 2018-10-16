@@ -11,14 +11,18 @@ def select_world():
         print("\n----{WORLD}----\nWhich world would you like to go to?")
         for world in worlds:
             print("[{}] {}".format(worlds[world], world))
-        choice = input(">>>")
+        choice = input(">>>").strip()
         try:
-            if (choice in worlds) or (choice in worlds[choice]):
-                print("You are going to {}...".format(choice))
-                return choice
+            for world in worlds:
+                if world.lower() == choice.lower():
+                    return world
+                elif choice == str(worlds[world]):
+                    return world
         except KeyError:
-            print("That... isn't a world. You almost threw a KeyError there mate be careful. Now lets try this again.")
-
+            print("That... isn't a world. Now lets try this again. (If it was, note a KeyError in bug report.")
+        except:
+            print("Something went wrong.")
+            return None
 
 def menu():
     valid = True

@@ -12,9 +12,10 @@ import world
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.6.0 (Build {})".format(build))
+print("Version 0.6.1 (Build {})".format(build))
 
-data.save_version(build)
+# uncomment this during development to increase build number. comment for full release
+# data.save_version(build)
 
 """
 def test():
@@ -38,13 +39,26 @@ class Player:
         self.health = health
         self.max_health = health
         self.defence = defence
-        self.completed = 0
+        self.completed = []
         self.xp = 0
         self.level = 1
         self.inventory = {"Test Item": 100, "bread": 3}
         self.money = 0
+        self.debugEnabled = False
         # TODO: make self.completed be a list/dict once pickle is installed
         # TODO: change all quest to add quest to completed list instead of completed number
+
+    def debug(self):
+        self.quest = input("Set new Quest: ")
+        self.money += int(input("Set Money: "))
+        self.health = 999
+        self.max_health = 999
+        self.level = int(input("Set level: "))
+        self.xp = int(input("Set XP:"))
+        choice = input("New Item? ")
+        amount = int(input("New Value? "))
+        self.inventory.update({choice: amount})
+        self.debugEnabled = True
 
 
 # broken thing below
@@ -94,8 +108,13 @@ def main():
         elif option == "shop":
             shop.shop(player)
 
+        # Player Info
         elif option == "player":
             info(player)
+
+        # Debug mode
+        elif option == "debug":
+            player.debug()
 
         # World Option
         elif option == "world":
@@ -179,6 +198,8 @@ def menu():
             return "world"
         elif choice.find("i") != -1:
             return "inventory"
+        elif choice == "debug mode":
+            return "debug"
 
 
 def start():
