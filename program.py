@@ -84,7 +84,6 @@ def main():
                 confirm = input("Start quest?: {} (y/n) \n>>>".format(player.quest))
                 if confirm.find("y") != -1:
                     # TODO: make a good system for this, cuz 2 lines of extra elifs per quest cant be great
-                    print("[!]Warning: This version of Quest is in beta. Proceed with caution.")
                     if player.quest == "Clap the Dragon":
                         quests.clap_the_dragon(player)
                     elif player.quest == "Dab on Turtles":
