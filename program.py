@@ -15,7 +15,7 @@ build = data.load_version()
 print("Version 0.6.2 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
-data.save_version(build)
+# data.save_version(build)
 
 """
 def test():
