@@ -21,6 +21,15 @@ class Enemy:
                       "looks ripe.",
                       "smells bad."]
 
+        def special(self, player):
+            print("There's nothing you can do!")
+
+
+class EvilTurtle(Enemy):
+    def special(self):
+        print("dabbed on")
+
+
 
 # ENEMIES: Go like Enemy(NAME, HEALTH, DAMAGE, XP)
 # evil_turtle = Enemy("Evil Turtle", 30, 5, 10)
@@ -83,7 +92,7 @@ def battle(player, enemy):
 
         # Special
         elif choice == "s" or choice == "special":
-            print("u aint no special snowflake and this is unfinished lol try again")
+            enemy.special()
 
         # Escape
         elif choice == "e" or "escape":
@@ -133,7 +142,7 @@ def battle_turtles(player, turtles):
     number = 0
     for turtle in range(turtles):
         number += 1
-        evil_turtle = Enemy("Evil Turtle #{}".format(number), 30, 5, 10)
+        evil_turtle = EvilTurtle("Evil Turtle #{}".format(number), 30, 5, 10)
         status = battle(player, evil_turtle)
         if status == "Lost":
             print("You have lost to {} turtles. Kinda sad really.".format(turtles))

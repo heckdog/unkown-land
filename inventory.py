@@ -26,7 +26,7 @@ def use_item(player):
                 player.inventory.update({player.weapon: 1})  # why does this work?
             player.weapon = choice
 
-            print("Equipped {}!").format(choice)
+            print("Equipped {}!".format(choice))
 
     # Using Healing Items
     elif (choice in health_items) and (choice in player.inventory):

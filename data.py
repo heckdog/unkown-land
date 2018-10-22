@@ -58,6 +58,14 @@ def get_full_path(name):
     # takes the ".", the "accounts", and the "name.txt" to combine into an OS specific path  eg .\accounts\accounts.txt
 
 
+def get_saves():
+    saves_list = []
+    for i in os.listdir(os.path.join(".","saves")):
+        if i != "version":
+            saves_list.append(i[:-4])
+    return saves_list
+
+
 def get_full_version(name):
     return os.path.abspath(os.path.join('.', 'saves', name))
 

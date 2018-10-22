@@ -12,7 +12,7 @@ import world
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.6.1 (Build {})".format(build))
+print("Version 0.6.2 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
 data.save_version(build)
@@ -202,22 +202,31 @@ def menu():
 
 
 def start():
-    print("\n----{MAIN MENU}----\n"
-          "[N]ew Game\n"
-          "[L]oad Profile")
-    ask = input(">>>")
-    if ask.lower() == "l" or ask.lower() == "load":
-        print("Type your username:")
-        ask_name = input(">>>").strip()
-        filepath = data.get_full_path(ask_name)
-        if os.path.exists(filepath):
-            loaded = data.load(ask_name)
-            if not loaded:  # if loading throws an error
-                return None
-            return loaded
-        print("Save file not found: '{}' \nStarting New Game...".format(ask_name))
-    else:
-        return None
+    active = True
+    while active:
+        print("\n----{START MENU}----\n"
+              "[N]ew Game\n"
+              "[L]oad Profile")
+        ask = input(">>>").lower()
+        if ask == "l" or ask == "load":
+            saves = data.get_saves()
+            for save in saves:
+                print("[-] {}".format(save))
+            print("Type your username:")
+            ask_name = input(">>>").strip()
+            filepath = data.get_full_path(ask_name)
+            if os.path.exists(filepath):
+                loaded = data.load(ask_name)
+                if not loaded:  # if loading throws an error
+                    return None
+                return loaded
+            else:
+                print("'{}' is not a save file. Did you spell it correctly? Caps matter ya know.".format(ask_name))
+        elif ask == "n" or ask == "new" or ask == "new game":
+            print("Starting New Game!")
+            return None
+        else:
+            print("'{}' not recognized. Try again.".format(ask))
 
 
 def info(player):
