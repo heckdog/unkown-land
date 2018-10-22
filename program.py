@@ -123,6 +123,11 @@ def main():
             elif selection == "Start Town":
                 world.start_world(player)
 
+        # Save the game!
+        elif option == "save":
+            data.save(player)
+            print("[!] Saved game!")
+
         # Exit Option
         elif option == "exit":
             # print("See ya later!")
@@ -180,7 +185,9 @@ def menu():
     while valid:
         choice = input("\n----{MENU}----\n"
                        "What would you like to do?\n"
-                       "[Q]uest [I]nventory [S]hop \n[P]layer [W]orld E[X]it\n"
+                       "[Q]uest [I]nventory [S]hop \n"
+                       "[P]layer [W]orld E[X]it\n"
+                       "[SAVE]\n"
                        ">>>").lower().strip()
         if choice.find("q") != -1:
             return "quest"
@@ -195,6 +202,8 @@ def menu():
             return "player"
         elif choice == "world" or choice == "w":
             return "world"
+        elif choice == "save":
+            return "save"
         elif choice.find("i") != -1:
             return "inventory"
         elif choice == "debug mode":
