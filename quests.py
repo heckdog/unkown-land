@@ -21,13 +21,22 @@ class Enemy:
                       "looks ripe.",
                       "smells bad."]
 
+        def special(self, player):
+            print("There's nothing you can do!")
+
+
+class EvilTurtle(Enemy):
+    def special(self):
+        print("dabbed on")
+
+
 
 # ENEMIES: Go like Enemy(NAME, HEALTH, DAMAGE, XP)
 # evil_turtle = Enemy("Evil Turtle", 30, 5, 10)
 dragon = Enemy("Dragon", 8000, 20, 1000)
 
 
-weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "Glitch": 123918312, "digional sword": 1000}
+weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "UNKOWN": 123918312, "digional sword": 1000}
 
 
 def battle(player, enemy):
@@ -83,7 +92,7 @@ def battle(player, enemy):
 
         # Special
         elif choice == "s" or choice == "special":
-            print("u aint no special snowflake and this is unfinished lol try again")
+            enemy.special()
 
         # Escape
         elif choice == "e" or "escape":
@@ -133,7 +142,7 @@ def battle_turtles(player, turtles):
     number = 0
     for turtle in range(turtles):
         number += 1
-        evil_turtle = Enemy("Evil Turtle #{}".format(number), 30, 5, 10)
+        evil_turtle = EvilTurtle("Evil Turtle #{}".format(number), 30, 5, 10)
         status = battle(player, evil_turtle)
         if status == "Lost":
             print("You have lost to {} turtles. Kinda sad really.".format(turtles))
@@ -172,12 +181,13 @@ def mess_with_goblins(player):
 
 def beat_the_dev(player):  # fight is somewhat broke nibba
     dev = Enemy("Heckin-doggo", 9999999, 1, 50000)
-    print("-Heh...")
+    sleep(2)
+    print("\n-Heh...")
     sleep(3)
     print("-You think you can really clap me, eh?")
     sleep(3)
     print("-I created this world. You are but another player object. Watch this.")
-    sleep(1)
+    sleep(3)
     print("[!] Your Health and Max Health have dropped to 1!")
     oldhealth = player.health
     oldmax = player.max_health
@@ -213,25 +223,40 @@ def beat_the_dev(player):  # fight is somewhat broke nibba
         print("-Do you... do you have the powers of UNKOWN?")
         sleep(2)
         print("-I thought I sealed those powers away in the title screen."
-              "-Apparently, I didn't do it that great, since here we are.")
+              "Apparently, I didn't do it that great, since here we are.")
         sleep(3)
-        print("I'll give you 50000 more XP and 10,000G not to tell anyone about it, deal?")
+        print("-I'll give you 50000 more XP and 100,000G not to tell anyone about it, deal?")
         deal = input("(y/n) \n>>>").lower().strip()
         if deal.find("ye") != -1 or deal == "y":
+            player.money += 100000
+            player.xp += 50000
+            player.inventory.pop("UNKOWN")
+            player.completed.append("Beat up the Developer")
             print("-Cool, also I completed the mission for ya.")
             print("-See ya later my guy")
             return True
         else:
-            print("-Well sucks to be you, I have the UNKOWN now. You need to pay attention to your pockets better.")
+            print("-Well sucks to be you, I have the UNKOWN now. You need to pay attention to your pockets pal.")
             print("[!] Everything in you inventory is missing! Maybe if you left now, you could retrieve your save.")
             sleep(1)
             print("-Wait, WHAT?! Don't leave the game! DONT! IM GONNA SAVE IT RIGHT NOW. NO MONEY OR ANYTHING. ILL DELETE YOU!!!")
             print("[!] The game froze. Now's your chance!")
-            sleep(30)
+            sleep(5)
+            print("I'll...")
+            sleep(3)
+            print("...dab...on...")
+            sleep(7)
+            print("...YOUUUUUU!!@!!!23123#Fveqwy3543g?%%%% player.name!!!@313323")
+            sleep(1)
+            print("[!] PLAYER {} NOT FOUND. COMMENCING FILE REMOVAL.".format(player.name))
             player.weapon = "Fists"
             player.money = 0
             player.health = 0
-            data.corrupt(player, player.name)
+            player.xp = -1
+            player.level = ": None!"
+            player.quest = "do nothing. You don't exist."
+            player.inventory = {"There's Nothing Here...": "You should just make a new save pal."}
+            data.save(player)
             player.name = "DELETED"
             print("----{GAME SAVED}----")
             sleep(1)
