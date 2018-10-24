@@ -9,7 +9,7 @@ import data
 
 
 class Enemy:
-    def __init__(self, name, health, damage, xp):
+    def __init__(self, name, health, damage, xp, doing_plus=[]):
         self.name = name
         self.health = health
         self.max_health = health
@@ -19,22 +19,52 @@ class Enemy:
                       "dances furiously.",
                       "stands in your way.",
                       "looks ripe.",
-                      "smells bad."]
+                      "smells bad.",
+                      "stands there... menacingly.",
+                      "is 'ez' according to some kid I asked.",
+                      "is probably just Gary in a costume.",
+                      "eats pant."
+                      ]
 
-        def special(self, player):
-            print("There's nothing you can do!")
+        for i in range(20):  # makes the other text more rare. change to lower to make special text appear more often.
+            self.doing.append("stands in your way.")
+
+        for thing in doing_plus:
+            self.doing.append(thing)
+
+        self.has_special = False
+
+    def special(self, player):
+        print("\n----{SPECIAL}----\n")
+        print("There's nothing you can do!")
 
 
 class EvilTurtle(Enemy):
-    def special(self):
-        print("dabbed on")
+    has_special = True  # tells battle program to allow attacks after this
 
+
+    def special(self, player):
+        print("\n----{SPECIAL}----")
+        print("[DAB] [DEFAULT DANCE]")
+        choice = input(">>>").strip().lower()
+        if choice == "dab" or choice == "d":
+            print("ooh my god you just dabbed on that turtle")
+            chance = randint(1,10)
+            if chance > 7: # just a random chance of dab back
+                print("BUT IT DABS BACK OH MY GOD!!!!!")
+                damage(player, int(player.health/4))  #TODO: if something ever breaks, its this int
+            else:
+                self.health = -9999
+        elif choice == "default dance" or choice == "dance" or choice == "dd":
+            print("The Turtle is unfazed by your smooth moves!")
+            damage(player, 5)
+        else:
+            print("I'm just gonna assume you're good cuz '{}' aint a choice my guy.".format(choice))
 
 
 # ENEMIES: Go like Enemy(NAME, HEALTH, DAMAGE, XP)
 # evil_turtle = Enemy("Evil Turtle", 30, 5, 10)
 dragon = Enemy("Dragon", 8000, 20, 1000)
-
 
 weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "UNKOWN": 123918312, "digional sword": 1000}
 
@@ -92,7 +122,13 @@ def battle(player, enemy):
 
         # Special
         elif choice == "s" or choice == "special":
-            enemy.special()
+            if enemy.has_special:
+                enemy.special(player)
+                if enemy.health <= 0:  # if enemy dead
+                    break  # break just makes it go to win sequence
+                damage(player, enemy.damage + randint(0, enemy.damage))  # damage 1-2x base value
+            else:
+                enemy.special(player)
 
         # Escape
         elif choice == "e" or "escape":
