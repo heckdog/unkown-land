@@ -12,7 +12,7 @@ import world
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.6.2 (Build {})".format(build))
+print("Version 0.6.3 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
 data.save_version(build)
