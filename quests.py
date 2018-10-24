@@ -111,7 +111,7 @@ def battle(player, enemy):
         print("You have successfully defeated the {}! Gained {} XP and {}G".format(enemy.name, xp_gain, money_gain))
         player.xp += xp_gain
         player.money += money_gain
-        sleep(1)
+        sleep(1.5)
         return "Won"
     elif player.health <= 0:
         print("You lost to the {}, which had {} HP left".format(enemy.name, enemy.health))
