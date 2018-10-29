@@ -42,17 +42,15 @@ class Player:
         self.completed = []
         self.xp = 0
         self.level = 1
-        self.inventory = {"Test Item": 100, "bread": 3}
+        self.inventory = {"Test Item": 100, "bread": 3}  # TODO The actual v.1.0 release should remove this
         self.money = 0
         self.debugEnabled = False
-        # TODO: make self.completed be a list/dict once pickle is installed
-        # TODO: change all quest to add quest to completed list instead of completed number
 
     def debug(self):
         self.quest = input("Set new Quest: ")
         self.money += int(input("Set Money: "))
-        self.health = 999
-        self.max_health = 999
+        self.health = 9999
+        self.max_health = 9999
         self.level = int(input("Set level: "))
         self.xp = int(input("Set XP:"))
         choice = input("New Item? ")
@@ -92,12 +90,14 @@ def main():
                         quests.beat_the_dev(player)
                     elif player.quest == "Mess with Goblins":
                         quests.mess_with_goblins(player)
+                    elif player.quest == "Ryan's Battle":  # test battle - only accessable via debug mode
+                        quests.ryans_battle(player)
                     else:
                         print("You don't have a quest!")
                 else:
-                    print("ok then be that way")
+                    print("ok then be that way man all this work i do to launch quests and u be that way ok cool")
             else:
-                print("Something went wrong. Either you said no or something broke lol.")
+                print("You don't have a quest! Go find one before trying to start! There may be some in town...")
 
         # Inventory Option
         elif option == "inventory":

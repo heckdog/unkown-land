@@ -5,6 +5,7 @@ from time import sleep
 
 worlds = {"Test World": 0, "Start Town": 1}
 
+
 def select_world():
     active = True
     while active:

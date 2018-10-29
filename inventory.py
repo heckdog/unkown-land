@@ -16,15 +16,16 @@ def use_item(player):
     choice = input("Which item would you like to use? \n>>>").strip()
 
     # Equipping Weapons
-    if (choice in weapons) and (choice in player.inventory):
-        equip = input("Equip {}? \n>>>".format(choice)).strip().lower()
-        if equip == "y" or equip.find("ye") != -1:
+    if (choice in weapons) and (choice in player.inventory):  # valid weapon and does exist on player
+        equip = input("Equip {}? \n>>>".format(choice)).strip().lower()  # ask to be sure
+        if equip == "y" or equip.find("ye") != -1:  # if yes
             # Taking the old weapon
             if choice in player.inventory and player.weapon != "Fists":  # if the item already exists in player inventory
                 player.inventory[player.weapon] += 1  # put that weapons count up
-            elif choice != "Fists":  # anything but nothing. I should really make "Fists" -> None
+            elif player.weapon != "Fists":
                 player.inventory.update({player.weapon: 1})  # why does this work?
             player.weapon = choice
+            player.inventory[choice] -= 1  # REMOVE THE OBJECT FROM INVENTORY BC ITS NOW IN WEAPON SLOT.
 
             print("Equipped {}!".format(choice))
 
@@ -45,15 +46,19 @@ def use_item(player):
     elif choice in player.inventory:
         use = input("Use {}? It doesn't seem to do anything. \n>>>".format(choice)).strip().lower()
         if use == "y" or use.find("ye") != -1:
-            player.inventory[choice] += -1
+            player.inventory[choice] += -1  # removes the object
             print("Used one {}. You feel strangely sad about losing it, as if it wasn't meant to be used up.".format(choice))
+
+    # get rid of fists cuz they gay
+    if "Fists" in player.inventory:
+        player.inventory["Fists"] = 0
 
     # Empty Check
     try:
         if player.inventory[choice] <= 0:
             test = player.inventory.pop(choice, None)  # this gets rid of that option and returns None if an error
             if not test:
-                print("You shouldn't see this text. If you do, line 57 under inventory.py went horribly wrong.")
+                print("You shouldn't see this text. If you do, line 58 under inventory.py went horribly wrong.")
     except KeyError:
         print("{} isn't in your inventory!".format(choice))
 

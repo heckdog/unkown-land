@@ -21,7 +21,7 @@ class Enemy:
                       "looks ripe.",
                       "smells bad.",
                       "stands there... menacingly.",
-                      "is 'ez' according to some kid I asked.",
+                      "called yo mama fat.",
                       "is probably just Gary in a costume.",
                       "eats pant."
                       ]
@@ -42,7 +42,6 @@ class Enemy:
 class EvilTurtle(Enemy):
     has_special = True  # tells battle program to allow attacks after this
 
-
     def special(self, player):
         print("\n----{SPECIAL}----")
         print("[DAB] [DEFAULT DANCE]")
@@ -60,6 +59,13 @@ class EvilTurtle(Enemy):
             damage(player, 5)
         else:
             print("I'm just gonna assume you're good cuz '{}' aint a choice my guy.".format(choice))
+
+
+class Dragon(Enemy):
+    has_special = True
+
+    def special(self, player):
+        print("this aint doin nothing yet")
 
 
 # ENEMIES: Go like Enemy(NAME, HEALTH, DAMAGE, XP)
@@ -297,5 +303,18 @@ def beat_the_dev(player):  # fight is somewhat broke nibba
             print("----{GAME SAVED}----")
             sleep(1)
             print("----{WORLD DELETED}----")
+
+
+# Easter Egg Battle. Unobtainable via normal means.
+def ryans_battle(player):
+    pheonix = Enemy("Pheonix", 1000000, 10000, 5000) #health, damage, xp, "Lost" "Won"
+    status = battle(player, pheonix)
+    if status == "Lost":
+        print("-hahahahahahahahaha loser")
+    else:
+        print("-ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh noooo")
+        player.completed.append("Ryan's Battle")
+        player.quest = None
+        sleep(1)
 
 

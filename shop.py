@@ -6,7 +6,7 @@ from inventory import view_inventory
 
 store = {"bread": 20, "Test Item": 200, "Health Potion": 100}
 weapon_store = {"Sword": 100, "digional sword": 100000}
-start = {"bread": 20, "Test Item": 150, "Health Potion": 100}
+start = {"bread": 20, "Test Item": 150, "Health Potion": 100, "Test Food": 40}
 
 
 def shop(player):
