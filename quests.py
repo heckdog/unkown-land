@@ -15,7 +15,7 @@ class Enemy:
         self.max_health = health
         self.damage = damage
         self.xp = int(xp)  # its an int to prevent other calculations from being floats idk why
-        '''
+        
         self.doing = ["stands dreamily.",
                       "dances furiously.",
                       "stands in your way.",
@@ -25,9 +25,8 @@ class Enemy:
                       "called yo mama fat.",
                       "is probably just Gary in a costume.",
                       "eats pant."
-                      ]'''
+                      ]
         self.doing = []
-
         for i in range(20):  # makes the other text more rare. change to lower to make special text appear more often.
             self.doing.append("stands in your way.")
 
