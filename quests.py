@@ -15,6 +15,7 @@ class Enemy:
         self.max_health = health
         self.damage = damage
         self.xp = int(xp)  # its an int to prevent other calculations from being floats idk why
+        '''
         self.doing = ["stands dreamily.",
                       "dances furiously.",
                       "stands in your way.",
@@ -24,7 +25,8 @@ class Enemy:
                       "called yo mama fat.",
                       "is probably just Gary in a costume.",
                       "eats pant."
-                      ]
+                      ]'''
+        self.doing = []
 
         for i in range(20):  # makes the other text more rare. change to lower to make special text appear more often.
             self.doing.append("stands in your way.")
@@ -137,7 +139,7 @@ def battle(player, enemy):
                 enemy.special(player)
 
         # Escape
-        elif choice == "e" or "escape":
+        elif choice == "e" or choice == "escape":
             escape_number = randint(1,100)
             if escape_number < 50:
                 print("You escaped from the {}".format(enemy.name))
@@ -184,7 +186,8 @@ def battle_turtles(player, turtles):
     number = 0
     for turtle in range(turtles):
         number += 1
-        evil_turtle = EvilTurtle("Evil Turtle #{}".format(number), 30, 5, 10)
+        evil_turtle = EvilTurtle("Evil Turtle #{}".format(number), 30, 5, 10, doing_plus=["tries to dab on you.",
+                                                                                          "rolls around in his shell"])
         status = battle(player, evil_turtle)
         if status == "Lost":
             print("You have lost to {} turtles. Kinda sad really.".format(turtles))
