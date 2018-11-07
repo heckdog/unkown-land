@@ -12,7 +12,7 @@ import world
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.6.3 (Build {})".format(build))
+print("Version 0.6.4 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
 data.save_version(build)
@@ -45,6 +45,8 @@ class Player:
         self.inventory = {"Test Item": 100, "bread": 3}  # TODO The actual v.1.0 release should remove this
         self.money = 0
         self.debugEnabled = False
+        self.traits = []  # this will hold traits that, if had, activate special things. ex: having "cute" could
+        #                   dull an enemy's senses or something. maybe lower attack
 
     def debug(self):
         self.quest = input("Set new Quest: ")

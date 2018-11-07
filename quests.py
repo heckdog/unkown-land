@@ -26,8 +26,8 @@ class Enemy:
                       "is probably just Gary in a costume.",
                       "eats pant."
                       ]
-        self.doing = []
-        for i in range(20):  # makes the other text more rare. change to lower to make special text appear more often.
+
+        for i in range(5):  # makes the other text more rare. change to lower to make special text appear more often.
             self.doing.append("stands in your way.")
 
         for thing in doing_plus:
@@ -66,12 +66,25 @@ class Dragon(Enemy):
     has_special = True
 
     def special(self, player):
-        print("this aint doin nothing yet")
+        print("\n----{SPECIAL}----")
+        print("[Clap] [Talk]")
+        choice = input(">>>").lower().strip()
+        if choice == "c" or choice == "clap":
+            print("OOF you done CLAPPED that dragon. He lost half his HP!")
+            damage(self, int(self.health/2))
+        elif choice == "t" or choice == "talk":  # TODO: add more talking options, dialog choices
+            print("You talk to the dragon...")
+            sleep(1)
+            print("-huh? you wanna talk to me b?")
+            sleep(2)
+            if "knows Bob" in player.traits:
+                print("-yo, you know my nibba bob! aight man thats cool. i'll leave ya alone. tell em ya won.")
+                self.health = 0
+                self.doing = ["is ready to talk to bob."]
+            else:
+                print("-welp, nice chat but im s'posed to beat yo ass so...")
+                self.doing.append("thinks about that chat you just had.")
 
-
-# ENEMIES: Go like Enemy(NAME, HEALTH, DAMAGE, XP)
-# evil_turtle = Enemy("Evil Turtle", 30, 5, 10)
-dragon = Enemy("Dragon", 8000, 20, 1000)
 
 weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "UNKOWN": 123918312, "digional sword": 1000}
 
@@ -174,6 +187,7 @@ def damage(player, dmg):
 def clap_the_dragon(player):
     # THIS QUEST IS FAR FROM WORKING
     if player.quest == "Clap the Dragon":
+        dragon = Dragon("Dragon", 5000, 20, 233)
         status = battle(player, dragon)
         if status == "Won":
             player.quest = None
