@@ -53,7 +53,7 @@ def start_world(player):
     print("-Oi mate! Welcome to Start Town! We don't get many new folk here, stay a while!")
     dialog = ["I heard sometimes weapons land critical hits that do 3x damage!",
               "I wish I was a pegasus. What? You weren't supposed to hear that! Go away!",
-              "Some retard came through here muttering about 'spaghetti code' and 'player and enemy objects' I think he's a bit coo-coo.",
+              "A strange man came through here muttering about 'spaghetti code' and 'player and enemy objects' I think he's a bit coo-coo.",
               "I've heard that Fergus the Shopkeep here has the cheapest Health Potions around. In a 3 mile radius.",
               "Where did you say you're from? Some town by the name of player.town_name? What a strange place.",
               "A newbie's defence has only around a 1/10 shot of working. Better get some armour, huh?",
