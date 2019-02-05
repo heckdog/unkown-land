@@ -24,7 +24,8 @@ class Enemy:
                       "stands there... menacingly.",
                       "called yo mama fat.",
                       "is probably just Gary in a costume.",
-                      "eats pant."
+                      "eats pant.",
+                      "ran out of ideas for text here."
                       ]
 
         for i in range(5):  # makes the other text more rare. change to lower to make special text appear more often.
@@ -86,11 +87,20 @@ class Dragon(Enemy):
                 self.doing.append("thinks about that chat you just had.")
 
 
+class Ryan(Enemy):
+    has_special = True
+
+    def special(self, player):
+        if "Burnt Popcorn" in player.inventory:
+            print("-what is that delectable smell?")
+
+
+
 weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "UNKOWN": 123918312, "digional sword": 1000}
 
 
 def battle(player, enemy):
-    print("---{BATTLE START}---")
+    print("\n---{BATTLE START}---")
     try:
         if player.health > 0:
             print("Battle Load successful.")
@@ -335,3 +345,16 @@ def ryans_battle(player):
         sleep(1)
 
 
+def defeat_ryan(player):
+    ryan = Ryan("Ryan, Consumer of the Cosmos.", 10000000, 1, 69420, doing_plus=["revs up his beyblade."])
+
+    status = battle(player, ryan)
+    if status == "Lost":
+        print("You were eaten.")
+    else:
+        print("The smell of burnt popcorn fades away. \nYou notice a small round object on the groun")
+        player.inventory.update({"BeyBlade": 1})
+        sleep(3)
+        print("You have acquired the Beyblade!")
+        player.quest = None
+        player.completed.append("Defeat Ryan")
