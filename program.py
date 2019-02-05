@@ -47,6 +47,7 @@ class Player:
         self.debugEnabled = False
         self.traits = []  # this will hold traits that, if had, activate special things. ex: having "cute" could
         #                   dull an enemy's senses or something. maybe lower attack
+        
 
     def debug(self):
         self.quest = input("Set new Quest: ")
@@ -59,6 +60,16 @@ class Player:
         amount = int(input("New Value? "))
         self.inventory.update({choice: amount})
         self.debugEnabled = True
+
+    def xp_check(self):
+        level_up = 80*self.level + (100*.05*self.level)
+        while self.xp >= level_up:
+            self.level += 1
+            print("Level up! You are at level {}".format(self.level))
+            level_up = 80*self.level + (100*.05*self.level)
+        print("{} XP away from next level.".format(level_up-self.xp))
+
+
 
 
 # broken thing below
@@ -149,6 +160,7 @@ def print_header():
 # TODO: rewrite this with better options/dialogue
 def start_choice():
 
+    sleep(2)
     name = input("-Wuz yo name, nibba? \n>>>").strip()
     print("-Ah, so it is {}. Sounds pretty dumb but ok".format(name))
     sleep(2)
