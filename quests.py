@@ -1,6 +1,7 @@
 from random import randint
 import random
 from time import sleep
+from essentials import weapons
 import inventory
 import data
 
@@ -90,13 +91,15 @@ class Dragon(Enemy):
 class Ryan(Enemy):
     has_special = True
 
+    def __init__(self):
+        self.name = "Ryan, Consumer of the Cosmos"
+        self.damage = 1
+        self.health = 10000000
+        self.xp = 15000
+
     def special(self, player):
         if "Burnt Popcorn" in player.inventory:
             print("-what is that delectable smell?")
-
-
-
-weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "UNKOWN": 123918312, "digional sword": 1000}
 
 
 def battle(player, enemy):
@@ -346,7 +349,7 @@ def ryans_battle(player):
 
 
 def defeat_ryan(player):
-    ryan = Ryan("Ryan, Consumer of the Cosmos.", 10000000, 1, 69420, doing_plus=["revs up his beyblade."])
+    ryan = Ryan(doing_plus=["revs up his beyblade."])
 
     status = battle(player, ryan)
     if status == "Lost":

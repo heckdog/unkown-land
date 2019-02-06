@@ -1,4 +1,4 @@
-weapons = ["Sword", "RPG", "Fists", "digional sword", "UNKOWN"]
+weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "UNKOWN": 123918312, "digional sword": 1000}
 # below are health values of healing items
 health_items = {"bread": 15, "Apple": 20, "Test Food": 99, "Health Potion": 200}
 

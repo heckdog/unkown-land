@@ -9,6 +9,10 @@ import os
 from essentials import add_commas
 import world
 
+# latest update: added ryan as a boss
+# still need to add burnt popcorn
+
+
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
@@ -25,6 +29,7 @@ t = Timer(5.0, test)
 t.start()
 print("does it continue tho")
 """
+
 
 #  we are no longer using namedtuples they gay
 # Player = namedtuple("Player", "name weapon quest health max_health defence completed")
@@ -47,7 +52,6 @@ class Player:
         self.debugEnabled = False
         self.traits = []  # this will hold traits that, if had, activate special things. ex: having "cute" could
         #                   dull an enemy's senses or something. maybe lower attack
-        
 
     def debug(self):
         self.quest = input("Set new Quest: ")
@@ -62,14 +66,16 @@ class Player:
         self.debugEnabled = True
 
     def xp_check(self):
-        level_up = 80*self.level + (100*.05*self.level)
+        level_up = 80 * self.level + (100 * .05 * self.level)
+        hp_gain = 0
         while self.xp >= level_up:
             self.level += 1
-            print("Level up! You are at level {}".format(self.level))
-            level_up = 80*self.level + (100*.05*self.level)
-        print("{} XP away from next level.".format(level_up-self.xp))
-
-
+            hp_gain += int(10 + .1*self.level)
+            level_up = 80 * self.level + (100 * .05 * self.level)
+        self.max_health += hp_gain
+        self.health += 5
+        print("Level up! You are at level {}. Gained {} HP from leveling!".format(self.level, hp_gain))
+        print("{} XP away from next level.".format(level_up - self.xp))
 
 
 # broken thing below
@@ -105,6 +111,8 @@ def main():
                         quests.mess_with_goblins(player)
                     elif player.quest == "Ryan's Battle":  # test battle - only accessable via debug mode
                         quests.ryans_battle(player)
+                    elif player.quest == "Defeat Ryan":
+                        quests.defeat_ryan(player)
                     else:
                         print("You don't have a quest!")
                 else:
@@ -135,6 +143,8 @@ def main():
                 world.test_world(player)
             elif selection == "Start Town":
                 world.start_world(player)
+            elif selection == "Topshelf":
+                world.topshelf(player)
 
         # Save the game!
         elif option == "save":
@@ -146,7 +156,7 @@ def main():
             # print("See ya later!")
             data.save(player)
             active = False
-            #break
+            # break
 
 
 def print_header():
@@ -159,7 +169,6 @@ def print_header():
 
 # TODO: rewrite this with better options/dialogue
 def start_choice():
-
     sleep(2)
     name = input("-Wuz yo name, nibba? \n>>>").strip()
     print("-Ah, so it is {}. Sounds pretty dumb but ok".format(name))

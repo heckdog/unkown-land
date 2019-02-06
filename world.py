@@ -25,20 +25,21 @@ def select_world():
             print("Something went wrong.")
             return None
 
+
 def menu(options=True):
     valid = True
     while valid:
         if options:
             choice = input("\n----{WORLD MENU}----\n"
-                        "What would you like to do?\n"
-                        "[I]nventory [S]hop E[X]it [T]alk\n"
-                        "[O]ther"
-                        "\n>>>").lower().strip()
+                           "What would you like to do?\n"
+                           "[I]nventory [S]hop E[X]it [T]alk\n"
+                           "[O]ther"
+                           "\n>>>").lower().strip()
         else:
             choice = input("\n----{WORLD MENU}----\n"
-                        "What would you like to do?\n"
-                        "[I]nventory [S]hop E[X]it [T]alk"
-                        "\n>>>").lower().strip()
+                           "What would you like to do?\n"
+                           "[I]nventory [S]hop E[X]it [T]alk"
+                           "\n>>>").lower().strip()
         if choice == "s" or choice == "shop" or choice == "store":
             return "shop"
         elif choice == "talk" or choice == "t":
@@ -85,7 +86,7 @@ def start_world(player):
 def topshelf(player):
     print("You arrive at Topshelf. A local towers above you waves hello.")
     sleep(1)
-    print("-Welcome, small one, to the realm of the Tallbois. Welcome, to Topshelf.")
+    print("-Welcome, small one, to the realm of the Longbois. Welcome, to Topshelf.")
     sleep(2)
     dialog = ["One must be considered quite tall to join the Longbois. Visit the evaluator if you wish to be judged.",
     "Jacob is the current leader of the Longbois. He's served us well.",
