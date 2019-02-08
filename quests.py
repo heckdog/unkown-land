@@ -44,6 +44,9 @@ class Enemy:
 
 class EvilTurtle(Enemy):
     has_special = True  # tells battle program to allow attacks after this
+    health = 30
+    damage = 5
+    xp = 10
 
     def special(self, player):
         print("\n----{SPECIAL}----")
