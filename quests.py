@@ -10,7 +10,7 @@ import data
 
 
 class Enemy:
-    def __init__(self, name, health, damage, xp, doing_plus=[], is_boss = False):
+    def __init__(self, name, health, damage, xp, doing_plus=[]):
         self.name = name
         self.health = health
         self.max_health = health
@@ -24,13 +24,10 @@ class Enemy:
                       "smells bad.",
                       "stands there... menacingly.",
                       "called yo mama fat.",
+                      "is probably just Gary in a costume.",
                       "eats pant.",
-                      "ran out of text ideas.",
-                      "fails to throw trash into the trashcan."
+                      "ran out of ideas for text here."
                       ]
-
-        if is_boss:
-            self.doing = []
 
         for i in range(5):  # makes the other text more rare. change to lower to make special text appear more often.
             self.doing.append("stands in your way.")
@@ -45,19 +42,8 @@ class Enemy:
         print("There's nothing you can do!")
 
 
-class Boss(Enemy):
-    def __init__(self, name, health, damage, xp, doing_plus):
-        Enemy.__init__(self, name, health, damage, xp, doing_plus, is_boss=True)  # its dumb but it works
-
-
 class EvilTurtle(Enemy):
-    has_special = True
-
-    # THIS IS HOW TO CALL OTHER STATS FROM ENEMY CLASS
-    def __init__(self, name):
-        Enemy.__init__(self, "EvilTurtle", 30, 5, 10, ["rolls around in its shell.",
-                                                       "fails to dab."])
-        self.name = name
+    has_special = True  # tells battle program to allow attacks after this
 
     def special(self, player):
         print("\n----{SPECIAL}----")
@@ -78,7 +64,7 @@ class EvilTurtle(Enemy):
             print("I'm just gonna assume you're good cuz '{}' aint a choice my guy.".format(choice))
 
 
-class Dragon(Boss):
+class Dragon(Enemy):
     has_special = True
 
     def special(self, player):
@@ -102,7 +88,7 @@ class Dragon(Boss):
                 self.doing.append("thinks about that chat you just had.")
 
 
-class Ryan(Boss):
+class Ryan(Enemy):
     has_special = True
 
     def __init__(self):
@@ -110,8 +96,6 @@ class Ryan(Boss):
         self.damage = 1
         self.health = 10000000
         self.xp = 15000
-        Boss.__init__(self, "Ryan, Consumer of the Cosmos", 10000000, 1, 15000, ["craves the finest burnt popcorn.",
-                                                                                 "prepares for a feast."])
 
     def special(self, player):
         if "Burnt Popcorn" in player.inventory:
