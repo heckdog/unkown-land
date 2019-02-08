@@ -38,7 +38,7 @@ def battle(player, enemies):
             names = []
             for enemy in enemies:
                 names.append(enemy.name)
-            status = status.replace("s ", " ")
+            status = status.replace("s ", " ")  # a grammar thing
             choice = input(("\n{} {} What do? "
                            "\n[A]ttack [I]nventory [S]pecial [E]scape\n>>>".format(arrange(names), status))).lower().strip()
 
@@ -66,6 +66,7 @@ def battle(player, enemies):
             # Enemy Turn
             for enemy in enemies:
                 if enemy.health <= 0:
+                    enemy.gain(player)
                     enemies.remove(enemy)
                 else:
                     print(enemy.name + " attacked!")
@@ -73,6 +74,7 @@ def battle(player, enemies):
                     sleep(1)
                     print()  # just a spacer
                 if len(enemies) == 0:
+                    player.xp_check()
                     return "Won"
 
         # # todo: redo this and make it not so useless
@@ -99,13 +101,24 @@ def battle(player, enemies):
 
         # Special
         elif choice == "s" or choice == "special":
-            if enemy.has_special:
-                enemy.special(player)
-                if enemy.health <= 0:  # if enemy dead
-                    break  # break just makes it go to win sequence
-                damage(player, enemy.damage + randint(0, enemy.damage))  # damage 1-2x base value
-            else:
-                enemy.special(player)
+            target = select(enemies)
+            target.special(player)
+            # if enemy.health <= 0:  # if enemy dead
+            #     break  # break just makes it go to win sequence
+
+            # TODO: perhaps in the future make this script an Enemy class default?
+            for enemy in enemies:
+                if enemy.health <= 0:
+                    enemy.gain(player)
+                    enemies.remove(enemy)
+                else:
+                    print(enemy.name + " attacked!")
+                    damage(player, enemy.damage + randint(0, enemy.damage))
+                    sleep(1)
+                    print()  # just a spacer
+                if len(enemies) == 0:
+                    player.xp_check()
+                    return "Won"
 
         # Escape
         elif choice == "e" or choice == "escape":
@@ -113,26 +126,30 @@ def battle(player, enemies):
             if escape_number < 50:
                 print("You escaped from the {}".format(enemy.name))
                 return "Escaped"
+            else:
+                print("You couldn't escape!")
+                for enemy in enemies:
+                    print("{} attacked!".format(enemy.name))
+                    damage(player, enemy.damage)
+                    print()
 
         # Unknown Command
         else:
             print("'{}' not recognized, please try again.".format(choice))
+
     # End sequence
     # Todo: work with multi xp gain
-    if enemy.health <= 0:
-        xp_gain = enemy.xp + int((randint(0, enemy.xp)/2))  # Give player Enemy XP + up to 0.5x more
-        money_gain = xp_gain * randint(2,3) + randint(1, 10)  # pseudo-random money based on enemy xp.
-        print("You have successfully defeated the {}! Gained {} XP and {}G".format(enemy.name, xp_gain, money_gain))
-        player.xp += xp_gain
-        player.money += money_gain
+    if not enemies:
         player.xp_check()
         sleep(1.5)
         return "Won"
     elif player.health <= 0:
-        print("You lost to the {}, which had {} HP left".format(enemy.name, enemy.health))
+        print("You lost. You lose 25% of your money.")
+        player.health = 1
+        player.money = player.money*.75
         return "Lost"
     else:
-        print("Unknown Error: You shouldn't be able to see this text.")
+        print("Unknown Error: You shouldn't be able to see this text unless the laws of math suddenly changed.")
         return None
 
 

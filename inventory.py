@@ -10,7 +10,7 @@ def view_inventory(player):
             print("[*] {} ({})".format(item, add_commas(player.inventory[item])))
 
 
-def use_item(player):
+def use_item(player, battle=False):
     # TODO: maybe make weapons in lowercase too or something with a for loop
     view_inventory(player)
     choice = input("Which item would you like to use? \n>>>").strip()
@@ -42,6 +42,15 @@ def use_item(player):
         else:
             print("You are already at max health!")
 
+    # Quest Items
+    elif choice in quest_items and choice in player.inventory:
+        if battle:
+            use = input("Use the {}? (y/n)\n>>>".format(choice)).strip().lower()
+            if use == "y" or use.find("ye") != -1:
+                player.inventory[choice] += -1
+        else:
+            print("You shouldn't use that now.")
+
     # Other Items
     elif choice in player.inventory:
         use = input("Use {}? It doesn't seem to do anything. \n>>>".format(choice)).strip().lower()
@@ -61,6 +70,7 @@ def use_item(player):
                 print("You shouldn't see this text. If you do, line 58 under inventory.py went horribly wrong.")
     except KeyError:
         print("{} isn't in your inventory!".format(choice))
+    return choice
 
 
 
