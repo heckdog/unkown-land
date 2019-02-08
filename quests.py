@@ -10,12 +10,15 @@ import data
 
 
 class Enemy:
-    def __init__(self, name, health, damage, xp, doing_plus=[]):
+    def __init__(self, name, health, damage, xp, doing_plus=[], is_boss=False, item_trigger = None):
+
         self.name = name
         self.health = health
         self.max_health = health
         self.damage = damage
         self.xp = int(xp)  # its an int to prevent other calculations from being floats idk why
+
+        self.item_trigger = item_trigger
         
         self.doing = ["stands dreamily.",
                       "dances furiously.",
@@ -36,6 +39,13 @@ class Enemy:
             self.doing.append(thing)
 
         self.has_special = False
+
+    def gain(self, player):
+        xp_gain = self.xp + int((randint(0, self.xp)/2))  # Give player Enemy XP + up to 0.5x more
+        money_gain = xp_gain * randint(2,3) + randint(1, 10)  # pseudo-random money based on enemy xp.
+        print("You have successfully defeated the {}! Gained {} XP and {}G".format(self.name, xp_gain, money_gain))
+        player.xp += xp_gain
+        player.money += money_gain
 
     def special(self, player):
         print("\n----{SPECIAL}----\n")
@@ -102,7 +112,7 @@ class Ryan(Enemy):
             print("-what is that delectable smell?")
 
 
-def battle(player, enemy):
+def battle(player, enemies):
     print("\n---{BATTLE START}---")
     try:
         if player.health > 0:
@@ -113,56 +123,90 @@ def battle(player, enemy):
         print("Battle system currently down, sorry. Go nag the dev about it (For error reporting, its a 'TypeError')")
         print("also... you really shouldn't even be able to see this. go away")
         return "Broke"
-    while enemy.health > 0 and player.health > 0:
+
+    while player.health > 0:
+
+        # check for the whole enemy team being dead.
+        for enemy in enemies:
+            dead = 0
+            if enemy.health <= 0:
+                dead += 1
+            if dead == len(enemies):
+                return "Won"
+
         status = random.choice(enemy.doing)
-        choice = input("\n{} {} What do? \n[A]ttack [I]nventory [D]efend [S]pecial [E]scape\n>>>".format(enemy.name, status)).lower().strip()
+
+        if len(enemies) == 1:
+            choice = input("\n{} {} What do? "
+                           "\n[A]ttack [I]nventory [S]pecial [E]scape\n>>>".format(enemy.name, status)).lower().strip()
+        else:
+            names = []
+            for enemy in enemies:
+                names.append(enemy.name)
+            status = status.replace("s ", " ")  # a grammar thing
+            choice = input(("\n{} {} What do? "
+                           "\n[A]ttack [I]nventory [S]pecial [E]scape\n>>>".format(arrange(names), status))).lower().strip()
 
         # Attacking
         if choice == "a" or choice == "attack":
+
+            print("\nAttack who? (type 'cancel' to cancel attack)")
+            target = select(enemies)
             # Player Turn
             dam = weapons[player.weapon]  # returns attack stats
             dam += randint(0, dam)
             # random crits
             for i in range(3):
-                if randint(0,10) == 2:  # a ten percent chance
+                if randint(0, 100) <= player.crit_chance:  # a ten percent chance
                     dam += randint(dam * 2, dam * 3)
                     print("CRITICAL HIT!")
-            damage(enemy, dam)
-            if enemy.health < 0:  # if you won
-                break
+            damage(target, dam)
+            sleep(1)
+            if target.health < 0:  # if you killed an enemy
+                print("{} died!".format(target.name))
 
+            print()  # spacer
             # Enemy Turn
-            damage(player, enemy.damage + randint(0, enemy.damage))
-
-        # Defending
-        elif choice == "d" or choice == "defend":
-            # Player Turn
-            defended = False
-            for i in range(player.defence):
-                chance = randint(1, 10)
-                if chance == 5:
-                    defended = True
-
-            # Enemy Turn
-            if defended:
-                print("{} managed to defend from the {}.".format(player.name, enemy.name))
-            else:
-                print("{} failed to defend, and got hit by the {}".format(player.name, enemy.name))
-                damage(player, enemy.damage + randint(0, enemy.damage))
+            for enemy in enemies:
+                if enemy.health <= 0:
+                    enemy.gain(player)
+                    enemies.remove(enemy)
+                else:
+                    print(enemy.name + " attacked!")
+                    damage(player, enemy.damage + randint(0, enemy.damage))
+                    sleep(1)
+                    print()  # just a spacer
+                if len(enemies) == 0:
+                    player.xp_check()
+                    return "Won"
 
         # Inventory
         elif choice == "i" or choice == "inventory":
-            inventory.use_item(player)
+            item = inventory.use_item(player)
+            for enemy in enemies:
+                if item == enemy.item_trigger:
+                    print("ITEM TRIGGER!")
 
         # Special
         elif choice == "s" or choice == "special":
-            if enemy.has_special:
-                enemy.special(player)
-                if enemy.health <= 0:  # if enemy dead
-                    break  # break just makes it go to win sequence
-                damage(player, enemy.damage + randint(0, enemy.damage))  # damage 1-2x base value
-            else:
-                enemy.special(player)
+            target = select(enemies)
+            target.special(player)
+            # if enemy.health <= 0:  # if enemy dead
+            #     break  # break just makes it go to win sequence
+
+            # TODO: perhaps in the future make this script an Enemy class default?
+            for enemy in enemies:
+                if enemy.health <= 0:
+                    enemy.gain(player)
+                    enemies.remove(enemy)
+                else:
+                    print(enemy.name + " attacked!")
+                    damage(player, enemy.damage + randint(0, enemy.damage))
+                    sleep(1)
+                    print()  # just a spacer
+                if len(enemies) == 0:
+                    player.xp_check()
+                    return "Won"
 
         # Escape
         elif choice == "e" or choice == "escape":
@@ -170,25 +214,30 @@ def battle(player, enemy):
             if escape_number < 50:
                 print("You escaped from the {}".format(enemy.name))
                 return "Escaped"
+            else:
+                print("You couldn't escape!")
+                for enemy in enemies:
+                    print("{} attacked!".format(enemy.name))
+                    damage(player, enemy.damage)
+                    print()
 
         # Unknown Command
         else:
             print("'{}' not recognized, please try again.".format(choice))
+
     # End sequence
-    if enemy.health <= 0:
-        xp_gain = enemy.xp + int((randint(0, enemy.xp)/2))  # Give player Enemy XP + up to 0.5x more
-        money_gain = xp_gain * randint(2,3) + randint(1, 10)  # pseudo-random money based on enemy xp.
-        print("You have successfully defeated the {}! Gained {} XP and {}G".format(enemy.name, xp_gain, money_gain))
-        player.xp += xp_gain
-        player.money += money_gain
+    # Todo: work with multi xp gain
+    if not enemies:
         player.xp_check()
         sleep(1.5)
         return "Won"
     elif player.health <= 0:
-        print("You lost to the {}, which had {} HP left".format(enemy.name, enemy.health))
+        print("You lost. You lose 25% of your money.")
+        player.health = 1
+        player.money = player.money*.75
         return "Lost"
     else:
-        print("Unknown Error: You shouldn't be able to see this text.")
+        print("Unknown Error: You shouldn't be able to see this text unless the laws of math suddenly changed.")
         return None
 
 
@@ -197,6 +246,63 @@ def damage(player, dmg):
     hp += -dmg
     player.health = hp
     print("{} took {} damage! HP: {}/{}".format(player.name, dmg, player.health, player.max_health))
+
+
+# WARNING: only use with DIFFERENTLY NAMED ENEMIES or you will get mixed results.
+def arrange(names):
+    arranged = names[0]
+    check = arranged
+
+    # check for single
+    if len(names) == 1:
+        return arranged
+
+    # check for multiple of the same
+    for name in names:
+        if name == check:
+            is_multiple = True
+        else:
+            is_multiple = False
+            break
+
+    if is_multiple:
+        return "{} {}s".format(len(names), arranged)  # eg: 10 goblins
+
+    # if none of the above
+    for name in names[1:]:
+        name_index = names.index(name)  # name_index and length are for debug purposes
+        length = len(names[1:])
+        if name_index == length:  # if it's the last name
+            # check that names isn't over 2
+            if len(names) > 2:  # if it isnt, do proper grammar
+                arranged = "{}, and {}".format(arranged, name)
+            else:  # if it is in fact 2 names, arrange without comma
+                arranged = "{} and {}".format(arranged, name)
+            return arranged
+        arranged = "{}, {}".format(arranged, name)  # if not the last name, add a comma
+    return arranged
+
+
+def select(enemies):
+    check = True
+    while check:
+        for e in enemies:
+            print("[{}] {} ({}/{}HP)".format(enemies.index(e) + 1, e.name, e.health, e.max_health))
+
+        target = input(">>>").strip()
+
+        try:
+            if target.lower() == "cancel":
+                print("yo idk this shouldnt be happening idk whats going on")
+            elif int(target) <= len(enemies) and int(target) >= 0:  # check if its within 0-len of targets
+                target = enemies[int(target) - 1]
+                check = False
+            else:
+                print("'{}' isn't valid. Type the number, not the name...").format(target)
+        except TypeError:
+            print("'{}' isn't valid. Type the number, not the name.").format(target)
+    return target
+
 
 
 # def clap_the_dragon(player):
@@ -212,17 +318,17 @@ def damage(player, dmg):
 
 def battle_turtles(player, turtles):
     number = 0
+    evil_turtles = []
     for turtle in range(turtles):
         number += 1
-        evil_turtle = EvilTurtle("Evil Turtle #{}".format(number), 30, 5, 10, doing_plus=["tries to dab on you.",
-                                                                                          "rolls around in his shell"])
-        status = battle(player, evil_turtle)
-        if status == "Lost":
-            print("You have lost to {} turtles. Kinda sad really.".format(turtles))
-            sleep(2)
-            return False
-        if status == "Escaped":
-            return False
+        evil_turtles.append(EvilTurtle("Evil Turtle {}".format(number)))
+    status = battle(player, evil_turtles)
+    if status == "Lost":
+        print("You have lost to {} turtles. Kinda sad really.".format(turtles))
+        sleep(2)
+        return False
+    if status == "Escaped":
+        return False
     print("You beat all {} of the turtles! Good Job!".format(turtles))
     player.quest = None
     player.completed.append("Dab on Turtles")
@@ -237,7 +343,7 @@ def mess_with_goblins(player):
     while player.money <= (original_money + 400):
         number += 1
         goblin = Enemy("Goblin #{}".format(number), 100, 15, 50)  # change the last value to make this chalenge harder or easier
-        status = battle(player, goblin)
+        status = battle(player, [goblin])
         if status == "Lost":
             print("Aw you lost to goblins boohoo. I've given you a bandaid tho so ur not dead yet.")
             player.health = 20
@@ -277,7 +383,7 @@ def beat_the_dev(player):  # fight is somewhat broke nibba
         print("")
         print("[!] Equipped weapon.ERROR: Weapon Does not Exist!")
     print("Let's fight, if that's what you're here for. :)")
-    result = battle(player, dev)
+    result = battle(player, [dev])
     if result == "Lost":
         print("-Did you really think that was a good idea?  I didn't.")
         sleep(0.5)
@@ -340,7 +446,7 @@ def beat_the_dev(player):  # fight is somewhat broke nibba
 # Easter Egg Battle. Unobtainable via normal means.
 def ryans_battle(player):
     pheonix = Enemy("Pheonix", 1000000, 10000, 5000) #health, damage, xp, "Lost" "Won"
-    status = battle(player, pheonix)
+    status = battle(player, [pheonix])
     if status == "Lost":
         print("-hahahahahahahahaha loser")
     else:
@@ -353,7 +459,7 @@ def ryans_battle(player):
 def defeat_ryan(player):
     ryan = Ryan(doing_plus=["revs up his beyblade."])
 
-    status = battle(player, ryan)
+    status = battle(player, [ryan])
     if status == "Lost":
         print("You were eaten.")
     else:

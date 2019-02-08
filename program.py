@@ -37,7 +37,7 @@ print("does it continue tho")
 
 # The Player Class
 class Player:
-    def __init__(self, name, weapon, quest, health, defence):
+    def __init__(self, name, weapon, quest, health, defence, crit_chance=10):
         self.name = name
         self.weapon = weapon
         self.quest = quest
@@ -49,6 +49,8 @@ class Player:
         self.level = 1
         self.inventory = {"Test Item": 100, "bread": 3}  # TODO The actual v.1.0 release should remove this
         self.money = 0
+
+        self.crit_chance = crit_chance
         self.debugEnabled = False
         self.traits = []  # this will hold traits that, if had, activate special things. ex: having "cute" could
         #                   dull an enemy's senses or something. maybe lower attack
@@ -104,7 +106,7 @@ def main():
                     if player.quest == "Clap the Dragon":
                         quests.clap_the_dragon(player)
                     elif player.quest == "Dab on Turtles":
-                        quests.battle_turtles(player, 5)
+                        quests.battle_turtles(player, 3)
                     elif player.quest == "Beat up the Developer":
                         quests.beat_the_dev(player)
                     elif player.quest == "Mess with Goblins":
