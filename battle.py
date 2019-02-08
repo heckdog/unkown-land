@@ -33,51 +33,65 @@ def battle(player, enemies):
 
         if len(enemies) == 1:
             choice = input("\n{} {} What do? "
-                           "\n[A]ttack [I]nventory [D]efend [S]pecial [E]scape\n>>>".format(enemy.name, status)).lower().strip()
+                           "\n[A]ttack [I]nventory [S]pecial [E]scape\n>>>".format(enemy.name, status)).lower().strip()
         else:
             names = []
             for enemy in enemies:
                 names.append(enemy.name)
             status = status.replace("s ", " ")
             choice = input(("\n{} {} What do? "
-                           "\n[A]ttack [I]nventory [D]efend [S]pecial [E]scape\n>>>".format(arrange(names), status)).lower().strip())
+                           "\n[A]ttack [I]nventory [S]pecial [E]scape\n>>>".format(arrange(names), status))).lower().strip()
 
 
         #TODO: allow attacking for only one enemy at a time
         # Attacking
         if choice == "a" or choice == "attack":
+
+            print("\nAttack who? (type 'cancel' to cancel attack)")
+            target = select(enemies)
             # Player Turn
             dam = weapons[player.weapon]  # returns attack stats
             dam += randint(0, dam)
             # random crits
             for i in range(3):
-                if randint(0,10) == 2:  # a ten percent chance
+                if randint(0, player.crit_chance) == 2:  # a ten percent chance
                     dam += randint(dam * 2, dam * 3)
                     print("CRITICAL HIT!")
-            damage(enemy, dam)
-            if enemy.health < 0:  # if you won
-                break
+            damage(target, dam)
+            sleep(1)
+            if target.health < 0:  # if you killed an enemy
+                print("{} died!".format(target.name))
 
+            print() # spacer
             # Enemy Turn
-            damage(player, enemy.damage + randint(0, enemy.damage))
+            for enemy in enemies:
+                if enemy.health <= 0:
+                    enemies.remove(enemy)
+                else:
+                    print(enemy.name + " attacked!")
+                    damage(player, enemy.damage + randint(0, enemy.damage))
+                    sleep(1)
+                    print()  # just a spacer
+                if len(enemies) == 0:
+                    return "Won"
 
-        # todo: redo this and make it not so useless
-        # Defending
-        elif choice == "d" or choice == "defend":
-            # Player Turn
-            defended = False
-            for i in range(player.defence):
-                chance = randint(1, 10)
-                if chance == 5:
-                    defended = True
-
-            # TODO: make below enemy TURNS
-            # Enemy Turn
-            if defended:
-                print("{} managed to defend from the {}.".format(player.name, enemy.name))
-            else:
-                print("{} failed to defend, and got hit by the {}".format(player.name, enemy.name))
-                damage(player, enemy.damage + randint(0, enemy.damage))
+        # # todo: redo this and make it not so useless
+        # # Defending
+        # elif choice == "d" or choice == "defend":
+        #     # Player Turn
+        #     defended = False
+        #     for i in range(player.defence):
+        #         chance = randint(1, 10)
+        #         if chance == 5:
+        #             defended = True
+        #
+        #     # TODO: make below enemy TURNS
+        #     # Enemy Turn
+        #     if defended:
+        #         print("{} managed to defend from the {}.".format(player.name, enemy.name))
+        #     else:
+        #         print("{} failed to defend, and got hit by the {}".format(player.name, enemy.name))
+        #         damage(player, enemy.damage + randint(0, enemy.damage))
 
         # Inventory
         elif choice == "i" or choice == "inventory":
@@ -162,6 +176,27 @@ def arrange(names):
             return arranged
         arranged = "{}, {}".format(arranged, name)  # if not the last name, add a comma
     return arranged
+
+
+def select(enemies):
+    check = True
+    while check:
+        for e in enemies:
+            print("[{}] {} ({}/{}HP)".format(enemies.index(e) + 1, e.name, e.health, e.max_health))
+
+        target = input(">>>").strip()
+
+        try:
+            if target.lower() == "cancel":
+                print("yo idk this shouldnt be happening idk whats going on")
+            elif int(target) <= len(enemies) and int(target) >= 0:  # check if its within 0-len of targets
+                target = enemies[int(target) - 1]
+                check = False
+            else:
+                print("'{}' isn't valid. Type the number, not the name...").format(target)
+        except TypeError:
+            print("'{}' isn't valid. Type the number, not the name.").format(target)
+    return target
 
 
 if __name__ == '__main__':
