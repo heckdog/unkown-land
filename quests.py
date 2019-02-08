@@ -111,6 +111,7 @@ def battle(player, enemy):
             print("ur dead lmao")
     except TypeError:
         print("Battle system currently down, sorry. Go nag the dev about it (For error reporting, its a 'TypeError')")
+        print("also... you really shouldn't even be able to see this. go away")
         return "Broke"
     while enemy.health > 0 and player.health > 0:
         status = random.choice(enemy.doing)
@@ -198,15 +199,15 @@ def damage(player, dmg):
     print("{} took {} damage! HP: {}/{}".format(player.name, dmg, player.health, player.max_health))
 
 
-def clap_the_dragon(player):
-    # THIS QUEST IS FAR FROM WORKING
-    if player.quest == "Clap the Dragon":
-        dragon = Dragon("Dragon", 5000, 20, 233)
-        status = battle(player, dragon)
-        if status == "Won":
-            player.quest = None
-            player.completed.append("Clap the Dragon")
-            player.xp += 300
+# def clap_the_dragon(player):
+#     # THIS QUEST IS FAR FROM WORKING
+#     if player.quest == "Clap the Dragon":
+#         dragon = Dragon("Dragon", 5000, 20, 233)
+#         status = battle(player, dragon)
+#         if status == "Won":
+#             player.quest = None
+#             player.completed.append("Clap the Dragon")
+#             player.xp += 300
 
 
 def battle_turtles(player, turtles):
@@ -251,6 +252,7 @@ def mess_with_goblins(player):
     return True
 
 
+# TODO: redo this gay battle its no fun.
 def beat_the_dev(player):  # fight is somewhat broke nibba
     dev = Enemy("Heckin-doggo", 9999999, 1, 50000)
     sleep(2)
