@@ -47,9 +47,8 @@ class Player:
         self.completed = []
         self.xp = 0
         self.level = 1
-        self.inventory = {"Test Item": 100, "bread": 5}  # TODO The actual v.1.0 release should remove this
+        self.inventory = {"Test Item": 100, "bread": 3}  # TODO The actual v.1.0 release should remove this
         self.money = 0
-        self.crit_chance = 10
         self.debugEnabled = False
         self.traits = []  # this will hold traits that, if had, activate special things. ex: having "cute" could
         #                   dull an enemy's senses or something. maybe lower attack
@@ -71,7 +70,7 @@ class Player:
         hp_gain = 0
         while self.xp >= level_up:
             self.level += 1
-            hp_gain += int(10 + .5*self.level)
+            hp_gain += int(10 + .1*self.level)
             level_up = 80 * self.level + (100 * .05 * self.level)
         self.max_health += hp_gain
         self.health += 5
