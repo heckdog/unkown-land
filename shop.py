@@ -6,7 +6,8 @@ from inventory import view_inventory
 
 store = {"bread": 20, "Test Item": 200, "Health Potion": 100}
 weapon_store = {"Sword": 100, "digional sword": 100000}
-start = {"bread": 20, "Test Item": 150, "Health Potion": 100}
+start = {"bread": 20, "Test Item": 150, "Health Potion": 100, "Test Food": 40}
+topshelf = {"bread": 20, "Tall Juice": 2500}
 
 
 def shop(player):
@@ -101,6 +102,25 @@ def weapon_store(player):
     print("\n----{SHOP}----")
     print("-Oi lad, whatcha be lookin' for?")
     print("[B]uy [S]ell")
+
+
+def topshelf_store(player):
+    print("\n----{SHOP}----")
+    if "tall" in player.traits:
+        print("-Aye big boi. Come take a look at what I've got for ye today.")
+    elif "longboi" in player.traits:
+        print("-Aye, it's that new Longboi! Please, come, take a look at what I've got for ye.")
+    else:
+        print("-Welcome wee one. Come take a look on the stool at what we have in stock.")
+        print("[B]uy [S]ell")
+        option = input(">>>").lower().strip()
+        if option == "b" or option == "buy":
+            buy(player, topshelf)
+        elif option == "s" or option == "sell":
+            if "longboi" in player.traits:
+                sell(player, topshelf, .73)
+            else:
+                sell(player, topshelf, .69)
 
 
 def buy(player, stock):

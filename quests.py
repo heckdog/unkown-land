@@ -1,6 +1,7 @@
 from random import randint
 import random
 from time import sleep
+from essentials import weapons
 import inventory
 import data
 
@@ -9,38 +10,110 @@ import data
 
 
 class Enemy:
-    def __init__(self, name, health, damage, xp):
+    def __init__(self, name, health, damage, xp, doing_plus=[], is_boss=False, item_trigger = None):
+
         self.name = name
         self.health = health
         self.max_health = health
         self.damage = damage
         self.xp = int(xp)  # its an int to prevent other calculations from being floats idk why
+
+        self.item_trigger = item_trigger
+        
         self.doing = ["stands dreamily.",
                       "dances furiously.",
                       "stands in your way.",
                       "looks ripe.",
-                      "smells bad."]
+                      "smells bad.",
+                      "stands there... menacingly.",
+                      "called yo mama fat.",
+                      "is probably just Gary in a costume.",
+                      "eats pant.",
+                      "ran out of ideas for text here."
+                      ]
 
-        def special(self, player):
-            print("There's nothing you can do!")
+        for i in range(5):  # makes the other text more rare. change to lower to make special text appear more often.
+            self.doing.append("stands in your way.")
+
+        for thing in doing_plus:
+            self.doing.append(thing)
+
+        self.has_special = False
+
+    def gain(self, player):
+        xp_gain = self.xp + int((randint(0, self.xp)/2))  # Give player Enemy XP + up to 0.5x more
+        money_gain = xp_gain * randint(2,3) + randint(1, 10)  # pseudo-random money based on enemy xp.
+        print("You have successfully defeated the {}! Gained {} XP and {}G".format(self.name, xp_gain, money_gain))
+        player.xp += xp_gain
+        player.money += money_gain
+
+    def special(self, player):
+        print("\n----{SPECIAL}----\n")
+        print("There's nothing you can do!")
 
 
 class EvilTurtle(Enemy):
-    def special(self):
-        print("dabbed on")
+    has_special = True  # tells battle program to allow attacks after this
+
+    def special(self, player):
+        print("\n----{SPECIAL}----")
+        print("[DAB] [DEFAULT DANCE]")
+        choice = input(">>>").strip().lower()
+        if choice == "dab" or choice == "d":
+            print("ooh my god you just dabbed on that turtle")
+            chance = randint(1,10)
+            if chance > 7: # just a random chance of dab back
+                print("BUT IT DABS BACK OH MY GOD!!!!!")
+                damage(player, int(player.health/4))  #TODO: if something ever breaks, its this int
+            else:
+                self.health = -9999
+        elif choice == "default dance" or choice == "dance" or choice == "dd":
+            print("The Turtle is unfazed by your smooth moves!")
+            damage(player, 5)
+        else:
+            print("I'm just gonna assume you're good cuz '{}' aint a choice my guy.".format(choice))
 
 
+class Dragon(Enemy):
+    has_special = True
 
-# ENEMIES: Go like Enemy(NAME, HEALTH, DAMAGE, XP)
-# evil_turtle = Enemy("Evil Turtle", 30, 5, 10)
-dragon = Enemy("Dragon", 8000, 20, 1000)
+    def special(self, player):
+        print("\n----{SPECIAL}----")
+        print("[Clap] [Talk]")
+        choice = input(">>>").lower().strip()
+        if choice == "c" or choice == "clap":
+            print("OOF you done CLAPPED that dragon. He lost half his HP!")
+            damage(self, int(self.health/2))
+        elif choice == "t" or choice == "talk":  # TODO: add more talking options, dialog choices
+            print("You talk to the dragon...")
+            sleep(1)
+            print("-huh? you wanna talk to me b?")
+            sleep(2)
+            if "knows Bob" in player.traits:
+                print("-yo, you know my nibba bob! aight man thats cool. i'll leave ya alone. tell em ya won.")
+                self.health = 0
+                self.doing = ["is ready to talk to bob."]
+            else:
+                print("-welp, nice chat but im s'posed to beat yo ass so...")
+                self.doing.append("thinks about that chat you just had.")
 
 
-weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "UNKOWN": 123918312, "digional sword": 1000}
+class Ryan(Enemy):
+    has_special = True
+
+    def __init__(self):
+        self.name = "Ryan, Consumer of the Cosmos"
+        self.damage = 1
+        self.health = 10000000
+        self.xp = 15000
+
+    def special(self, player):
+        if "Burnt Popcorn" in player.inventory:
+            print("-what is that delectable smell?")
 
 
-def battle(player, enemy):
-    print("---{BATTLE START}---")
+def battle(player, enemies):
+    print("\n---{BATTLE START}---")
     try:
         if player.health > 0:
             print("Battle Load successful.")
@@ -48,76 +121,123 @@ def battle(player, enemy):
             print("ur dead lmao")
     except TypeError:
         print("Battle system currently down, sorry. Go nag the dev about it (For error reporting, its a 'TypeError')")
+        print("also... you really shouldn't even be able to see this. go away")
         return "Broke"
-    while enemy.health > 0 and player.health > 0:
+
+    while player.health > 0:
+
+        # check for the whole enemy team being dead.
+        for enemy in enemies:
+            dead = 0
+            if enemy.health <= 0:
+                dead += 1
+            if dead == len(enemies):
+                return "Won"
+
         status = random.choice(enemy.doing)
-        choice = input("\n{} {} What do? \n[A]ttack [I]nventory [D]efend [S]pecial [E]scape\n>>>".format(enemy.name, status)).lower().strip()
+
+        if len(enemies) == 1:
+            choice = input("\n{} {} What do? "
+                           "\n[A]ttack [I]nventory [S]pecial [E]scape\n>>>".format(enemy.name, status)).lower().strip()
+        else:
+            names = []
+            for enemy in enemies:
+                names.append(enemy.name)
+            status = status.replace("s ", " ")  # a grammar thing
+            choice = input(("\n{} {} What do? "
+                           "\n[A]ttack [I]nventory [S]pecial [E]scape\n>>>".format(arrange(names), status))).lower().strip()
 
         # Attacking
         if choice == "a" or choice == "attack":
+
+            print("\nAttack who? (type 'cancel' to cancel attack)")
+            target = select(enemies)
             # Player Turn
             dam = weapons[player.weapon]  # returns attack stats
             dam += randint(0, dam)
             # random crits
             for i in range(3):
-                if randint(0,10) == 2:  # a ten percent chance
+                if randint(0, 100) <= player.crit_chance:  # a ten percent chance
                     dam += randint(dam * 2, dam * 3)
                     print("CRITICAL HIT!")
-            damage(enemy, dam)
-            if enemy.health < 0:  # if you won
-                break
+            damage(target, dam)
+            sleep(1)
+            if target.health < 0:  # if you killed an enemy
+                print("{} died!".format(target.name))
 
+            print()  # spacer
             # Enemy Turn
-            damage(player, enemy.damage + randint(0, enemy.damage))
-
-        # Defending
-        elif choice == "d" or choice == "defend":
-            # Player Turn
-            defended = False
-            for i in range(player.defence):
-                chance = randint(1, 10)
-                if chance == 5:
-                    defended = True
-
-            # Enemy Turn
-            if defended:
-                print("{} managed to defend from the {}.".format(player.name, enemy.name))
-            else:
-                print("{} failed to defend, and got hit by the {}".format(player.name, enemy.name))
-                damage(player, enemy.damage + randint(0, enemy.damage))
+            for enemy in enemies:
+                if enemy.health <= 0:
+                    enemy.gain(player)
+                    enemies.remove(enemy)
+                else:
+                    print(enemy.name + " attacked!")
+                    damage(player, enemy.damage + randint(0, enemy.damage))
+                    sleep(1)
+                    print()  # just a spacer
+                if len(enemies) == 0:
+                    player.xp_check()
+                    return "Won"
 
         # Inventory
         elif choice == "i" or choice == "inventory":
-            inventory.use_item(player)
+            item = inventory.use_item(player)
+            for enemy in enemies:
+                if item == enemy.item_trigger:
+                    print("ITEM TRIGGER!")
 
         # Special
         elif choice == "s" or choice == "special":
-            enemy.special()
+            target = select(enemies)
+            target.special(player)
+            # if enemy.health <= 0:  # if enemy dead
+            #     break  # break just makes it go to win sequence
+
+            # TODO: perhaps in the future make this script an Enemy class default?
+            for enemy in enemies:
+                if enemy.health <= 0:
+                    enemy.gain(player)
+                    enemies.remove(enemy)
+                else:
+                    print(enemy.name + " attacked!")
+                    damage(player, enemy.damage + randint(0, enemy.damage))
+                    sleep(1)
+                    print()  # just a spacer
+                if len(enemies) == 0:
+                    player.xp_check()
+                    return "Won"
 
         # Escape
-        elif choice == "e" or "escape":
+        elif choice == "e" or choice == "escape":
             escape_number = randint(1,100)
             if escape_number < 50:
                 print("You escaped from the {}".format(enemy.name))
                 return "Escaped"
+            else:
+                print("You couldn't escape!")
+                for enemy in enemies:
+                    print("{} attacked!".format(enemy.name))
+                    damage(player, enemy.damage)
+                    print()
 
         # Unknown Command
         else:
             print("'{}' not recognized, please try again.".format(choice))
+
     # End sequence
-    if enemy.health <= 0:
-        xp_gain = enemy.xp + int((randint(0, enemy.xp)/2))  # Give player Enemy XP + up to 0.5x more
-        money_gain = xp_gain * randint(2,3) + randint(1, 10)  # pseudo-random money based on enemy xp.
-        print("You have successfully defeated the {}! Gained {} XP and {}G".format(enemy.name, xp_gain, money_gain))
-        player.xp += xp_gain
-        player.money += money_gain
+    # Todo: work with multi xp gain
+    if not enemies:
+        player.xp_check()
         sleep(1.5)
         return "Won"
     elif player.health <= 0:
-        print("You lost to the {}, which had {} HP left".format(enemy.name, enemy.health))
+        print("You lost. You lose 25% of your money.")
+        player.health = 1
+        player.money = player.money*.75
         return "Lost"
     else:
-        print("Unknown Error: You shouldn't be able to see this text.")
+        print("Unknown Error: You shouldn't be able to see this text unless the laws of math suddenly changed.")
         return None
 
 
@@ -128,28 +248,87 @@ def damage(player, dmg):
     print("{} took {} damage! HP: {}/{}".format(player.name, dmg, player.health, player.max_health))
 
 
-def clap_the_dragon(player):
-    # THIS QUEST IS FAR FROM WORKING
-    if player.quest == "Clap the Dragon":
-        status = battle(player, dragon)
-        if status == "Won":
-            player.quest = None
-            player.completed.append("Clap the Dragon")
-            player.xp += 300
+# WARNING: only use with DIFFERENTLY NAMED ENEMIES or you will get mixed results.
+def arrange(names):
+    arranged = names[0]
+    check = arranged
+
+    # check for single
+    if len(names) == 1:
+        return arranged
+
+    # check for multiple of the same
+    for name in names:
+        if name == check:
+            is_multiple = True
+        else:
+            is_multiple = False
+            break
+
+    if is_multiple:
+        return "{} {}s".format(len(names), arranged)  # eg: 10 goblins
+
+    # if none of the above
+    for name in names[1:]:
+        name_index = names.index(name)  # name_index and length are for debug purposes
+        length = len(names[1:])
+        if name_index == length:  # if it's the last name
+            # check that names isn't over 2
+            if len(names) > 2:  # if it isnt, do proper grammar
+                arranged = "{}, and {}".format(arranged, name)
+            else:  # if it is in fact 2 names, arrange without comma
+                arranged = "{} and {}".format(arranged, name)
+            return arranged
+        arranged = "{}, {}".format(arranged, name)  # if not the last name, add a comma
+    return arranged
+
+
+def select(enemies):
+    check = True
+    while check:
+        for e in enemies:
+            print("[{}] {} ({}/{}HP)".format(enemies.index(e) + 1, e.name, e.health, e.max_health))
+
+        target = input(">>>").strip()
+
+        try:
+            if target.lower() == "cancel":
+                print("yo idk this shouldnt be happening idk whats going on")
+            elif int(target) <= len(enemies) and int(target) >= 0:  # check if its within 0-len of targets
+                target = enemies[int(target) - 1]
+                check = False
+            else:
+                print("'{}' isn't valid. Type the number, not the name...").format(target)
+        except TypeError:
+            print("'{}' isn't valid. Type the number, not the name.").format(target)
+    return target
+
+
+
+# def clap_the_dragon(player):
+#     # THIS QUEST IS FAR FROM WORKING
+#     if player.quest == "Clap the Dragon":
+#         dragon = Dragon("Dragon", 5000, 20, 233)
+#         status = battle(player, dragon)
+#         if status == "Won":
+#             player.quest = None
+#             player.completed.append("Clap the Dragon")
+#             player.xp += 300
 
 
 def battle_turtles(player, turtles):
     number = 0
+    evil_turtles = []
     for turtle in range(turtles):
         number += 1
-        evil_turtle = EvilTurtle("Evil Turtle #{}".format(number), 30, 5, 10)
-        status = battle(player, evil_turtle)
-        if status == "Lost":
-            print("You have lost to {} turtles. Kinda sad really.".format(turtles))
-            sleep(2)
-            return False
-        if status == "Escaped":
-            return False
+        evil_turtles.append(EvilTurtle("Evil Turtle {}".format(number)))
+    status = battle(player, evil_turtles)
+    if status == "Lost":
+        print("You have lost to {} turtles. Kinda sad really.".format(turtles))
+        sleep(2)
+        return False
+    if status == "Escaped":
+        return False
     print("You beat all {} of the turtles! Good Job!".format(turtles))
     player.quest = None
     player.completed.append("Dab on Turtles")
@@ -164,7 +343,7 @@ def mess_with_goblins(player):
     while player.money <= (original_money + 400):
         number += 1
         goblin = Enemy("Goblin #{}".format(number), 100, 15, 50)  # change the last value to make this chalenge harder or easier
-        status = battle(player, goblin)
+        status = battle(player, [goblin])
         if status == "Lost":
             print("Aw you lost to goblins boohoo. I've given you a bandaid tho so ur not dead yet.")
             player.health = 20
@@ -179,6 +358,7 @@ def mess_with_goblins(player):
     return True
 
 
+# TODO: redo this gay battle its no fun.
 def beat_the_dev(player):  # fight is somewhat broke nibba
     dev = Enemy("Heckin-doggo", 9999999, 1, 50000)
     sleep(2)
@@ -203,7 +383,7 @@ def beat_the_dev(player):  # fight is somewhat broke nibba
         print("")
         print("[!] Equipped weapon.ERROR: Weapon Does not Exist!")
     print("Let's fight, if that's what you're here for. :)")
-    result = battle(player, dev)
+    result = battle(player, [dev])
     if result == "Lost":
         print("-Did you really think that was a good idea?  I didn't.")
         sleep(0.5)
@@ -263,3 +443,29 @@ def beat_the_dev(player):  # fight is somewhat broke nibba
             print("----{WORLD DELETED}----")
 
 
+# Easter Egg Battle. Unobtainable via normal means.
+def ryans_battle(player):
+    pheonix = Enemy("Pheonix", 1000000, 10000, 5000) #health, damage, xp, "Lost" "Won"
+    status = battle(player, [pheonix])
+    if status == "Lost":
+        print("-hahahahahahahahaha loser")
+    else:
+        print("-ahhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh noooo")
+        player.completed.append("Ryan's Battle")
+        player.quest = None
+        sleep(1)
+
+
+def defeat_ryan(player):
+    ryan = Ryan(doing_plus=["revs up his beyblade."])
+
+    status = battle(player, [ryan])
+    if status == "Lost":
+        print("You were eaten.")
+    else:
+        print("The smell of burnt popcorn fades away. \nYou notice a small round object on the groun")
+        player.inventory.update({"BeyBlade": 1})
+        sleep(3)
+        print("You have acquired the Beyblade!")
+        player.quest = None
+        player.completed.append("Defeat Ryan")

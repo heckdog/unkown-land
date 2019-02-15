@@ -3,7 +3,8 @@ import shop
 import inventory
 from time import sleep
 
-worlds = {"Test World": 0, "Start Town": 1}
+worlds = {"Test World": 0, "Start Town": 1, "Topshelf": 2,}
+
 
 def select_world():
     active = True
@@ -24,15 +25,21 @@ def select_world():
             print("Something went wrong.")
             return None
 
-def menu():
+
+def menu(options=True):
     valid = True
     while valid:
-        choice = input("\n----{WORLD MENU}----\n"
-                       "What would you like to do?\n"
-                       "[I]nventory [S]hop E[X]it [T]alk"
-                       "\n>>>").lower().strip()
-        # if choice.find("q") != -1:
-            # return "quest"
+        if options:
+            choice = input("\n----{WORLD MENU}----\n"
+                           "What would you like to do?\n"
+                           "[I]nventory [S]hop E[X]it [T]alk\n"
+                           "[O]ther"
+                           "\n>>>").lower().strip()
+        else:
+            choice = input("\n----{WORLD MENU}----\n"
+                           "What would you like to do?\n"
+                           "[I]nventory [S]hop E[X]it [T]alk"
+                           "\n>>>").lower().strip()
         if choice == "s" or choice == "shop" or choice == "store":
             return "shop"
         elif choice == "talk" or choice == "t":
@@ -49,15 +56,42 @@ def test_world(player):
 
 def start_world(player):
     print("You arrive at Start Town. A friendly local waves hello.")
+    sleep(1)
     print("-Oi mate! Welcome to Start Town! We don't get many new folk here, stay a while!")
+    sleep(1)
     dialog = ["I heard sometimes weapons land critical hits that do 3x damage!",
               "I wish I was a pegasus. What? You weren't supposed to hear that! Go away!",
-              "Some retard came through here muttering about 'spaghetti code' and 'player and enemy objects' I think he's a bit coo-coo.",
+              "A strange man came through here muttering about 'spaghetti code' and 'player and enemy objects' I think he's a bit coo-coo.",
               "I've heard that Fergus the Shopkeep here has the cheapest Health Potions around. In a 3 mile radius.",
               "Where did you say you're from? Some town by the name of player.town_name? What a strange place.",
               "A newbie's defence has only around a 1/10 shot of working. Better get some armour, huh?",
               "The quest system is so broken. It should be a list, damnit.",
               "What's with the guy that welcomes the new people here? \"ayo deadass wuz yo name nibba?\" Who speaks like that here? "]
+
+    active = True
+    while active:
+        action = menu(options=False)
+        if action == "shop":
+            print("You have arrived at the shop. You begin to look around...")
+            sleep(1)
+            shop.start_store(player)
+        elif action == "inventory":
+            inventory.use_item(player)
+        elif action == "talk":
+            print("-" + random.choice(dialog))
+        elif action == "exit":
+            active = False
+
+
+def topshelf(player):
+    print("You arrive at Topshelf. A local towers above you waves hello.")
+    sleep(1)
+    print("-Welcome, small one, to the realm of the Longbois. Welcome, to Topshelf.")
+    sleep(2)
+    dialog = ["One must be considered quite tall to join the Longbois. Visit the evaluator if you wish to be judged.",
+    "Jacob is the current leader of the Longbois. He's served us well.",
+    "You may want to investigate the [O] path near the entrance of this world.\n It shows a directory of things harder to find in this town, had you not a directory.",
+    "One fool wished to name our realm The Ceiling. I'm glad the great Dev denied\n that idea. The fool was smited."]
 
     active = True
     while active:
@@ -72,4 +106,3 @@ def start_world(player):
             print("-" + random.choice(dialog))
         elif action == "exit":
             active = False
-

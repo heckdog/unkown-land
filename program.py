@@ -9,10 +9,14 @@ import os
 from essentials import add_commas
 import world
 
+# latest update: added ryan as a boss
+# still need to add burnt popcorn
+
+
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Run (BUILD)
 build = data.load_version()
-print("Version 0.6.2 (Build {})".format(build))
+print("Version 0.7.0 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
 # data.save_version(build)
@@ -26,13 +30,14 @@ t.start()
 print("does it continue tho")
 """
 
+
 #  we are no longer using namedtuples they gay
 # Player = namedtuple("Player", "name weapon quest health max_health defence completed")
 
 
 # The Player Class
 class Player:
-    def __init__(self, name, weapon, quest, health, defence):
+    def __init__(self, name, weapon, quest, health, defence, crit_chance=10):
         self.name = name
         self.weapon = weapon
         self.quest = quest
@@ -42,23 +47,37 @@ class Player:
         self.completed = []
         self.xp = 0
         self.level = 1
-        self.inventory = {"Test Item": 100, "bread": 3}
+        self.inventory = {"Test Item": 100, "bread": 3}  # TODO The actual v.1.0 release should remove this
         self.money = 0
+
+        self.crit_chance = crit_chance
         self.debugEnabled = False
-        # TODO: make self.completed be a list/dict once pickle is installed
-        # TODO: change all quest to add quest to completed list instead of completed number
+        self.traits = []  # this will hold traits that, if had, activate special things. ex: having "cute" could
+        #                   dull an enemy's senses or something. maybe lower attack
 
     def debug(self):
         self.quest = input("Set new Quest: ")
         self.money += int(input("Set Money: "))
-        self.health = 999
-        self.max_health = 999
+        self.health = 9999
+        self.max_health = 9999
         self.level = int(input("Set level: "))
         self.xp = int(input("Set XP:"))
         choice = input("New Item? ")
         amount = int(input("New Value? "))
         self.inventory.update({choice: amount})
         self.debugEnabled = True
+
+    def xp_check(self):
+        level_up = 80 * self.level + (100 * .05 * self.level)
+        hp_gain = 0
+        while self.xp >= level_up:
+            self.level += 1
+            hp_gain += int(10 + .1*self.level)
+            level_up = 80 * self.level + (100 * .05 * self.level)
+        self.max_health += hp_gain
+        self.health += 5
+        print("Level up! You are at level {}. Gained {} HP from leveling!".format(self.level, hp_gain))
+        print("{} XP away from next level.".format(level_up - self.xp))
 
 
 # broken thing below
@@ -87,17 +106,21 @@ def main():
                     if player.quest == "Clap the Dragon":
                         quests.clap_the_dragon(player)
                     elif player.quest == "Dab on Turtles":
-                        quests.battle_turtles(player, 5)
+                        quests.battle_turtles(player, 3)
                     elif player.quest == "Beat up the Developer":
                         quests.beat_the_dev(player)
                     elif player.quest == "Mess with Goblins":
                         quests.mess_with_goblins(player)
+                    elif player.quest == "Ryan's Battle":  # test battle - only accessable via debug mode
+                        quests.ryans_battle(player)
+                    elif player.quest == "Defeat Ryan":
+                        quests.defeat_ryan(player)
                     else:
                         print("You don't have a quest!")
                 else:
-                    print("ok then be that way")
+                    print("ok then be that way man all this work i do to launch quests and u be that way ok cool")
             else:
-                print("Something went wrong. Either you said no or something broke lol.")
+                print("You don't have a quest! Go find one before trying to start! There may be some in town...")
 
         # Inventory Option
         elif option == "inventory":
@@ -122,6 +145,8 @@ def main():
                 world.test_world(player)
             elif selection == "Start Town":
                 world.start_world(player)
+            elif selection == "Topshelf":
+                world.topshelf(player)
 
         # Save the game!
         elif option == "save":
@@ -133,7 +158,7 @@ def main():
             # print("See ya later!")
             data.save(player)
             active = False
-            #break
+            # break
 
 
 def print_header():
@@ -146,7 +171,7 @@ def print_header():
 
 # TODO: rewrite this with better options/dialogue
 def start_choice():
-
+    sleep(2)
     name = input("-Wuz yo name, nibba? \n>>>").strip()
     print("-Ah, so it is {}. Sounds pretty dumb but ok".format(name))
     sleep(2)
