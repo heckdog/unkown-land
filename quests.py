@@ -255,6 +255,7 @@ def select(enemies):
             print("'{}' isn't valid. Type the number, not the name.").format(target)
     return target
 
+
 class EvilTurtle(Enemy):
     has_special = True
 
