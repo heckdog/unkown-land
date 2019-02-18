@@ -175,22 +175,19 @@ def start_choice():
     name = input("-Wuz yo name, nibba? \n>>>").strip()
     print("-Ah, so it is {}. Sounds pretty dumb but ok".format(name))
     sleep(2)
-    print("-These gay ass turtles be dabbin on all the land. deadass get him b")
+    print("-These gay ass turtles be dabbin on all the land. deadass get em b")
     answer = input("yes or no \n>>>").lower()
     if answer.find("ye") != -1:
         print("-finna clap these nibbas cheeks")
 
     else:
-        print("-well thats gay but youre doing it anyways slave")
+        print("-well thats gay but youre doing it anyways retar")
 
     sleep(2)
-    weapon_choice = input("-anyways you need a weapon b. whatchu want a sword or a mf rpg \n>>>").lower().strip()
-    if weapon_choice == "sword":
+    weapon_choice = input("-anyways you need a weapon b. i've got this broken sword if you want. \n>>>").lower().strip()
+    if weapon_choice == "sword" or weapon_choice.find("ye") == -1:
         print("-you have fun with that but ok")
-        weapon = "Sword"
-    elif weapon_choice == "mf rpg" or weapon_choice == "rpg":
-        print("-hell yeah")
-        weapon = "RPG"
+        weapon = "Rusty Sword"
     else:
         print("-that's not a weapon so you goin barehanded. try actually choosing something next game tho.")
         weapon = "Fists"

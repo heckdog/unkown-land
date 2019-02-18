@@ -157,7 +157,7 @@ def battle(player, enemies):
             dam += randint(0, dam)
             # random crits
             for i in range(3):
-                if randint(0, 100) <= player.crit_chance:  # a ten percent chance
+                if randint(0, 100) <= player.crit_chance:  # a ten percent chance to start with
                     dam += randint(dam * 2, dam * 3)
                     print("CRITICAL HIT!")
             damage(target, dam)
