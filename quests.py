@@ -5,13 +5,13 @@ from essentials import weapons
 import inventory
 import data
 
+
 # below is deprecated
 # Enemy = namedtuple("Enemy", "name health max_health damage")
 
 
 class Enemy:
-    def __init__(self, name, health, damage, xp, doing_plus=[], is_boss=False, item_trigger = None):
-
+    def __init__(self, name, health, damage, xp, doing_plus=[], is_boss=False, item_trigger=None):
         self.name = name
         self.health = health
         self.max_health = health
@@ -19,7 +19,7 @@ class Enemy:
         self.xp = int(xp)  # its an int to prevent other calculations from being floats idk why
 
         self.item_trigger = item_trigger
-        
+
         self.doing = ["stands dreamily.",
                       "dances furiously.",
                       "stands in your way.",
@@ -27,10 +27,13 @@ class Enemy:
                       "smells bad.",
                       "stands there... menacingly.",
                       "called yo mama fat.",
-                      "is probably just Gary in a costume.",
                       "eats pant.",
-                      "ran out of ideas for text here."
+                      "ran out of text ideas.",
+                      "fails to throw trash into the trashcan."
                       ]
+
+        if is_boss:
+            self.doing = []
 
         for i in range(5):  # makes the other text more rare. change to lower to make special text appear more often.
             self.doing.append("stands in your way.")
@@ -41,8 +44,8 @@ class Enemy:
         self.has_special = False
 
     def gain(self, player):
-        xp_gain = self.xp + int((randint(0, self.xp)/2))  # Give player Enemy XP + up to 0.5x more
-        money_gain = xp_gain * randint(2,3) + randint(1, 10)  # pseudo-random money based on enemy xp.
+        xp_gain = self.xp + int((randint(0, self.xp) / 2))  # Give player Enemy XP + up to 0.5x more
+        money_gain = xp_gain * randint(2, 3) + randint(1, 10)  # pseudo-random money based on enemy xp.
         print("You have successfully defeated the {}! Gained {} XP and {}G".format(self.name, xp_gain, money_gain))
         player.xp += xp_gain
         player.money += money_gain
@@ -52,8 +55,19 @@ class Enemy:
         print("There's nothing you can do!")
 
 
+class Boss(Enemy):
+    def __init__(self, name, health, damage, xp, doing_plus=[]):
+        Enemy.__init__(self, name, health, damage, xp, doing_plus, is_boss=True)  # its dumb but it works
+
+
 class EvilTurtle(Enemy):
-    has_special = True  # tells battle program to allow attacks after this
+    has_special = True
+
+    # THIS IS HOW TO CALL OTHER STATS FROM ENEMY CLASS
+    def __init__(self, name):
+        Enemy.__init__(self, "EvilTurtle", 30, 5, 10, ["rolls around in its shell.",
+                                                       "fails to dab."])
+        self.name = name
 
     def special(self, player):
         print("\n----{SPECIAL}----")
@@ -61,10 +75,10 @@ class EvilTurtle(Enemy):
         choice = input(">>>").strip().lower()
         if choice == "dab" or choice == "d":
             print("ooh my god you just dabbed on that turtle")
-            chance = randint(1,10)
-            if chance > 7: # just a random chance of dab back
+            chance = randint(1, 10)
+            if chance > 7:  # just a random chance of dab back
                 print("BUT IT DABS BACK OH MY GOD!!!!!")
-                damage(player, int(player.health/4))  #TODO: if something ever breaks, its this int
+                damage(player, int(player.health / 4))  # TODO: if something ever breaks, its this int
             else:
                 self.health = -9999
         elif choice == "default dance" or choice == "dance" or choice == "dd":
@@ -74,7 +88,7 @@ class EvilTurtle(Enemy):
             print("I'm just gonna assume you're good cuz '{}' aint a choice my guy.".format(choice))
 
 
-class Dragon(Enemy):
+class Dragon(Boss):
     has_special = True
 
     def special(self, player):
@@ -83,7 +97,7 @@ class Dragon(Enemy):
         choice = input(">>>").lower().strip()
         if choice == "c" or choice == "clap":
             print("OOF you done CLAPPED that dragon. He lost half his HP!")
-            damage(self, int(self.health/2))
+            damage(self, int(self.health / 2))
         elif choice == "t" or choice == "talk":  # TODO: add more talking options, dialog choices
             print("You talk to the dragon...")
             sleep(1)
@@ -98,7 +112,7 @@ class Dragon(Enemy):
                 self.doing.append("thinks about that chat you just had.")
 
 
-class Ryan(Enemy):
+class Ryan(Boss):
     has_special = True
 
     def __init__(self):
@@ -106,6 +120,9 @@ class Ryan(Enemy):
         self.damage = 1
         self.health = 10000000
         self.xp = 15000
+        Boss.__init__(self, "Ryan, Consumer of the Cosmos", 10000000, 1, 15000, ["craves the finest burnt popcorn.",
+                                                                                 "prepares for a feast.",
+                                                                                 "revs up his Beyblade."])
 
     def special(self, player):
         if "Burnt Popcorn" in player.inventory:
@@ -145,7 +162,8 @@ def battle(player, enemies):
                 names.append(enemy.name)
             status = status.replace("s ", " ")  # a grammar thing
             choice = input(("\n{} {} What do? "
-                           "\n[A]ttack [I]nventory [S]pecial [E]scape\n>>>".format(arrange(names), status))).lower().strip()
+                            "\n[A]ttack [I]nventory [S]pecial [E]scape\n>>>".format(arrange(names),
+                                                                                    status))).lower().strip()
 
         # Attacking
         if choice == "a" or choice == "attack":
@@ -157,7 +175,7 @@ def battle(player, enemies):
             dam += randint(0, dam)
             # random crits
             for i in range(3):
-                if randint(0, 100) <= player.crit_chance:  # a ten percent chance to start with
+                if randint(0, 100) <= player.crit_chance:  # a ten percent chance
                     dam += randint(dam * 2, dam * 3)
                     print("CRITICAL HIT!")
             damage(target, dam)
@@ -182,13 +200,14 @@ def battle(player, enemies):
 
         # Inventory
         elif choice == "i" or choice == "inventory":
-            item = inventory.use_item(player)
+            item = inventory.use_item(player, battle=True)
             for enemy in enemies:
-                if item == enemy.item_trigger:
+                if item == enemy.item_trigger and player.debugEnabled:
                     print("ITEM TRIGGER!")
 
         # Special
         elif choice == "s" or choice == "special":
+            print("Perform Special on who?")
             target = select(enemies)
             target.special(player)
             # if enemy.health <= 0:  # if enemy dead
@@ -210,7 +229,7 @@ def battle(player, enemies):
 
         # Escape
         elif choice == "e" or choice == "escape":
-            escape_number = randint(1,100)
+            escape_number = randint(1, 100)
             if escape_number < 50:
                 print("You escaped from the {}".format(enemy.name))
                 return "Escaped"
@@ -234,7 +253,7 @@ def battle(player, enemies):
     elif player.health <= 0:
         print("You lost. You lose 25% of your money.")
         player.health = 1
-        player.money = player.money*.75
+        player.money = player.money * .75
         return "Lost"
     else:
         print("Unknown Error: You shouldn't be able to see this text unless the laws of math suddenly changed.")
@@ -304,7 +323,6 @@ def select(enemies):
     return target
 
 
-
 # def clap_the_dragon(player):
 #     # THIS QUEST IS FAR FROM WORKING
 #     if player.quest == "Clap the Dragon":
@@ -342,7 +360,8 @@ def mess_with_goblins(player):
     number = 0
     while player.money <= (original_money + 400):
         number += 1
-        goblin = Enemy("Goblin #{}".format(number), 100, 15, 50)  # change the last value to make this chalenge harder or easier
+        goblin = Enemy("Goblin #{}".format(number), 100, 15,
+                       50)  # change the last value to make this chalenge harder or easier
         status = battle(player, [goblin])
         if status == "Lost":
             print("Aw you lost to goblins boohoo. I've given you a bandaid tho so ur not dead yet.")
@@ -419,7 +438,8 @@ def beat_the_dev(player):  # fight is somewhat broke nibba
             print("-Well sucks to be you, I have the UNKOWN now. You need to pay attention to your pockets pal.")
             print("[!] Everything in you inventory is missing! Maybe if you left now, you could retrieve your save.")
             sleep(1)
-            print("-Wait, WHAT?! Don't leave the game! DONT! IM GONNA SAVE IT RIGHT NOW. NO MONEY OR ANYTHING. ILL DELETE YOU!!!")
+            print(
+                "-Wait, WHAT?! Don't leave the game! DONT! IM GONNA SAVE IT RIGHT NOW. NO MONEY OR ANYTHING. ILL DELETE YOU!!!")
             print("[!] The game froze. Now's your chance!")
             sleep(5)
             print("I'll...")
@@ -445,7 +465,7 @@ def beat_the_dev(player):  # fight is somewhat broke nibba
 
 # Easter Egg Battle. Unobtainable via normal means.
 def ryans_battle(player):
-    pheonix = Enemy("Pheonix", 1000000, 10000, 5000) #health, damage, xp, "Lost" "Won"
+    pheonix = Enemy("Pheonix", 1000000, 10000, 5000)  # health, damage, xp, "Lost" "Won"
     status = battle(player, [pheonix])
     if status == "Lost":
         print("-hahahahahahahahaha loser")
@@ -457,15 +477,17 @@ def ryans_battle(player):
 
 
 def defeat_ryan(player):
-    ryan = Ryan(doing_plus=["revs up his beyblade."])
+    ryan = Ryan()
 
     status = battle(player, [ryan])
     if status == "Lost":
         print("You were eaten.")
-    else:
-        print("The smell of burnt popcorn fades away. \nYou notice a small round object on the groun")
+    elif status == "Won":
+        print("The smell of burnt popcorn fades away. \nYou notice a small round object on the ground.")
         player.inventory.update({"BeyBlade": 1})
         sleep(3)
         print("You have acquired the Beyblade!")
         player.quest = None
         player.completed.append("Defeat Ryan")
+    else:
+        print("The air is noticeably lighter.")
