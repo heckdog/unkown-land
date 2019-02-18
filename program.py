@@ -19,7 +19,7 @@ build = data.load_version()
 print("Version 0.7.1 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
-# data.save_version(build)
+data.save_version(build)
 
 """
 def test():
@@ -68,6 +68,7 @@ class Player:
         self.debugEnabled = True
 
     def xp_check(self):
+        original = self.level
         level_up = 80 * self.level + (100 * .05 * self.level)
         hp_gain = 0
         while self.xp >= level_up:
@@ -76,8 +77,9 @@ class Player:
             level_up = 80 * self.level + (100 * .05 * self.level)
         self.max_health += hp_gain
         self.health += 5
-        print("Level up! You are at level {}. Gained {} HP from leveling!".format(self.level, hp_gain))
-        print("{} XP away from next level.".format(level_up - self.xp))
+        if self.level != original:
+            print("Level up! You are at level {}. Gained {} HP from leveling!".format(self.level, hp_gain))
+            print("{} XP away from next level.".format(level_up - self.xp))
 
 
 # broken thing below
@@ -103,9 +105,9 @@ def main():
                 confirm = input("Start quest?: {} (y/n) \n>>>".format(player.quest))
                 if confirm.find("y") != -1:
                     # TODO: make a good system for this, cuz 2 lines of extra elifs per quest cant be great
-                    if player.quest == "Clap the Dragon":
-                        quests.clap_the_dragon(player)
-                    elif player.quest == "Dab on Turtles":
+                    # if player.quest == "Clap the Dragon":
+                    #     quests.clap_the_dragon(player)
+                    if player.quest == "Dab on Turtles":
                         quests.battle_turtles(player, 3)
                     elif player.quest == "Beat up the Developer":
                         quests.beat_the_dev(player)
