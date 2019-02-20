@@ -103,33 +103,35 @@ def battle(player, enemies):
 
             print("\nAttack who? (type 'cancel' to cancel attack)")
             target = select(enemies)
-            # Player Turn
-            dam = weapons[player.weapon]  # returns attack stats
-            dam += randint(0, dam)
-            # random crits
-            for i in range(3):
+
+            if target:
+                # Player Turn
+                dam = weapons[player.weapon]  # returns attack stats
+                dam += randint(0, dam)
+                # random crits
                 if randint(0, 100) <= player.crit_chance:  # a ten percent chance
                     dam += randint(dam * 2, dam * 3)
                     print("CRITICAL HIT!")
-            damage(target, dam)
-            sleep(1)
-            if target.health < 0:  # if you killed an enemy
-                print("{} died!".format(target.name))
 
-            print()  # spacer
-            # Enemy Turn
-            for enemy in enemies:
-                if enemy.health <= 0:
-                    enemy.gain(player)
-                    enemies.remove(enemy)
-                else:
-                    print(enemy.name + " attacked!")
-                    damage(player, enemy.damage + randint(0, enemy.damage))
-                    sleep(1)
-                    print()  # just a spacer
-                if len(enemies) == 0:
-                    player.xp_check()
-                    return "Won"
+                damage(target, dam)
+                sleep(1)
+                if target.health < 0:  # if you killed an enemy
+                    print("{} died!".format(target.name))
+
+                print()  # spacer
+                # Enemy Turn
+                for enemy in enemies:
+                    if enemy.health <= 0:
+                        enemy.gain(player)
+                        enemies.remove(enemy)
+                    else:
+                        print(enemy.name + " attacked!")
+                        damage(player, enemy.damage + randint(0, enemy.damage))
+                        sleep(1)
+                        print()  # just a spacer
+                    if len(enemies) == 0:
+                        player.xp_check()
+                        return "Won"
 
         # Inventory
         elif choice == "i" or choice == "inventory":
@@ -142,23 +144,24 @@ def battle(player, enemies):
         elif choice == "s" or choice == "special":
             print("Perform Special on who?")
             target = select(enemies)
-            target.special(player)
-            # if enemy.health <= 0:  # if enemy dead
-            #     break  # break just makes it go to win sequence
+            if target:
+                target.special(player)
+                # if enemy.health <= 0:  # if enemy dead
+                #     break  # break just makes it go to win sequence
 
-            # TODO: perhaps in the future make this script an Enemy class default?
-            for enemy in enemies:
-                if enemy.health <= 0:
-                    enemy.gain(player)
-                    enemies.remove(enemy)
-                else:
-                    print(enemy.name + " attacked!")
-                    damage(player, enemy.damage + randint(0, enemy.damage))
-                    sleep(1)
-                    print()  # just a spacer
-                if len(enemies) == 0:
-                    player.xp_check()
-                    return "Won"
+                # TODO: perhaps in the future make this script an Enemy class default?
+                for enemy in enemies:
+                    if enemy.health <= 0:
+                        enemy.gain(player)
+                        enemies.remove(enemy)
+                    else:
+                        print(enemy.name + " attacked!")
+                        damage(player, enemy.damage + randint(0, enemy.damage))
+                        sleep(1)
+                        print()  # just a spacer
+                    if len(enemies) == 0:
+                        player.xp_check()
+                        return "Won"
 
         # Escape
         elif choice == "e" or choice == "escape":
@@ -245,14 +248,14 @@ def select(enemies):
 
         try:
             if target.lower() == "cancel":
-                print("yo idk this shouldnt be happening idk whats going on")
+                return None
             elif int(target) <= len(enemies) and int(target) >= 0:  # check if its within 0-len of targets
                 target = enemies[int(target) - 1]
                 check = False
             else:
-                print("'{}' isn't valid. Type the number, not the name...").format(target)
+                print("'{}' isn't valid. Type the number, not the name!".format(target))
         except TypeError:
-            print("'{}' isn't valid. Type the number, not the name.").format(target)
+            print("'{}' isn't valid. Type the number, not the name.".format(target))
     return target
 
 

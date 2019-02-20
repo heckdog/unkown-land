@@ -14,12 +14,12 @@ import world
 
 
 # naming convention as follows:
-# RELEASE.BIGUPDATE.Run (BUILD)
+# RELEASE.BIGUPDATE.Small (BUILD)
 build = data.load_version()
-print("Version 0.7.1 (Build {})".format(build))
+print("Version 0.7.2 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
-data.save_version(build)
+# data.save_version(build)
 
 """
 def test():
@@ -94,7 +94,7 @@ def main():
     if not player:
         player = start_choice()
     info(player)
-    sleep(2)
+    sleep(1)
     active = True
 
     while active:
@@ -268,6 +268,7 @@ def info(player):
     print("Your current task is to {}".format(player.quest))
     print("You have {}/{} HP and {}G".format(player.health, player.max_health, add_commas(player.money)))
     print("LEVEL {} ({} XP)".format(player.level, player.xp))
+    sleep(1)
 
 
 if __name__ == "__main__":
