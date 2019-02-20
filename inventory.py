@@ -84,16 +84,19 @@ def select(inventory):
 
         target = input(">>>").strip()
 
-        try:
-            if target.lower() == "cancel":
-                return None
-            elif int(target) <= len(inventory) and int(target) > 0:  # check if its within 0-len of targets
-                target = inv_list[int(target) - 1]
-                check = False
-            else:
-                print("'{}' isn't valid. Type the number, not the name...".format(target))
-        except ValueError:
-            print("'{}' isn't valid. Type the number, not the name of the item.\n".format(target))
+        if target in inv_list:
+            return target
+        else:
+            try:
+                if target.lower() == "cancel":
+                    return None
+                elif int(target) <= len(inventory) and int(target) > 0:  # check if its within 0-len of targets
+                    target = inv_list[int(target) - 1]
+                    check = False
+                else:
+                    print("'{}' isn't valid.\n".format(target))
+            except ValueError:
+                print("'{}' isn't a valid item.\n".format(target))
     return target
 
 

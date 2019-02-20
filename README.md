@@ -17,7 +17,7 @@ as part of the 100th commit, lets see where the game stands as of right now, Feb
 * **Enemies?** Very lacking. Only Evil Turtles and Goblins, and some bosses
 * **Shop?** Can be used in a variety of ways, even giving out new quests and such. Only 3 right now
 * **Worlds?** Only 2 real worlds, and one is unfinished. System is however in place and functional to add more.
-* _CONTENT_
+* **_CONTENT_**
   - **Early game?** Bad. There are only like 2 missions you can do, and one is hidden away in a town.
   - **Sustainability?** Nonexistant. There's no meat to this game yet -- no quests or ability to grow
   - **Late game?** There are bosses and such but with no mid game it doesn't really matter.
