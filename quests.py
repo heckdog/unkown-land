@@ -181,7 +181,6 @@ def battle(player, enemies):
             print("'{}' not recognized, please try again.".format(choice))
 
     # End sequence
-    # Todo: work with multi xp gain
     if not enemies:
         player.xp_check()
         sleep(1.5)
