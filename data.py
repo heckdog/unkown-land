@@ -60,7 +60,7 @@ def get_full_path(name):
 
 def get_saves():
     saves_list = []
-    for i in os.listdir(os.path.join(".","saves")):
+    for i in os.listdir(os.path.join(".", "saves")):
         if i != "version":
             saves_list.append(i[:-4])
     return saves_list

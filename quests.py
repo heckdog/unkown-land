@@ -60,74 +60,6 @@ class Boss(Enemy):
         Enemy.__init__(self, name, health, damage, xp, doing_plus, is_boss=True)  # its dumb but it works
 
 
-class EvilTurtle(Enemy):
-    has_special = True
-
-    # THIS IS HOW TO CALL OTHER STATS FROM ENEMY CLASS
-    def __init__(self, name):
-        Enemy.__init__(self, "EvilTurtle", 30, 5, 10, ["rolls around in its shell.",
-                                                       "fails to dab."])
-        self.name = name
-
-    def special(self, player):
-        print("\n----{SPECIAL}----")
-        print("[DAB] [DEFAULT DANCE]")
-        choice = input(">>>").strip().lower()
-        if choice == "dab" or choice == "d":
-            print("ooh my god you just dabbed on that turtle")
-            chance = randint(1, 10)
-            if chance > 7:  # just a random chance of dab back
-                print("BUT IT DABS BACK OH MY GOD!!!!!")
-                damage(player, int(player.health / 4))  # TODO: if something ever breaks, its this int
-            else:
-                self.health = -9999
-        elif choice == "default dance" or choice == "dance" or choice == "dd":
-            print("The Turtle is unfazed by your smooth moves!")
-            damage(player, 5)
-        else:
-            print("I'm just gonna assume you're good cuz '{}' aint a choice my guy.".format(choice))
-
-
-class Dragon(Boss):
-    has_special = True
-
-    def special(self, player):
-        print("\n----{SPECIAL}----")
-        print("[Clap] [Talk]")
-        choice = input(">>>").lower().strip()
-        if choice == "c" or choice == "clap":
-            print("OOF you done CLAPPED that dragon. He lost half his HP!")
-            damage(self, int(self.health / 2))
-        elif choice == "t" or choice == "talk":  # TODO: add more talking options, dialog choices
-            print("You talk to the dragon...")
-            sleep(1)
-            print("-huh? you wanna talk to me b?")
-            sleep(2)
-            if "knows Bob" in player.traits:
-                print("-yo, you know my nibba bob! aight man thats cool. i'll leave ya alone. tell em ya won.")
-                self.health = 0
-                self.doing = ["is ready to talk to bob."]
-            else:
-                print("-welp, nice chat but im s'posed to beat yo ass so...")
-                self.doing.append("thinks about that chat you just had.")
-
-
-class Ryan(Boss):
-    has_special = True
-
-    def __init__(self):
-        self.name = "Ryan, Consumer of the Cosmos"
-        self.damage = 1
-        self.health = 10000000
-        self.xp = 15000
-        Boss.__init__(self, "Ryan, Consumer of the Cosmos", 10000000, 1, 15000, ["craves the finest burnt popcorn.",
-                                                                                 "prepares for a feast.",
-                                                                                 "revs up his Beyblade."])
-
-    def special(self, player):
-        if "Burnt Popcorn" in player.inventory:
-            print("-what is that delectable smell?")
-
 
 def battle(player, enemies):
     print("\n---{BATTLE START}---")
@@ -149,6 +81,7 @@ def battle(player, enemies):
             if enemy.health <= 0:
                 dead += 1
             if dead == len(enemies):
+                player.xp_check()
                 return "Won"
 
         status = random.choice(enemy.doing)
@@ -170,33 +103,35 @@ def battle(player, enemies):
 
             print("\nAttack who? (type 'cancel' to cancel attack)")
             target = select(enemies)
-            # Player Turn
-            dam = weapons[player.weapon]  # returns attack stats
-            dam += randint(0, dam)
-            # random crits
-            for i in range(3):
+
+            if target:
+                # Player Turn
+                dam = weapons[player.weapon]  # returns attack stats
+                dam += randint(0, dam)
+                # random crits
                 if randint(0, 100) <= player.crit_chance:  # a ten percent chance
                     dam += randint(dam * 2, dam * 3)
                     print("CRITICAL HIT!")
-            damage(target, dam)
-            sleep(1)
-            if target.health < 0:  # if you killed an enemy
-                print("{} died!".format(target.name))
 
-            print()  # spacer
-            # Enemy Turn
-            for enemy in enemies:
-                if enemy.health <= 0:
-                    enemy.gain(player)
-                    enemies.remove(enemy)
-                else:
-                    print(enemy.name + " attacked!")
-                    damage(player, enemy.damage + randint(0, enemy.damage))
-                    sleep(1)
-                    print()  # just a spacer
-                if len(enemies) == 0:
-                    player.xp_check()
-                    return "Won"
+                damage(target, dam)
+                sleep(1)
+                if target.health < 0:  # if you killed an enemy
+                    print("{} died!".format(target.name))
+
+                print()  # spacer
+                # Enemy Turn
+                for enemy in enemies:
+                    if enemy.health <= 0:
+                        enemy.gain(player)
+                        enemies.remove(enemy)
+                    else:
+                        print(enemy.name + " attacked!")
+                        damage(player, enemy.damage + randint(0, enemy.damage))
+                        sleep(1)
+                        print()  # just a spacer
+                    if len(enemies) == 0:
+                        player.xp_check()
+                        return "Won"
 
         # Inventory
         elif choice == "i" or choice == "inventory":
@@ -209,23 +144,24 @@ def battle(player, enemies):
         elif choice == "s" or choice == "special":
             print("Perform Special on who?")
             target = select(enemies)
-            target.special(player)
-            # if enemy.health <= 0:  # if enemy dead
-            #     break  # break just makes it go to win sequence
+            if target:
+                target.special(player)
+                # if enemy.health <= 0:  # if enemy dead
+                #     break  # break just makes it go to win sequence
 
-            # TODO: perhaps in the future make this script an Enemy class default?
-            for enemy in enemies:
-                if enemy.health <= 0:
-                    enemy.gain(player)
-                    enemies.remove(enemy)
-                else:
-                    print(enemy.name + " attacked!")
-                    damage(player, enemy.damage + randint(0, enemy.damage))
-                    sleep(1)
-                    print()  # just a spacer
-                if len(enemies) == 0:
-                    player.xp_check()
-                    return "Won"
+                # TODO: perhaps in the future make this script an Enemy class default?
+                for enemy in enemies:
+                    if enemy.health <= 0:
+                        enemy.gain(player)
+                        enemies.remove(enemy)
+                    else:
+                        print(enemy.name + " attacked!")
+                        damage(player, enemy.damage + randint(0, enemy.damage))
+                        sleep(1)
+                        print()  # just a spacer
+                    if len(enemies) == 0:
+                        player.xp_check()
+                        return "Won"
 
         # Escape
         elif choice == "e" or choice == "escape":
@@ -312,26 +248,84 @@ def select(enemies):
 
         try:
             if target.lower() == "cancel":
-                print("yo idk this shouldnt be happening idk whats going on")
+                return None
             elif int(target) <= len(enemies) and int(target) >= 0:  # check if its within 0-len of targets
                 target = enemies[int(target) - 1]
                 check = False
             else:
-                print("'{}' isn't valid. Type the number, not the name...").format(target)
+                print("'{}' isn't valid. Type the number, not the name!".format(target))
         except TypeError:
-            print("'{}' isn't valid. Type the number, not the name.").format(target)
+            print("'{}' isn't valid. Type the number, not the name.".format(target))
     return target
 
 
-# def clap_the_dragon(player):
-#     # THIS QUEST IS FAR FROM WORKING
-#     if player.quest == "Clap the Dragon":
-#         dragon = Dragon("Dragon", 5000, 20, 233)
-#         status = battle(player, dragon)
-#         if status == "Won":
-#             player.quest = None
-#             player.completed.append("Clap the Dragon")
-#             player.xp += 300
+class EvilTurtle(Enemy):
+    has_special = True
+
+    # THIS IS HOW TO CALL OTHER STATS FROM ENEMY CLASS
+    def __init__(self, name):
+        Enemy.__init__(self, "EvilTurtle", 30, 5, 10, ["rolls around in its shell.",
+                                                       "fails to dab."])
+        self.name = name
+
+    def special(self, player):
+        print("\n----{SPECIAL}----")
+        print("[DAB] [DEFAULT DANCE]")
+        choice = input(">>>").strip().lower()
+        if choice == "dab" or choice == "d":
+            print("ooh my god you just dabbed on that turtle")
+            chance = randint(1, 10)
+            if chance > 7:  # just a random chance of dab back
+                print("BUT IT DABS BACK OH MY GOD!!!!!")
+                damage(player, int(player.health / 4))  # TODO: if something ever breaks, its this int
+            else:
+                self.health = -9999
+        elif choice == "default dance" or choice == "dance" or choice == "dd":
+            print("The Turtle is unfazed by your smooth moves!")
+            damage(player, 5)
+        else:
+            print("I'm just gonna assume you're good cuz '{}' aint a choice my guy.".format(choice))
+
+
+class Dragon(Boss):
+    has_special = True
+
+    def special(self, player):
+        print("\n----{SPECIAL}----")
+        print("[Clap] [Talk]")
+        choice = input(">>>").lower().strip()
+        if choice == "c" or choice == "clap":
+            print("OOF you done CLAPPED that dragon. He lost half his HP!")
+            damage(self, int(self.health / 2))
+        elif choice == "t" or choice == "talk":  # TODO: add more talking options, dialog choices
+            print("You talk to the dragon...")
+            sleep(1)
+            print("-huh? you wanna talk to me b?")
+            sleep(2)
+            if "knows Bob" in player.traits:
+                print("-yo, you know my nibba bob! aight man thats cool. i'll leave ya alone. tell em ya won.")
+                self.health = 0
+                self.doing = ["is ready to talk to bob."]
+            else:
+                print("-welp, nice chat but im s'posed to beat yo ass so...")
+                self.doing.append("thinks about that chat you just had.")
+
+
+class Ryan(Boss):
+    has_special = True
+
+    def __init__(self):
+        self.name = "Ryan, Consumer of the Cosmos"
+        self.damage = 1
+        self.health = 10000000
+        self.xp = 15000
+        Boss.__init__(self, "Ryan, Consumer of the Cosmos", 10000000, 1, 15000, ["craves the finest burnt popcorn.",
+                                                                                 "prepares for a feast.",
+                                                                                 "revs up his Beyblade."])
+
+    def special(self, player):
+        if "Burnt Popcorn" in player.inventory:
+            print("-what is that delectable smell?")
 
 
 def battle_turtles(player, turtles):

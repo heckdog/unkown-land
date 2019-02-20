@@ -14,9 +14,9 @@ import world
 
 
 # naming convention as follows:
-# RELEASE.BIGUPDATE.Run (BUILD)
+# RELEASE.BIGUPDATE.Small (BUILD)
 build = data.load_version()
-print("Version 0.7.1 (Build {})".format(build))
+print("Version 0.7.2 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
 # data.save_version(build)
@@ -68,6 +68,7 @@ class Player:
         self.debugEnabled = True
 
     def xp_check(self):
+        original = self.level
         level_up = 80 * self.level + (100 * .05 * self.level)
         hp_gain = 0
         while self.xp >= level_up:
@@ -76,8 +77,9 @@ class Player:
             level_up = 80 * self.level + (100 * .05 * self.level)
         self.max_health += hp_gain
         self.health += 5
-        print("Level up! You are at level {}. Gained {} HP from leveling!".format(self.level, hp_gain))
-        print("{} XP away from next level.".format(level_up - self.xp))
+        if self.level != original:
+            print("Level up! You are at level {}. Gained {} HP from leveling!".format(self.level, hp_gain))
+            print("{} XP away from next level.".format(level_up - self.xp))
 
 
 # broken thing below
@@ -92,7 +94,7 @@ def main():
     if not player:
         player = start_choice()
     info(player)
-    sleep(2)
+    sleep(1)
     active = True
 
     while active:
@@ -103,9 +105,9 @@ def main():
                 confirm = input("Start quest?: {} (y/n) \n>>>".format(player.quest))
                 if confirm.find("y") != -1:
                     # TODO: make a good system for this, cuz 2 lines of extra elifs per quest cant be great
-                    if player.quest == "Clap the Dragon":
-                        quests.clap_the_dragon(player)
-                    elif player.quest == "Dab on Turtles":
+                    # if player.quest == "Clap the Dragon":
+                    #     quests.clap_the_dragon(player)
+                    if player.quest == "Dab on Turtles":
                         quests.battle_turtles(player, 3)
                     elif player.quest == "Beat up the Developer":
                         quests.beat_the_dev(player)
@@ -266,6 +268,7 @@ def info(player):
     print("Your current task is to {}".format(player.quest))
     print("You have {}/{} HP and {}G".format(player.health, player.max_health, add_commas(player.money)))
     print("LEVEL {} ({} XP)".format(player.level, player.xp))
+    sleep(1)
 
 
 if __name__ == "__main__":
