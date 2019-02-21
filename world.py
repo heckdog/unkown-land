@@ -116,7 +116,7 @@ def topshelf(player):
         if action == "shop":
             print("You have arrived at the shop. You begin to look around...")
             sleep(1)
-            shop.start_store(player)
+            shop.topshelf_store(player)
         elif action == "inventory":
             inventory.use_item(player)
         elif action == "talk":
