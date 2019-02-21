@@ -112,15 +112,15 @@ def topshelf_store(player):
         print("-Aye, it's that new Longboi! Please, come, take a look at what I've got for ye.")
     else:
         print("-Welcome wee one. Come take a look on the stool at what we have in stock.")
-        print("[B]uy [S]ell")
-        option = input(">>>").lower().strip()
-        if option == "b" or option == "buy":
-            buy(player, topshelf)
-        elif option == "s" or option == "sell":
-            if "Longboi" in player.traits:
-                sell(player, topshelf, .73)
-            else:
-                sell(player, topshelf, .69)
+    print("[B]uy [S]ell")
+    option = input(">>>").lower().strip()
+    if option == "b" or option == "buy":
+        buy(player, topshelf)
+    elif option == "s" or option == "sell":
+        if "Longboi" in player.traits:
+            sell(player, topshelf, .73)
+        else:
+            sell(player, topshelf, .69)
 
 
 def ptonio_store(player):
