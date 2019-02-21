@@ -299,7 +299,7 @@ class PtonioOutlaw(Enemy):
 
     def trigger(self):
         print("-[{}] Heh... that silly... potion... wont stop... me...".format(self.name))
-        sleep(2)
+        sleep(4)
         print("[!] {} passed out!".format(self.name))
         self.health = 5
         self.damage = 0
@@ -533,8 +533,34 @@ def defeat_ryan(player):
         print("The smell of burnt popcorn fades away. \nYou notice a small round object on the ground.")
         player.inventory.update({"BeyBlade": 1})
         sleep(3)
-        print("You have acquired the Beyblade!")
+        print("[!] You have acquired the Beyblade!")
         player.quest = None
         player.completed.append("Defeat Ryan")
     else:
         print("The air is noticeably lighter.")
+
+
+def defeat_outlaws(player, level=1, amount=3):
+    names = ["Jimbob", "Y. Haw", "Cleetus", "Willy", "R. T. Cowboy", "Gideon", "JR", "Clyde", "Don"]
+    outlaws = []
+
+    for i in range(amount):
+        rand_name = random.choice(names)
+        names.pop(rand_name)
+        outlaw = PtonioOutlaw("Outlaw {}".format(rand_name))
+        outlaws.append(outlaw)
+
+    status = battle(player, outlaws)
+    if status == "Lost":
+        print("You got blasted by the Ptonian Outlaws")
+        player.health = 1
+    elif status == "Won":
+        print("You done got {} cowboys! Yeehaw!".format(amount))
+        player.completed.append("Defeat the Outlaws")
+        player.quest = None
+
+
+
+
+
+

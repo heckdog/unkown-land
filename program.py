@@ -119,6 +119,8 @@ def main():
                         quests.ryans_battle(player)
                     elif player.quest == "Defeat Ryan":
                         quests.defeat_ryan(player)
+                    elif player.quest == "Defeat the Outlaws":
+                        quests.defeat_outlaws(player)
                     else:
                         print("You don't have a quest!")
                 else:

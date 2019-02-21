@@ -9,6 +9,7 @@ weapon_store = {"Sword": 100, "digional sword": 100000}
 start = {"bread": 20, "Test Item": 150, "Health Potion": 100, "Test Food": 40}
 topshelf = {"bread": 20, "Longsword": 1000, "Longbow": 950}
 ptonio = {"Mini Health Potion": 50, "Health Potion": 90, "Nap Time" : 40}
+# TODO: add custom mel shop list
 
 
 def shop(player):
@@ -126,6 +127,28 @@ def topshelf_store(player):
 def ptonio_store(player):
     print("\n----{PTONIO SHOP}----")
     print("-[PHILO] Howdy! Welcome to Philo's Ptonio Potions!")
+    print("[B]uy [S]ell")
+    option = input(">>>").lower().strip()
+    if option == "b" or option == "buy":
+        buy(player, ptonio)
+    elif option == "s" or option == "sell":
+        sell(player, ptonio, .7)
+
+
+def mel_shop(player):
+    print("\n----{MEL'S MARKET}----")
+    print("-[MEL] What would you like, dear?")
+    print("[B]uy [S]ell")
+    option = input(">>>").lower().strip()
+    if option == "b" or option == "buy":
+        buy(player, ptonio)
+    elif option == "s" or option == "sell":
+        sell(player, ptonio, .7)
+
+
+def early_mel_shop(player):
+    print("\n----{MEL'S MARKET}----")
+    print("-[MEL] What would you like?")
     print("[B]uy [S]ell")
     option = input(">>>").lower().strip()
     if option == "b" or option == "buy":

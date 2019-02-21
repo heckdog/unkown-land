@@ -189,7 +189,7 @@ def ptonio(player):
               "Yeehaw!"]
     active = True
     while active:
-        action = menu("Ptonio", options=False)
+        action = menu("Ptonio")
         if action == "shop":
             print("You have arrived at the shop. You begin to look around...")
             sleep(1)
@@ -200,3 +200,67 @@ def ptonio(player):
             print("- " + random.choice(dialog))
         elif action == "exit":
             active = False
+        elif action == "other":
+            o_check = True
+            while o_check:
+                print("----{PTONIO DIRECTORY}----\n")
+                print("[1] Strange Alley\n"
+                      "[2] Ptonio Dump\n"
+                      "[3] Bulletin Board\n")
+                print("\nWhere would you like to go? ('cancel' to cancel)")
+                choice = input(">>>").strip()
+
+                if choice == "1":
+                    talk("You enter the strange alley...", 3)
+                    # TODO: verifiy the below
+                    if "metMel" not in player.metadata:
+                        talk("-[?] Eh? Who are you?", 2)
+                        talk("- I sense you are new round here, aren't ya?", 2.5)
+                        talk("- What brings you down here? Nobody ever comes down the alley...", 3)
+                        talk("- You must be seekin some sort of potion, ain't that right?", 2.5)
+                        talk("-[MEL] Well, alright. Folks round here call me Mel. I sell, uh, questionable potions.", 3)
+                        talk("- Apparently the Longbois didn't prefer that I allow just anyone to be tall, so\n"
+                             "  they attempted to shut me down", 4)
+                        talk("- But I managed. And here we are", 1.6)
+                        talk("- So, what're you lookin for?")
+                        choice = input("[1] A tall potion?\n"
+                                       "[2] Nothing, just seeing what you have.\n"
+                                       ">>>")
+                        if choice == "1":
+                            choice = input("- I don't produce that one anymore. If it's that you're lookin for, "
+                                           "you best leave.\n"
+                                           "[1] What if I did something for ya?\n"
+                                           "[2] Ok, bye.\n"
+                                           ">>>")
+                            if choice == "2":
+                                o_check = False
+                            elif choice == "1":
+                                player.metadata = "metMel"
+                                talk("- Well, you COULD clear out some pests for me.", 2)
+                                talk("- The outlaws are gettin a real mess. If you can clear em out, we can talk.", 3)
+                                if player.quest:
+                                    if "MelQuestBacklog" not in player.metadata:
+                                        player.metadata.append("MelQuestBacklog")
+                                        print("[!] Already have quest! Come back after it's done.")
+                                    else:
+                                        print("[!] Come back without a quest!")
+                                else:
+                                    player.quest = "Defeat the Outlaws"
+                        elif choice == "2":
+                            print("- Oh, ok. Here you are, take a look.")
+                            shop.early_mel_shop(player)
+                        else:
+                            print("you done broke it wow good job try again")
+                            o_check = False
+                    else:
+                        print("-[MEL] Oooh, is that {}? Yes, come in...".format(player.name))
+                        if "MelQuestBacklog" in player.metadata:
+                            print("Start quest? Defeat the Outlaws (y/n)")
+                            choice = input(">>>").strip().lower()
+                            if choice == "y":
+                                player.quest = "Defeat the Outlaws"
+                                o_check = False
+                            elif choice == "n":
+                                o_check = False
+                        else:
+                            shop.mel_shop(player)
