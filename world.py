@@ -141,25 +141,25 @@ def topshelf(player):
                     if "tall" not in player.traits or "Longboi" not in player.traits:
                         talk("-[THE EVALUATOR] Well, what have we here?", 1.5)
                         # TODO: redo the print/sleeps with talk()s
-                        print("-I assume you are looking to get evaluated, yes?")
+                        print("- I assume you are looking to get evaluated, yes?")
                         sleep(1)
-                        print("-Hmmm...")
+                        print("- Hmmm...")
                         sleep(1.5)
-                        print("-Uh huh...")
+                        print("- Uh huh...")
                         sleep(1)
-                        print("-Well, you seem to be quite short by Longboi standards.")
+                        print("- Well, you seem to be quite short by Longboi standards.")
                         sleep(1)
-                        print("-We require a certain height that you must achieve. I do admire"
+                        print("- We require a certain height that you must achieve. I do admire"
                               " your determination, however...")
                         sleep(3)
-                        print("Tell you what, small one. I happen to know of a town nearby that has a special "
+                        print("- Tell you what, small one. I happen to know of a town nearby that has a special "
                               "something that could boost you a bit. I'll show you on this map...")
                         sleep(4)
                         player.metadata.append("Ptonio")
                         print("[!] You have learned about Ptonio!")
                         sleep(.5)
-                        print("Yes... Ptonio is a short ways away, but they have some potions"
-                              "Try it out, you may find something good over there...")
+                        print("- Yes... Ptonio is a short ways away, but they have some potions."
+                              " Try it out, you may find something good over there...")
                         o_check = False
                         sleep(3)
                     elif "Longboi" not in player.traits:
