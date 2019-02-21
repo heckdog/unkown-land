@@ -6,7 +6,7 @@ import data
 import shop
 import inventory
 import os
-from essentials import add_commas
+from essentials import *
 import world
 
 # latest update: added ryan as a boss
@@ -19,7 +19,7 @@ build = data.load_version()
 print("Version 0.7.2 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
-# data.save_version(build)
+data.save_version(build)
 
 """
 def test():
@@ -54,6 +54,7 @@ class Player:
         self.debugEnabled = False
         self.traits = []  # this will hold traits that, if had, activate special things. ex: having "cute" could
         #                   dull an enemy's senses or something. maybe lower attack
+        self.metadata = []
 
     def debug(self):
         self.quest = input("Set new Quest: ")
@@ -64,6 +65,7 @@ class Player:
         self.xp = int(input("Set XP:"))
         choice = input("New Item? ")
         amount = int(input("New Value? "))
+        self.metadata.append(input("Metadata?").strip())
         self.inventory.update({choice: amount})
         self.debugEnabled = True
 
@@ -142,6 +144,7 @@ def main():
 
         # World Option
         elif option == "world":
+            world.world_init(player)
             selection = world.select_world()
             if selection == "Test World":
                 world.test_world(player)
@@ -149,11 +152,17 @@ def main():
                 world.start_world(player)
             elif selection == "Topshelf":
                 world.topshelf(player)
+            elif selection == "Ptonio" and "Ptonio" in player.metadata:
+                world.ptonio(player)
 
         # Save the game!
         elif option == "save":
             data.save(player)
             print("[!] Saved game!")
+
+        # I NEED HELP!!!
+        elif option == "help":
+            game_help()
 
         # Exit Option
         elif option == "exit":
@@ -171,11 +180,14 @@ def print_header():
     print("--------------------------------------")
 
 
-# TODO: rewrite this with better options/dialogue
+# TODO: it could still be better
 def start_choice():
     sleep(2)
-    name = input("-Wuz yo name, nibba? \n>>>").strip()
-    print("-Ah, so it is {}. Sounds pretty dumb but ok".format(name))
+    name = input("-[?] wuz yo name, nibba? \n>>>").strip()
+    if name.lower().find("steve") == -1:
+        print("-oh, it's {}. sounds pretty stupid but ok".format(name))
+    else:
+        print("-aight, yo name's {}. cool name".format(name))
     sleep(2)
     print("-These gay ass turtles be dabbin on all the land. deadass get em b")
     answer = input("yes or no \n>>>").lower()
@@ -186,13 +198,13 @@ def start_choice():
         print("-well thats gay but youre doing it anyways retar")
 
     sleep(2)
-    weapon_choice = input("-anyways you need a weapon b. i've got this broken sword if you want. \n>>>").lower().strip()
-    if weapon_choice == "sword" or weapon_choice.find("ye") == -1:
-        print("-you have fun with that but ok")
-        weapon = "Rusty Sword"
-    else:
-        print("-that's not a weapon so you goin barehanded. try actually choosing something next game tho.")
-        weapon = "Fists"
+    print("-[steve] oh by the way, the name's steve. yeah. lowercase. got a problem? no? ok.")
+    sleep(3)
+    print("-anyways you need a weapon b. i've got this broken sword if you want. here nibba.")
+    sleep(2.5)
+    weapon = "Rusty Sword"
+    print("-now go dab on them turtle nerds. they need a good beatin.")
+    sleep(2)
 
     quest = "Dab on Turtles"
 
@@ -211,7 +223,7 @@ def menu():
                        "What would you like to do?\n"
                        "[Q]uest [I]nventory [S]hop \n"
                        "[P]layer [W]orld E[X]it\n"
-                       "[SAVE]\n"
+                       "[SAVE] [HELP]\n"
                        ">>>").lower().strip()
         if choice.find("q") != -1:
             return "quest"
@@ -230,6 +242,8 @@ def menu():
             return "save"
         elif choice.find("i") != -1:
             return "inventory"
+        elif choice == "help":
+            return "help"
         elif choice == "debug mode":
             return "debug"
 
@@ -269,6 +283,26 @@ def info(player):
     print("You have {}/{} HP and {}G".format(player.health, player.max_health, add_commas(player.money)))
     print("LEVEL {} ({} XP)".format(player.level, player.xp))
     sleep(1)
+
+
+def game_help():
+    print("\n\n----{HELP}----")
+    print("* Menus always follow the ----{TITLE}---- format to alert you to the menu's start.")
+    print("* Anything you can type in a situation, like keys or keywords, are in [BRACKETS]")
+    print("* Dialog starts with a '-[NAME]' so you can see who's talking.")
+    print("-[HELP GUY] Hello!")
+    print("- Also, any other dialog by the same person is shortened to a dash.")
+    print("-[HELP GUY 2] But other people can join conversations!")
+    print("[!] Personal Alerts show up with a [!] identifier.")
+    input("\nPress [ENTER] to continue...")
+    print("\n\n----{HELP}----")
+    print("* Quests are under the [Q] tab, where you can launch quests from the main menu.")
+    print("* Shops and other stuff is found in [W]orlds. Different places have different goods!")
+    print("* They can also give you new quests! Check town directories, they may have quest bulletins"
+          "\nor people to talk to!")
+    print("* Use [I]nventory to use items! Some items can only be used within battles.")
+    print("* Finally, be sure to [SAVE] often!")
+    input("\nPress [ENTER] to continue...")
 
 
 if __name__ == "__main__":

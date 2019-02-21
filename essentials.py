@@ -1,8 +1,24 @@
-weapons = {"Sword": 70, "RPG": 5000, "Fists": 10, "UNKOWN": 123918312, "digional sword": 1000, "Beyblade" : 1500, "Longsword" : 300,
-           "Rusty Sword": 30}
+from time import sleep as wait
+# weapons and dmg values
+weapons = {"Sword": 70,
+           "RPG": 5000,
+           "Fists": 10,
+           "UNKOWN": 123918312,
+           "digional sword": 1000,
+           "Beyblade" : 1500,
+           "Longsword": 300,
+           "Rusty Sword": 30,
+           "Longbow": 275}
+
 # below are health values of healing items
-health_items = {"bread": 15, "Apple": 20, "Test Food": 99, "Health Potion": 200}
-quest_items = ["Burnt Popcorn", "UNKOWN"]
+health_items = {"bread": 15,
+                "Apple": 20,
+                "Test Food": 99,
+                "Health Potion": 200,
+                "Mini Health Potion": 110}
+
+# below items can only be used in battles as item triggers
+quest_items = ["Burnt Popcorn", "UNKOWN", "Nap Time"]
 
 
 def add_commas(number):
@@ -38,3 +54,8 @@ def add_commas(number):
         new_string += i
 
     return new_string
+
+
+def talk(dialog, time: float=1):
+    print(dialog)
+    wait(time)
