@@ -214,14 +214,19 @@ def ptonio(player):
                     talk("You enter the strange alley...", 3)
                     # TODO: verifiy the below
                     if "metMel" not in player.metadata:
-                        talk("-[?] Eh? Who are you?", 2)
-                        talk("- I sense you are new round here, aren't ya?", 2.5)
-                        talk("- What brings you down here? Nobody ever comes down the alley...", 3)
-                        talk("- You must be seekin some sort of potion, ain't that right?", 2.5)
-                        talk("-[MEL] Well, alright. Folks round here call me Mel. I sell, uh, questionable potions.", 3)
-                        talk("- Apparently the Longbois didn't prefer that I allow just anyone to be tall, so\n"
-                             "  they attempted to shut me down", 4)
-                        talk("- But I managed. And here we are", 1.6)
+                        if "knowMelName" not in player.metadata:
+                            talk("-[?] Eh? Who are you?", 2)
+                            talk("- I sense you are new round here, aren't ya?", 2.5)
+                            talk("- What brings you down here? Nobody ever comes down the alley...", 3)
+                            talk("- You must be seekin some sort of potion, ain't that right?", 2.5)
+                            talk("-[MEL] Well, alright. Folks round here call me Mel. I sell, uh, questionable potions.", 4)
+                            player.metadata.append("knowMelName")
+                            talk("- Apparently the Longbois didn't prefer that I allow just anyone to be tall, so\n"
+                                 "  they attempted to shut me down", 6)
+                            talk("- But I managed. And here we are", 2)
+                        else:
+                            talk("-[MEL] Eh? Who's that?", 1.5)
+                            talk("- Oh. I've seen you before. Come on in.", 3)
                         talk("- So, what're you lookin for?")
                         choice = input("[1] A tall potion?\n"
                                        "[2] Nothing, just seeing what you have.\n"
@@ -235,7 +240,7 @@ def ptonio(player):
                             if choice == "2":
                                 o_check = False
                             elif choice == "1":
-                                player.metadata = "metMel"
+                                player.metadata.append("metMel")
                                 talk("- Well, you COULD clear out some pests for me.", 2)
                                 talk("- The outlaws are gettin a real mess. If you can clear em out, we can talk.", 3)
                                 if player.quest:
@@ -264,3 +269,14 @@ def ptonio(player):
                                 o_check = False
                         else:
                             shop.mel_shop(player)
+
+                elif choice == "2":
+                    print("Nothing here...")
+                    sleep(2)
+                    o_check = False
+                elif choice == "3":
+                    print("No missions right now... damn.")
+                    sleep(3)
+                    o_check = False
+                elif choice.lower() == "cancel":
+                    o_check = False

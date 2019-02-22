@@ -558,6 +558,33 @@ def defeat_outlaws(player, level=1, amount=3):
         print("You done got {} cowboys! Yeehaw!".format(amount))
         player.completed.append("Defeat the Outlaws")
         player.quest = None
+    else:
+        print("A sense of yeehaw leaves your body.")
+
+
+def tutorial_mission(player):
+    steve = Enemy("steve", 10, 1, 5, ["is being steve.",
+                                      "exists patiently.",
+                                      "waits...",
+                                      "calls you 'nibba.'"])
+    print("- ready?")
+    status = battle(player, [steve])
+    if status == "Won":
+        print("- that's what i like to see. here, have some change i found on the ground")
+        player.money += 14
+        sleep(3.1)
+        print("[!] Gained 14G.")
+    elif status == "Lose":
+        sleep(1)
+        print("- {}...".format(player.name))
+        sleep(4)
+        print("- that was absolutely retarded. how did you lose? i didn't even try? cmon nibba.")
+        sleep(5)
+        print("- ur lucky im a doctor. i might not have a degree but....")
+        sleep(3)
+        print("[!] Your HP has been restored.")
+        player.health = 100
+        print("- anyways...")
 
 
 

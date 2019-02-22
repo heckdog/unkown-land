@@ -282,7 +282,10 @@ def start():
 def info(player):
     print("\n----{INFO}----")
     print("You are {}, wielder of the {}.".format(player.name, player.weapon))
-    print("Your current task is to {}".format(player.quest))
+    if player.quest:
+        print("Your current task is to {}".format(player.quest))
+    else:
+        print("You have no current task.")
     print("You have {}/{} HP and {}G".format(player.health, player.max_health, add_commas(player.money)))
     print("LEVEL {} ({} XP)".format(player.level, player.xp))
     sleep(1)
