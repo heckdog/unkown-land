@@ -95,7 +95,7 @@ def start_world(player):
 
 
 def topshelf(player):
-    print("You arrive at Topshelf. A local towers above you waves hello.")
+    print("You arrive at Topshelf. A local towers above and you waves hello.")
     sleep(1)
     if "tall" not in player.traits:
         print("- Welcome, small one, to Topshelf, realm of the Longbois.")
@@ -142,22 +142,22 @@ def topshelf(player):
                         talk("-[THE EVALUATOR] Well, what have we here?", 1.5)
                         # TODO: redo the print/sleeps with talk()s
                         print("- I assume you are looking to get evaluated, yes?")
-                        sleep(1)
+                        sleep(2)
                         print("- Hmmm...")
                         sleep(1.5)
                         print("- Uh huh...")
-                        sleep(1)
+                        sleep(2)
                         print("- Well, you seem to be quite short by Longboi standards.")
                         sleep(1)
                         print("- We require a certain height that you must achieve. I do admire"
                               " your determination, however...")
-                        sleep(3)
+                        sleep(4)
                         print("- Tell you what, small one. I happen to know of a town nearby that has a special "
                               "something that could boost you a bit. I'll show you on this map...")
                         sleep(4)
                         player.metadata.append("Ptonio")
                         print("[!] You have learned about Ptonio!")
-                        sleep(.5)
+                        sleep(1.5)
                         print("- Yes... Ptonio is a short ways away, but they have some potions."
                               " Try it out, you may find something good over there...")
                         o_check = False
