@@ -57,15 +57,15 @@ class Enemy:
 
 class Boss(Enemy):
     def __init__(self, name, health, damage, xp, doing_plus=[], item_trigger=None):
-        Enemy.__init__(self, name, health, damage, xp, doing_plus, is_boss=True, item_trigger=item_trigger)  # its dumb but it works
-
+        Enemy.__init__(self, name, health, damage, xp, doing_plus, is_boss=True, item_trigger=item_trigger)
+        # its dumb but it works
 
 
 def battle(player, enemies):
     print("\n---{BATTLE START}---")
     try:
         if player.health > 0:
-            print("Battle Load successful.")
+            print("{} joined the battle! ({}/{}HP)".format(player.name, player.health, player.max_health))
         else:
             print("ur dead lmao")
     except TypeError:
@@ -137,7 +137,9 @@ def battle(player, enemies):
         elif choice == "i" or choice == "inventory":
             item = inventory.use_item(player, battle=True)
             for enemy in enemies:
-                if item == enemy.item_trigger:
+                if item == None:
+                    pass
+                elif item == enemy.item_trigger:
                     print("ITEM TRIGGER!")
                     enemy.trigger()
 
@@ -164,11 +166,11 @@ def battle(player, enemies):
                         player.xp_check()
                         return "Won"
 
-        # Escape
+        # Escape # TODO: add ability to disable this option before a battle
         elif choice == "e" or choice == "escape":
             escape_number = randint(1, 100)
             if escape_number < 50:
-                print("[!] You escaped from the {}".format(enemy.name))
+                print("[!] You escaped from {}".format(enemy.name))
                 return "Escaped"
             else:
                 print("[!] You couldn't escape!")
@@ -486,7 +488,8 @@ def beat_the_dev(player):  # fight is somewhat broke nibba
             print("[!] Everything in you inventory is missing! Maybe if you left now, you could retrieve your save.")
             sleep(1)
             print(
-                "-Wait, WHAT?! Don't leave the game! DONT! IM GONNA SAVE IT RIGHT NOW. NO MONEY OR ANYTHING. ILL DELETE YOU!!!")
+                "-Wait, WHAT?! Don't leave the game! DONT! IM GONNA SAVE IT RIGHT NOW. "
+                "NO MONEY OR ANYTHING. ILL DELETE YOU!!!")
             print("[!] The game froze. Now's your chance!")
             sleep(5)
             print("I'll...")
@@ -574,17 +577,24 @@ def tutorial_mission(player):
         player.money += 14
         sleep(3.1)
         print("[!] Gained 14G.")
+        sleep(2)
+        print("-oh, lemme heal dem boo boos of yours.")
+        sleep(.5)
+        print("[!] Your HP has been restored")
+        player.health = 100
+        player.completed.append("Tutorial")
+
     elif status == "Lose":
         sleep(1)
         print("- {}...".format(player.name))
         sleep(4)
         print("- that was absolutely retarded. how did you lose? i didn't even try? cmon nibba.")
         sleep(5)
-        print("- ur lucky im a doctor. i might not have a degree but....")
+        print("- yo ass lucky im a doctor. i might not have a degree but....")
         sleep(3)
         print("[!] Your HP has been restored.")
         player.health = 100
-        print("- anyways...")
+        print("- so...")
 
 
 

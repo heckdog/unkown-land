@@ -185,33 +185,30 @@ def print_header():
 # TODO: it could still be better
 def start_choice():
     sleep(2)
-    name = input("-[?] wuz yo name, nibba? \n>>>").strip()
+    name = input("-[???] wuz yo name, nibba? \n>>>").strip()
     if name.lower().find("steve") == -1:
         print("- oh, it's {}. sounds pretty stupid but ok".format(name))
     else:
         print("- aight, yo name's {}. cool name".format(name))  # haha cuz he name steve
     sleep(2)
-    print("- these gay ass turtles be dabbin on all the land. deadass get em b")
-    answer = input("yes or no \n>>>").lower()
-    if answer.find("ye") != -1:
-        print("- finna clap these nibbas cheeks")
+    talk("-[steve] oh by the way, the name's steve. yeah. lowercase. got a problem? no? ok.",3)
+    talk("- so let's get to business. you're gonna need to learn to fight so ima let you throw some punches", 4)
 
-    else:
-        print("- well thats gay but youre doing it anyways retar")
+    player = Player(name, "Fists", None, 100, 10)
+    quests.tutorial_mission(player)
 
-    sleep(2)
-    print("-[steve] oh by the way, the name's steve. yeah. lowercase. got a problem? no? ok.")
-    sleep(3)
     print("- anyways you need a weapon b. i've got this broken sword if you want. here nibba.")
     sleep(2.5)
-    weapon = "Rusty Sword"
+    player.weapon = "Rusty Sword"
+    print("[!] Equipped Rusty Sword!")
+    sleep(.5)
     print("- now go dab on them turtle nerds. they need a good beatin.")
     sleep(2)
     talk("- and once you're done with that, go visit a town or something. start town and topshelf are pretty aight", 5)
 
-    quest = "Dab on Turtles"
+    player.quest = "Dab on Turtles"
 
-    return Player(name, weapon, quest, 100, 10)  # the last 2 numbers are health, defence
+    return player  # the last 2 numbers are health, defence
 
 
 def damage(player, dmg):
