@@ -25,6 +25,18 @@ def load_version():
     return version
 
 
+def load_settings():
+    filename = get_full_version("settings")
+
+    try:
+        if os.path.exists(filename):
+            with open(filename, "rb") as fin:
+                settings = pickle.load(fin)
+        return settings
+    except:
+        return None
+
+
 def save_version(version):
     new_version = int(version) + 1
     filename = get_full_version("version")
@@ -47,6 +59,14 @@ def save(player):
     print("Saved!")
 
 
+def save_settings(settings):
+    filename = get_full_version("settings")
+
+    with open(filename, "wb") as fout:
+        pickle.dump(settings, fout)
+
+
+
 def get_full_path(name):
     """
     This method takes a string "name" and returns the named file's filepath.
@@ -61,7 +81,7 @@ def get_full_path(name):
 def get_saves():
     saves_list = []
     for i in os.listdir(os.path.join(".", "saves")):
-        if i != "version":
+        if i != "version" and i != "settings":
             saves_list.append(i[:-4])
     return saves_list
 

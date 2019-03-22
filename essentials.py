@@ -1,4 +1,20 @@
 from time import sleep as wait
+import data
+
+
+# default settings
+class Settings:
+    def __init__(self):
+        self.enter_dialog = True
+        self.test_setting = True
+
+
+settings = data.load_settings()
+
+# load defaults if none are loaded
+if not settings:
+    settings = Settings()
+
 # weapons and dmg values
 weapons = {"Sword": 70,
            "RPG": 5000,
@@ -58,4 +74,9 @@ def add_commas(number):
 
 def talk(dialog, time: float=1):
     print(dialog)
-    wait(time)
+    if settings.enter_dialog:
+        input()
+    else:
+        wait(time)
+
+

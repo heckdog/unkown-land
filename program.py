@@ -56,6 +56,7 @@ class Player:
         #                   dull an enemy's senses or something. maybe lower attack
         self.metadata = []
 
+
     def debug(self):
         self.quest = input("Set new Quest: ")
         self.money += int(input("Set Money: "))
@@ -160,16 +161,22 @@ def main():
         # Save the game!
         elif option == "save":
             data.save(player)
+            data.save_settings(settings)
             print("[!] Saved game!")
 
         # I NEED HELP!!!
         elif option == "help":
             game_help()
 
+        # Set some tings
+        elif option == "settings":
+            change_settings()
+
         # Exit Option
         elif option == "exit":
             # print("See ya later!")
             data.save(player)
+            data.save_settings(settings)
             active = False
             # break
 
@@ -211,6 +218,7 @@ def start_choice():
     return player  # the last 2 numbers are health, defence
 
 
+# I dont think the below gets used anywhere here, only in battle.py
 def damage(player, dmg):
     player.health -= dmg
     print("{} took {} damage! HP: {}/{}".format(player.name, damage, player.health, player.max_health))
@@ -223,7 +231,7 @@ def menu():
                        "What would you like to do?\n"
                        "[Q]uest [I]nventory [S]hop \n"
                        "[P]layer [W]orld E[X]it\n"
-                       "[SAVE] [HELP]\n"
+                       "[SAVE] [HELP] [SETTINGS]\n"
                        ">>>").lower().strip()
         if choice.find("q") != -1:
             return "quest"
@@ -240,12 +248,14 @@ def menu():
             return "world"
         elif choice == "save":
             return "save"
-        elif choice.find("i") != -1:
-            return "inventory"
         elif choice == "help":
             return "help"
+        elif choice == "settings":
+            return "settings"
         elif choice == "debug mode":
             return "debug"
+        elif choice.find("i") != -1:
+            return "inventory"
 
 
 def start():
@@ -306,6 +316,21 @@ def game_help():
     print("* Use [I]nventory to use items! Some items can only be used within battles.")
     print("* Finally, be sure to [SAVE] often!")
     input("\nPress [ENTER] to continue...")
+
+
+def change_settings():
+    global settings
+    check = True
+    print("\nDo you want timed dialog or when you press [ENTER]? (timed/enter)")
+    while check:
+        ask = input(">>>").lower().strip()
+        if ask == "timed":
+            settings.enter_dialog = False
+            check = False
+        elif ask == "enter":
+            settings.enter_dialog = True
+            check = False
+    print("Settings changed! Be sure to [SAVE] to keep changes!")
 
 
 if __name__ == "__main__":

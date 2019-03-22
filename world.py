@@ -60,14 +60,13 @@ def menu(name, options=True):
 
 
 def test_world(player):
-    print("hi, {}. you really dont wana be here. go away".format(player.name))
+    talk("hi, {}. you really dont wana be here. go away".format(player.name), 1)
 
 
 def start_world(player):
     print("You arrive at Start Town. A friendly local waves hello.")
     sleep(1)
-    print("- Oi mate! Welcome to Start Town! We don't get many new folk here, stay a while!")
-    sleep(1)
+    talk("- Oi mate! Welcome to Start Town! We don't get many new folk here, stay a while!", 1)
     dialog = ["I heard sometimes weapons land critical hits that do 3x damage!",
               "I wish I was a pegasus. What? You weren't supposed to hear that! Go away!",
               "A strange man came through here muttering about 'spaghetti code' and 'player and"
@@ -149,12 +148,10 @@ def topshelf(player):
                         sleep(2)
                         print("- Well, you seem to be quite short by Longboi standards.")
                         sleep(1)
-                        print("- We require a certain height that you must achieve. I do admire"
-                              " your determination, however...")
-                        sleep(4)
-                        print("- Tell you what, small one. I happen to know of a town nearby that has a special "
-                              "something that could boost you a bit. I'll show you on this map...")
-                        sleep(4)
+                        talk("- We require a certain height that you must achieve. I do admire"
+                             " your determination, however...", 4)
+                        talk("- Tell you what, small one. I happen to know of a town nearby that has a special "
+                             "something that could boost you a bit. I'll show you on this map...", 4)
                         player.metadata.append("Ptonio")
                         print("[!] You have learned about Ptonio!")
                         sleep(1.5)
