@@ -6,7 +6,7 @@ import data
 import shop
 import inventory
 import os
-from essentials import add_commas
+from essentials import *
 import world
 
 # latest update: added ryan as a boss
@@ -16,10 +16,10 @@ import world
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Small (BUILD)
 build = data.load_version()
-print("Version 0.7.2 (Build {})".format(build))
+print("Version 0.8.1 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
-# data.save_version(build)
+data.save_version(build)
 
 """
 def test():
@@ -54,6 +54,8 @@ class Player:
         self.debugEnabled = False
         self.traits = []  # this will hold traits that, if had, activate special things. ex: having "cute" could
         #                   dull an enemy's senses or something. maybe lower attack
+        self.metadata = []
+
 
     def debug(self):
         self.quest = input("Set new Quest: ")
@@ -64,6 +66,7 @@ class Player:
         self.xp = int(input("Set XP:"))
         choice = input("New Item? ")
         amount = int(input("New Value? "))
+        self.metadata.append(input("Metadata?").strip())
         self.inventory.update({choice: amount})
         self.debugEnabled = True
 
@@ -117,6 +120,8 @@ def main():
                         quests.ryans_battle(player)
                     elif player.quest == "Defeat Ryan":
                         quests.defeat_ryan(player)
+                    elif player.quest == "Defeat the Outlaws":
+                        quests.defeat_outlaws(player)
                     else:
                         print("You don't have a quest!")
                 else:
@@ -142,6 +147,7 @@ def main():
 
         # World Option
         elif option == "world":
+            world.world_init(player)
             selection = world.select_world()
             if selection == "Test World":
                 world.test_world(player)
@@ -149,16 +155,28 @@ def main():
                 world.start_world(player)
             elif selection == "Topshelf":
                 world.topshelf(player)
+            elif selection == "Ptonio" and "Ptonio" in player.metadata:
+                world.ptonio(player)
 
         # Save the game!
         elif option == "save":
             data.save(player)
+            data.save_settings(settings)
             print("[!] Saved game!")
+
+        # I NEED HELP!!!
+        elif option == "help":
+            game_help()
+
+        # Set some tings
+        elif option == "settings":
+            change_settings()
 
         # Exit Option
         elif option == "exit":
             # print("See ya later!")
             data.save(player)
+            data.save_settings(settings)
             active = False
             # break
 
@@ -171,34 +189,36 @@ def print_header():
     print("--------------------------------------")
 
 
-# TODO: rewrite this with better options/dialogue
+# TODO: it could still be better
 def start_choice():
     sleep(2)
-    name = input("-Wuz yo name, nibba? \n>>>").strip()
-    print("-Ah, so it is {}. Sounds pretty dumb but ok".format(name))
-    sleep(2)
-    print("-These gay ass turtles be dabbin on all the land. deadass get em b")
-    answer = input("yes or no \n>>>").lower()
-    if answer.find("ye") != -1:
-        print("-finna clap these nibbas cheeks")
-
+    name = input("-[???] wuz yo name, nibba? \n>>>").strip()
+    if name.lower().find("steve") == -1:
+        print("- oh, it's {}. sounds pretty stupid but ok".format(name))
     else:
-        print("-well thats gay but youre doing it anyways retar")
-
+        print("- aight, yo name's {}. cool name".format(name))  # haha cuz he name steve
     sleep(2)
-    weapon_choice = input("-anyways you need a weapon b. i've got this broken sword if you want. \n>>>").lower().strip()
-    if weapon_choice == "sword" or weapon_choice.find("ye") == -1:
-        print("-you have fun with that but ok")
-        weapon = "Rusty Sword"
-    else:
-        print("-that's not a weapon so you goin barehanded. try actually choosing something next game tho.")
-        weapon = "Fists"
+    talk("-[steve] oh by the way, the name's steve. yeah. lowercase. got a problem? no? ok.",3)
+    talk("- so let's get to business. you're gonna need to learn to fight so ima let you throw some punches", 4)
 
-    quest = "Dab on Turtles"
+    player = Player(name, "Fists", None, 100, 10)
+    quests.tutorial_mission(player)
 
-    return Player(name, weapon, quest, 100, 10)  # the last 2 numbers are health, defence
+    print("- anyways you need a weapon b. i've got this broken sword if you want. here nibba.")
+    sleep(2.5)
+    player.weapon = "Rusty Sword"
+    print("[!] Equipped Rusty Sword!")
+    sleep(.5)
+    print("- now go dab on them turtle nerds. they need a good beatin.")
+    sleep(2)
+    talk("- and once you're done with that, go visit a town or something. start town and topshelf are pretty aight", 5)
+
+    player.quest = "Dab on Turtles"
+
+    return player  # the last 2 numbers are health, defence
 
 
+# I dont think the below gets used anywhere here, only in battle.py
 def damage(player, dmg):
     player.health -= dmg
     print("{} took {} damage! HP: {}/{}".format(player.name, damage, player.health, player.max_health))
@@ -211,7 +231,7 @@ def menu():
                        "What would you like to do?\n"
                        "[Q]uest [I]nventory [S]hop \n"
                        "[P]layer [W]orld E[X]it\n"
-                       "[SAVE]\n"
+                       "[SAVE] [HELP] [SETTINGS]\n"
                        ">>>").lower().strip()
         if choice.find("q") != -1:
             return "quest"
@@ -228,10 +248,14 @@ def menu():
             return "world"
         elif choice == "save":
             return "save"
-        elif choice.find("i") != -1:
-            return "inventory"
+        elif choice == "help":
+            return "help"
+        elif choice == "settings":
+            return "settings"
         elif choice == "debug mode":
             return "debug"
+        elif choice.find("i") != -1:
+            return "inventory"
 
 
 def start():
@@ -265,10 +289,48 @@ def start():
 def info(player):
     print("\n----{INFO}----")
     print("You are {}, wielder of the {}.".format(player.name, player.weapon))
-    print("Your current task is to {}".format(player.quest))
+    if player.quest:
+        print("Your current task is to {}".format(player.quest))
+    else:
+        print("You have no current task.")
     print("You have {}/{} HP and {}G".format(player.health, player.max_health, add_commas(player.money)))
     print("LEVEL {} ({} XP)".format(player.level, player.xp))
     sleep(1)
+
+
+def game_help():
+    print("\n\n----{HELP}----")
+    print("* Menus always follow the ----{TITLE}---- format to alert you to the menu's start.")
+    print("* Anything you can type in a situation, like keys or keywords, are in [BRACKETS]")
+    print("* Dialog starts with a '-[NAME]' so you can see who's talking.")
+    print("-[HELP GUY] Hello!")
+    print("- Also, any other dialog by the same person is shortened to a dash.")
+    print("-[HELP GUY 2] But other people can join conversations!")
+    print("[!] Personal Alerts show up with a [!] identifier.")
+    input("\nPress [ENTER] to continue...")
+    print("\n\n----{HELP}----")
+    print("* Quests are under the [Q] tab, where you can launch quests from the main menu.")
+    print("* Shops and other stuff is found in [W]orlds. Different places have different goods!")
+    print("* They can also give you new quests! Check town directories, they may have quest bulletins"
+          "\nor people to talk to!")
+    print("* Use [I]nventory to use items! Some items can only be used within battles.")
+    print("* Finally, be sure to [SAVE] often!")
+    input("\nPress [ENTER] to continue...")
+
+
+def change_settings():
+    global settings
+    check = True
+    print("\nDo you want timed dialog or when you press [ENTER]? (timed/enter)")
+    while check:
+        ask = input(">>>").lower().strip()
+        if ask == "timed":
+            settings.enter_dialog = False
+            check = False
+        elif ask == "enter":
+            settings.enter_dialog = True
+            check = False
+    print("Settings changed! Be sure to [SAVE] to keep changes!")
 
 
 if __name__ == "__main__":

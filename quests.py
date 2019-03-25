@@ -56,16 +56,16 @@ class Enemy:
 
 
 class Boss(Enemy):
-    def __init__(self, name, health, damage, xp, doing_plus=[]):
-        Enemy.__init__(self, name, health, damage, xp, doing_plus, is_boss=True)  # its dumb but it works
-
+    def __init__(self, name, health, damage, xp, doing_plus=[], item_trigger=None):
+        Enemy.__init__(self, name, health, damage, xp, doing_plus, is_boss=True, item_trigger=item_trigger)
+        # its dumb but it works
 
 
 def battle(player, enemies):
     print("\n---{BATTLE START}---")
     try:
         if player.health > 0:
-            print("Battle Load successful.")
+            print("{} joined the battle! ({}/{}HP)".format(player.name, player.health, player.max_health))
         else:
             print("ur dead lmao")
     except TypeError:
@@ -111,12 +111,12 @@ def battle(player, enemies):
                 # random crits
                 if randint(0, 100) <= player.crit_chance:  # a ten percent chance
                     dam += randint(dam * 2, dam * 3)
-                    print("CRITICAL HIT!")
+                    print("[!] CRITICAL HIT!")
 
                 damage(target, dam)
                 sleep(1)
                 if target.health < 0:  # if you killed an enemy
-                    print("{} died!".format(target.name))
+                    print("[!] {} died!".format(target.name))
 
                 print()  # spacer
                 # Enemy Turn
@@ -137,8 +137,11 @@ def battle(player, enemies):
         elif choice == "i" or choice == "inventory":
             item = inventory.use_item(player, battle=True)
             for enemy in enemies:
-                if item == enemy.item_trigger and player.debugEnabled:
+                if item == None:
+                    pass
+                elif item == enemy.item_trigger:
                     print("ITEM TRIGGER!")
+                    enemy.trigger()
 
         # Special
         elif choice == "s" or choice == "special":
@@ -163,14 +166,14 @@ def battle(player, enemies):
                         player.xp_check()
                         return "Won"
 
-        # Escape
+        # Escape # TODO: add ability to disable this option before a battle
         elif choice == "e" or choice == "escape":
             escape_number = randint(1, 100)
             if escape_number < 50:
-                print("You escaped from the {}".format(enemy.name))
+                print("[!] You escaped from {}".format(enemy.name))
                 return "Escaped"
             else:
-                print("You couldn't escape!")
+                print("[!] You couldn't escape!")
                 for enemy in enemies:
                     print("{} attacked!".format(enemy.name))
                     damage(player, enemy.damage)
@@ -286,6 +289,27 @@ class EvilTurtle(Enemy):
             print("I'm just gonna assume you're good cuz '{}' aint a choice my guy.".format(choice))
 
 
+class PtonioOutlaw(Enemy):
+    def __init__(self, name):
+        self.name = name
+        Enemy.__init__(self, self.name,
+                       100, 20, 70,
+                       ["seems concerned.",
+                        "yeehaws at you.",
+                        "shatters an empty potion bottle.",
+                        "sneers under his 10-gallon hat."], item_trigger="Nap Time")
+
+    def trigger(self):
+        print("-[{}] Heh... that silly... potion... wont stop... me...".format(self.name))
+        sleep(4)
+        print("[!] {} passed out!".format(self.name))
+        self.health = 5
+        self.damage = 0
+        self.doing = ["is passed out." for i in range(919)]
+
+
+
+
 class Dragon(Boss):
     has_special = True
 
@@ -320,11 +344,43 @@ class Ryan(Boss):
         self.xp = 15000
         Boss.__init__(self, "Ryan, Consumer of the Cosmos", 10000000, 1, 15000, ["craves the finest burnt popcorn.",
                                                                                  "prepares for a feast.",
-                                                                                 "revs up his Beyblade."])
+                                                                                 "revs up his Beyblade."],
+                      item_trigger="Burnt Popcorn")
 
     def special(self, player):
         if "Burnt Popcorn" in player.inventory:
-            print("-what is that delectable smell?")
+            print("-[RYAN] *sniff* What is that delectable smell?")
+            print("[!] Ryan lost 1000 HP!")
+            self.health += -1000
+
+    def trigger(self):
+        print("-[RYAN] Oh man, I love me some Popcorn! MMMMMMMMMMM *dies*")
+        self.health = 0
+
+
+class Wendt(Boss):
+
+    def __init__(self):
+        Boss.__init__(self, "Wendt, Leader of the Longbois",
+                      600000, 400, 10434,
+                      ["towers above you.",
+                       "laughs at your puny height",
+                       "casts a long shadow."
+                       "creates a tornado via the power of Orange Justice.",
+                       "breathes in the clouds.",
+                       "stands ominously."])
+
+    def special(self, player):
+        print("----{SPECIAL}----")
+        print("[Longsword Sweep] [Chat]\n"
+              "[Convince] [Orange Justice]")
+        choice = input(">>>").strip().lower()
+
+        if choice == "longsword sweep":
+            print("[!] CRITICAL HIT!")
+            #TODO: FINSIH the boss battle. implement Crider as co-boss
+
+
 
 
 def battle_turtles(player, turtles):
@@ -432,7 +488,8 @@ def beat_the_dev(player):  # fight is somewhat broke nibba
             print("[!] Everything in you inventory is missing! Maybe if you left now, you could retrieve your save.")
             sleep(1)
             print(
-                "-Wait, WHAT?! Don't leave the game! DONT! IM GONNA SAVE IT RIGHT NOW. NO MONEY OR ANYTHING. ILL DELETE YOU!!!")
+                "-Wait, WHAT?! Don't leave the game! DONT! IM GONNA SAVE IT RIGHT NOW. "
+                "NO MONEY OR ANYTHING. ILL DELETE YOU!!!")
             print("[!] The game froze. Now's your chance!")
             sleep(5)
             print("I'll...")
@@ -479,8 +536,68 @@ def defeat_ryan(player):
         print("The smell of burnt popcorn fades away. \nYou notice a small round object on the ground.")
         player.inventory.update({"BeyBlade": 1})
         sleep(3)
-        print("You have acquired the Beyblade!")
+        print("[!] You have acquired the Beyblade!")
         player.quest = None
         player.completed.append("Defeat Ryan")
     else:
         print("The air is noticeably lighter.")
+
+
+def defeat_outlaws(player, level=1, amount=3):
+    names = ["Jimbob", "Y. Haw", "Cleetus", "Willy", "R. T. Cowboy", "Gideon", "JR", "Clyde", "Don"]
+    outlaws = []
+
+    for i in range(amount):
+        rand_name = random.choice(names)
+        names.pop(rand_name)
+        outlaw = PtonioOutlaw("Outlaw {}".format(rand_name))
+        outlaws.append(outlaw)
+
+    status = battle(player, outlaws)
+    if status == "Lost":
+        print("You got blasted by the Ptonian Outlaws")
+        player.health = 1
+    elif status == "Won":
+        print("You done got {} cowboys! Yeehaw!".format(amount))
+        player.completed.append("Defeat the Outlaws")
+        player.quest = None
+    else:
+        print("A sense of yeehaw leaves your body.")
+
+
+def tutorial_mission(player):
+    steve = Enemy("steve", 10, 1, 5, ["is being steve.",
+                                      "exists patiently.",
+                                      "waits...",
+                                      "calls you 'nibba.'"])
+    print("- ready?")
+    status = battle(player, [steve])
+    if status == "Won":
+        print("- that's what i like to see. here, have some change i found on the ground")
+        player.money += 14
+        sleep(3.1)
+        print("[!] Gained 14G.")
+        sleep(2)
+        print("-oh, lemme heal dem boo boos of yours.")
+        sleep(.5)
+        print("[!] Your HP has been restored")
+        player.health = 100
+        player.completed.append("Tutorial")
+
+    elif status == "Lose":
+        sleep(1)
+        print("- {}...".format(player.name))
+        sleep(4)
+        print("- that was absolutely retarded. how did you lose? i didn't even try? cmon nibba.")
+        sleep(5)
+        print("- yo ass lucky im a doctor. i might not have a degree but....")
+        sleep(3)
+        print("[!] Your HP has been restored.")
+        player.health = 100
+        print("- so...")
+
+
+
+
+
+

@@ -7,14 +7,16 @@ from inventory import view_inventory
 store = {"bread": 20, "Test Item": 200, "Health Potion": 100}
 weapon_store = {"Sword": 100, "digional sword": 100000}
 start = {"bread": 20, "Test Item": 150, "Health Potion": 100, "Test Food": 40}
-topshelf = {"bread": 20, "Tall Juice": 2500}
+topshelf = {"bread": 20, "Longsword": 1000, "Longbow": 950}
+ptonio = {"Mini Health Potion": 50, "Health Potion": 90, "Nap Time" : 40}
+# TODO: add custom mel shop list
 
 
 def shop(player):
     print("\n----{SHOP}----")
-    print("-Welcome to the Shop! Whatcha lookin' for?")
+    print("-[TOM] Welcome to the Shop! Whatcha lookin' for?")
 
-    if player.level >= 5:
+    if player.level >= 50:
         print("[B]uy [S]ell [L]eave [Q]uest")
     else:
         print("[B]uy [S]ell [L]eave")
@@ -36,8 +38,8 @@ def shop(player):
         return "exit"  # later i may add status codes if things get too complex, so heres one of em.
 
     # Quest Start
-    elif (option == "q" or option == "quest") and player.level >=5:
-        print("-Eh? You want a quest?")
+    elif (option == "q" or option == "quest") and player.level >=50:
+        print("-[TOM] Eh? You want a quest?")
         sleep(1)
         print("-Alright, I've got one. There's been this one guy, he keeps coming in here with tons of money but robs me anyways.")
         sleep(3)
@@ -68,8 +70,8 @@ def shop(player):
 
 
 def start_store(player):
-    print("\n----{SHOP}----")
-    print("-Aye lad, welcome to me shop.")
+    print("\n----{START SHOP}----")
+    print("-[FERGUS] Aye lad, welcome to me shop.")
     print("[B]uy [S]ell [Q]uest")
     option = input(">>>").lower().strip()
     if option == "b" or option == "buy":
@@ -97,7 +99,6 @@ def start_store(player):
                 print("Quest not changed.")
 
 
-
 def weapon_store(player):
     print("\n----{SHOP}----")
     print("-Oi lad, whatcha be lookin' for?")
@@ -112,15 +113,48 @@ def topshelf_store(player):
         print("-Aye, it's that new Longboi! Please, come, take a look at what I've got for ye.")
     else:
         print("-Welcome wee one. Come take a look on the stool at what we have in stock.")
-        print("[B]uy [S]ell")
-        option = input(">>>").lower().strip()
-        if option == "b" or option == "buy":
-            buy(player, topshelf)
-        elif option == "s" or option == "sell":
-            if "longboi" in player.traits:
-                sell(player, topshelf, .73)
-            else:
-                sell(player, topshelf, .69)
+    print("[B]uy [S]ell")
+    option = input(">>>").lower().strip()
+    if option == "b" or option == "buy":
+        buy(player, topshelf)
+    elif option == "s" or option == "sell":
+        if "Longboi" in player.traits:
+            sell(player, topshelf, .73)
+        else:
+            sell(player, topshelf, .69)
+
+
+def ptonio_store(player):
+    print("\n----{PTONIO SHOP}----")
+    print("-[PHILO] Howdy! Welcome to Philo's Ptonio Potions!")
+    print("[B]uy [S]ell")
+    option = input(">>>").lower().strip()
+    if option == "b" or option == "buy":
+        buy(player, ptonio)
+    elif option == "s" or option == "sell":
+        sell(player, ptonio, .7)
+
+
+def mel_shop(player):
+    print("\n----{MEL'S MARKET}----")
+    print("-[MEL] What would you like, dear?")
+    print("[B]uy [S]ell")
+    option = input(">>>").lower().strip()
+    if option == "b" or option == "buy":
+        buy(player, ptonio)
+    elif option == "s" or option == "sell":
+        sell(player, ptonio, .7)
+
+
+def early_mel_shop(player):
+    print("\n----{MEL'S MARKET}----")
+    print("-[MEL] What would you like?")
+    print("[B]uy [S]ell")
+    option = input(">>>").lower().strip()
+    if option == "b" or option == "buy":
+        buy(player, ptonio)
+    elif option == "s" or option == "sell":
+        sell(player, ptonio, .7)
 
 
 def buy(player, stock):
@@ -155,7 +189,7 @@ def buy(player, stock):
         else:
             print("-ok then nvm u wont get it smh")
     else:
-        print("-\"{}\" is not one of my options rarted. Even if it was, you'd need to bring some cash.".format(choice))
+        print("[!] \"{}\" is not available!".format(choice))
 
 
 def sell(player, stock, modifier=.75):
