@@ -549,7 +549,7 @@ def defeat_outlaws(player, level=1, amount=3):
 
     for i in range(amount):
         rand_name = random.choice(names)
-        names.pop(rand_name)
+        names.pop(names.index(rand_name))
         outlaw = PtonioOutlaw("Outlaw {}".format(rand_name))
         outlaws.append(outlaw)
 
