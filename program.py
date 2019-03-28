@@ -16,7 +16,7 @@ import world
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Small (BUILD)
 build = data.load_version()
-print("Version 0.8.2 (Build {})".format(build))
+print("Version 0.8.3 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
 data.save_version(build)
@@ -204,13 +204,11 @@ def start_choice():
     player = Player(name, "Fists", None, 100, 10)
     quests.tutorial_mission(player)
 
-    print("- anyways you need a weapon b. i've got this broken sword if you want. here nibba.")
-    sleep(2.5)
+    talk("- anyways you need a weapon b. i've got this broken sword if you want. here nibba.", 2.5)
     player.weapon = "Rusty Sword"
     print("[!] Equipped Rusty Sword!")
     sleep(.5)
-    print("- now go dab on them turtle nerds. they need a good beatin.")
-    sleep(2)
+    talk("- now go dab on them turtle nerds. they need a good beatin.", 2)
     talk("- and once you're done with that, go visit a town or something. start town and topshelf are pretty aight", 5)
 
     player.quest = "Dab on Turtles"
@@ -295,6 +293,7 @@ def info(player):
         print("You have no current task.")
     print("You have {}/{} HP and {}G".format(player.health, player.max_health, add_commas(player.money)))
     print("LEVEL {} ({} XP)".format(player.level, player.xp))
+    print("------------\n")
     sleep(1)
 
 
