@@ -138,7 +138,7 @@ def topshelf(player):
                     sleep(2)
                     if "tall" not in player.traits or "Longboi" not in player.traits:
                         talk("-[THE EVALUATOR] Well, what have we here?", 1.5)
-                        # TODO: redo the print/sleeps with talk()s
+
                         talk("- I assume you are looking to get evaluated, yes?", 2)
                         talk("- Hmmm...", 1.75)
                         talk("- Uh huh...", 2)
@@ -155,16 +155,62 @@ def topshelf(player):
                         o_check = False
                     elif "Longboi" not in player.traits:
                         # TODO: longboi evaluation
-                        print("[INSERT EVALUATION]")
+                        talk("-[THE EVALUATOR] Why, look at that!", 1.5)
+                        talk("- That right there is some fine Longboi material. Let me just have a glance at your other stats.", 3)
+                        talk("- Hmm...", 2)
+                        talk("- Uh huh...", 2.5)
+                        talk("- Yep, yep...", 3)
+                        talk("Well {}, you did it. I hereby declare you a Longboi. Welcome to Topshelf.".format(player.name), 4)
                         print("[!] You are now a Longboi!")
+                        sleep(.5)
                         player.traits.append("Longboi")
                     else:
                         talk("-[THE EVALUATOR] Why hello there fellow Longboi. I hope you enjoy "
                              "your stay here at Topshelf.", 3)
+
                 elif choice == "2":
                     print("[UNDER CONSTRUCTION]")
+
                 elif choice == "3":
-                    talk("No quests it seems...", 1)
+                    if not player.quest:
+                        # Quest Lore: Quest ID <-- goes to program.py, which sends it to quests.py
+                        # TODO: make the IDs valid in program.py
+                        bulletin = {
+                            "SEEKING PEST EXPERT TO EXTERMINATE LONGWORMS INFESTING FIELD. PAY: 500G.": "do Pest Control",
+                            "Wanted: Hemlick, Ptonian Outlaw. Owes me money. 600G Reward.": "Teach Hemlick a Lesson"
+                        }
+
+                        talk("You go up to the bulletin...", 1.5)
+
+                        # Add quest lore to a list to cycle it + index it
+                        quest_list = []
+                        for quest in bulletin:
+                            quest_list.append(quest)
+
+                        # Quest Choice
+                        chosen = False
+                        while not chosen:
+                            for quest in quest_list:
+                                print("\n")
+                                print(quest)
+                                choice = ""
+                                while choice != "y" and choice != "n" and choice != "cancel":  # auto exits if good answer
+                                    choice = input("Choose this Quest? (y/n/cancel)").strip().lower()
+                                if choice == "cancel" or choice == "x":
+                                    o_check = False  # leave "other" loop
+                                    chosen = True  # exit bulletin loop
+                                elif choice == "y":
+                                    talk("[!] Accepted quest to {}!".format(bulletin[quest]))  # set quest to ID
+                                    player.quest = bulletin[quest]
+                                    chosen = True
+                                    o_check = False
+                                elif choice == "n":
+                                    print("Next...")
+                                    sleep(.75)
+
+                    else:
+                        talk("[!] You already have a quest!")
+
                 elif choice == "cancel":
                     o_check = False
                 else:

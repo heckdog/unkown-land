@@ -16,7 +16,7 @@ import world
 # naming convention as follows:
 # RELEASE.BIGUPDATE.Small (BUILD)
 build = data.load_version()
-print("Version 0.8.3 (Build {})".format(build))
+print("Version 0.9.0 (Build {})".format(build))
 
 # uncomment this during development to increase build number. comment for full release
 data.save_version(build)
@@ -194,10 +194,9 @@ def start_choice():
     sleep(2)
     name = input("-[???] wuz yo name, nibba? \n>>>").strip()
     if name.lower().find("steve") == -1:
-        print("- oh, it's {}. sounds pretty stupid but ok".format(name))
+        talk("- oh, it's {}. sounds pretty stupid but ok".format(name),2)
     else:
-        print("- aight, yo name's {}. cool name".format(name))  # haha cuz he name steve
-    sleep(2)
+        talk("- aight, yo name's {}. cool name".format(name),2)  # haha cuz he name steve
     talk("-[steve] oh by the way, the name's steve. yeah. lowercase. got a problem? no? ok.",3)
     talk("- so let's get to business. you're gonna need to learn to fight so ima let you throw some punches", 4)
 
@@ -207,7 +206,7 @@ def start_choice():
     talk("- anyways you need a weapon b. i've got this broken sword if you want. here nibba.", 2.5)
     player.weapon = "Rusty Sword"
     print("[!] Equipped Rusty Sword!")
-    sleep(.5)
+    sleep(.25)
     talk("- now go dab on them turtle nerds. they need a good beatin.", 2)
     talk("- and once you're done with that, go visit a town or something. start town and topshelf are pretty aight", 5)
 
