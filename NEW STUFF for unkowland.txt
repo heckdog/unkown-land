@@ -1,0 +1,31 @@
+Version 0.9.0 (4/4/19 Build)
+* removed extra spacing when using [ENTER] dialog mode
+* added Hemlick fight on bulletin board
+* removed ability to repeat quests on bulletin board
+* added pest control battle
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+* 
+
+

@@ -2,6 +2,7 @@ from random import randint
 import random
 from time import sleep
 from essentials import weapons
+from essentials import talk
 import inventory
 import data
 
@@ -308,6 +309,13 @@ class PtonioOutlaw(Enemy):
         self.doing = ["is passed out." for i in range(919)]
 
 
+class Longworm(Enemy):
+    def __init__(self):
+        self.name = "Longworm"
+        Enemy.__init__(self, self.name, 40, 10, 10, [
+            "wriggles around.",
+            "does some weird squiggly crap.",
+            "munches on dirt."])
 
 
 class Dragon(Boss):
@@ -597,7 +605,52 @@ def tutorial_mission(player):
         print("- so...")
 
 
+def defeat_hemlick(player):
+    hemlick = PtonioOutlaw("Hemlick")
+
+    status = battle(player, [hemlick])
+    if status == "Won":
+        sleep(.2)  # this sleep is just to help with continuity
+        talk("- Woah there partner, you did it! Yeeehaw!", 3.5)
+        player.money += 600
+        print("[!] You gained 600G!")
+        sleep(.5)
+        talk("- That bandit won't be botherin' me no more. Here, this drink's on me.", 4)
+        player.health = player.max_health
+        print("[!] Your HP was restored!")
+        sleep(.5)
+
+        player.completed.append("Teach Hemlick a Lesson")
+        player.quest = None
+
+    elif status == "Lose":
+        talk("-[HEMLICK] Ain't no finer bandit in Ptonio than I. Get outta here, {}".format(player.name), 3)
+    else:
+        talk("You decide you don't wanna die today.")
 
 
+def pest_control(player):
+    worms = []
+    for i in range(5):
+        worms.append(Longworm())
 
+    status = battle(player, worms)
 
+    if status == "Won":
+        if "tall" not in player.metadata:
+            talk("- Thanks, little one. I shall pay you for your service.", 3)
+        elif "Longboi" in player.metadata:
+            talk("- Thank you, Longboi {}, for the kind service. Here's your money.".format(player.name), 4)
+        else:
+            talk("- Thank you my friend. Here is some money for your troubles.", 4)
+
+        print("[!] You got 500G!")
+        sleep(.5)
+        player.money += 500
+
+        player.completed.append("do Pest Control")
+        player.quest = None
+    elif status == "Lose":
+        talk("dam...", 1.5)
+    else:
+        talk("Maybe another time...", 2)

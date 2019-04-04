@@ -73,10 +73,10 @@ def add_commas(number):
 
 
 def talk(dialog, time: float=1):
-    print(dialog)
     if settings.enter_dialog:
-        input()
+        input(dialog)
     else:
+        print(dialog)
         wait(time)
 
 

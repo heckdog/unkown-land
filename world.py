@@ -185,7 +185,8 @@ def topshelf(player):
                         # Add quest lore to a list to cycle it + index it
                         quest_list = []
                         for quest in bulletin:
-                            quest_list.append(quest)
+                            if bulletin[quest] not in player.completed:  # check to see if player has done quest before
+                                quest_list.append(quest)
 
                         # Quest Choice
                         chosen = False

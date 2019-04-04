@@ -122,6 +122,10 @@ def main():
                         quests.defeat_ryan(player)
                     elif player.quest == "Defeat the Outlaws":
                         quests.defeat_outlaws(player)
+                    elif player.quest == "do Pest Control":
+                        quests.pest_control(player)
+                    elif player.quest == "Teach Hemlick a Lesson":
+                        quests.defeat_hemlick(player)
                     else:
                         print("You don't have a quest!")
                 else:
@@ -224,7 +228,7 @@ def damage(player, dmg):
 def menu():
     valid = True
     while valid:
-        choice = input("\n----{MENU}----\n"
+        choice = input("\n\n----{MENU}----\n"
                        "What would you like to do?\n"
                        "[Q]uest [I]nventory [S]hop \n"
                        "[P]layer [W]orld E[X]it\n"
