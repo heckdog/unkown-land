@@ -38,6 +38,8 @@ quest_items = ["Burnt Popcorn", "UNKOWN", "Nap Time"]
 
 
 def add_commas(number):
+    number = round(number)  # should drop any decimals
+    number = int(number)  # if broke, this is why
     # variables
     count = 0
     withcommas = ""
