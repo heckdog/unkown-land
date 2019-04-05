@@ -50,6 +50,7 @@ class Enemy:
         print("You have successfully defeated the {}! Gained {} XP and {}G".format(self.name, xp_gain, money_gain))
         player.xp += xp_gain
         player.money += money_gain
+        sleep(3)  # todo: make this a toggle setting
 
     def special(self, player):
         print("\n----{SPECIAL}----\n")
