@@ -116,8 +116,19 @@ def battle(player, enemies):
 
                 damage(target, dam)
                 sleep(1)
+
+                die_messages = ["got yeeted on!",
+                                "got RKO'd straight outta nowhere!",
+                                "got gamershotted!",
+                                "needs an F in the chat.",
+                                "= RIP",
+                                "is straight up not having a good time!",
+                                "is no more.",
+                                "just fricken dies.",
+                                "turned into dust."]
+
                 if target.health < 0:  # if you killed an enemy
-                    print("[!] {} died!".format(target.name))
+                    print("[!] {} {}".format(target.name, random.choice(die_messages)))  # hee hee funny
 
                 print()  # spacer
                 # Enemy Turn
@@ -434,93 +445,6 @@ def mess_with_goblins(player):
     return True
 
 
-# TODO: redo this gay battle its no fun.
-def beat_the_dev(player):  # fight is somewhat broke nibba
-    dev = Enemy("Heckin-doggo", 9999999, 1, 50000)
-    sleep(2)
-    print("\n-Heh...")
-    sleep(3)
-    print("-You think you can really clap me, eh?")
-    sleep(3)
-    print("-I created this world. You are but another player object. Watch this.")
-    sleep(3)
-    print("[!] Your Health and Max Health have dropped to 1!")
-    oldhealth = player.health
-    oldmax = player.max_health
-    oldweapon = player.weapon
-    player.health = 1
-    player.max_health = 1
-    sleep(1)
-    print("[!] You feel a noticeable lack of weapon...")
-    player.weapon = "Fists"
-    sleep(2)
-    if "UNKOWN" in player.inventory:
-        player.weapon = "UNKOWN"
-        print("")
-        print("[!] Equipped weapon.ERROR: Weapon Does not Exist!")
-    print("Let's fight, if that's what you're here for. :)")
-    result = battle(player, [dev])
-    if result == "Lost":
-        print("-Did you really think that was a good idea?  I didn't.")
-        sleep(0.5)
-        print("-Here's your stats back, by the way.")
-        print("[!] You feel whole and weighted again! Although you really didn't need those extra pounds back...")
-        player.health = oldhealth
-        player.max_health = oldmax
-        player.weapon = oldweapon
-        return False
-    elif result == "Won":
-        print("-Holy frick how did you manage to do that?!?!")
-        sleep(1)
-        print("-Do, do you have some unknown powers?")
-        sleep(1)
-        print("-WAIT!!")
-        sleep(3)
-        print("-Do you... do you have the powers of UNKOWN?")
-        sleep(2)
-        print("-I thought I sealed those powers away in the title screen."
-              "Apparently, I didn't do it that great, since here we are.")
-        sleep(3)
-        print("-I'll give you 50000 more XP and 100,000G not to tell anyone about it, deal?")
-        deal = input("(y/n) \n>>>").lower().strip()
-        if deal.find("ye") != -1 or deal == "y":
-            player.money += 100000
-            player.xp += 50000
-            player.inventory.pop("UNKOWN")
-            player.completed.append("Beat up the Developer")
-            print("-Cool, also I completed the mission for ya.")
-            print("-See ya later my guy")
-            return True
-        else:
-            print("-Well sucks to be you, I have the UNKOWN now. You need to pay attention to your pockets pal.")
-            print("[!] Everything in you inventory is missing! Maybe if you left now, you could retrieve your save.")
-            sleep(1)
-            print(
-                "-Wait, WHAT?! Don't leave the game! DONT! IM GONNA SAVE IT RIGHT NOW. "
-                "NO MONEY OR ANYTHING. ILL DELETE YOU!!!")
-            print("[!] The game froze. Now's your chance!")
-            sleep(5)
-            print("I'll...")
-            sleep(3)
-            print("...dab...on...")
-            sleep(7)
-            print("...YOUUUUUU!!@!!!23123#Fveqwy3543g?%%%% player.name!!!@313323")
-            sleep(1)
-            print("[!] PLAYER {} NOT FOUND. COMMENCING FILE REMOVAL.".format(player.name))
-            player.weapon = "Fists"
-            player.money = 0
-            player.health = 0
-            player.xp = -1
-            player.level = ": None!"
-            player.quest = "do nothing. You don't exist."
-            player.inventory = {"There's Nothing Here...": "You should just make a new save pal."}
-            data.save(player)
-            player.name = "DELETED"
-            print("----{GAME SAVED}----")
-            sleep(1)
-            print("----{WORLD DELETED}----")
-
-
 # Easter Egg Battle. Unobtainable via normal means.
 def ryans_battle(player):
     pheonix = Enemy("Pheonix", 1000000, 10000, 5000)  # health, damage, xp, "Lost" "Won"
@@ -578,31 +502,28 @@ def tutorial_mission(player):
                                       "exists patiently.",
                                       "waits...",
                                       "calls you 'nibba.'"])
-    print("- ready?")
+    talk("- ready?")
     status = battle(player, [steve])
     if status == "Won":
-        print("- that's what i like to see. here, have some change i found on the ground")
+        talk("- that's what i like to see. here, have some change i found on the ground", 3.1)
         player.money += 14
-        sleep(3.1)
         print("[!] Gained 14G.")
-        sleep(2)
-        print("-oh, lemme heal dem boo boos of yours.")
-        sleep(.5)
+        sleep(1)
+        talk("-oh, lemme heal dem boo boos of yours.", 2)
         print("[!] Your HP has been restored")
+        sleep(.5)
         player.health = 100
         player.completed.append("Tutorial")
 
     elif status == "Lose":
         sleep(1)
-        print("- {}...".format(player.name))
-        sleep(4)
-        print("- that was absolutely retarded. how did you lose? i didn't even try? cmon nibba.")
-        sleep(5)
-        print("- yo ass lucky im a doctor. i might not have a degree but....")
-        sleep(3)
+        talk("- {}...".format(player.name), 4)
+        talk("- that was absolutely retarded. how did you lose? i didn't even try? cmon nibba.", 5)
+        talk("- yo ass lucky im a doctor. i might not have a degree but....", 3)
         print("[!] Your HP has been restored.")
+        sleep(.5)
         player.health = 100
-        print("- so...")
+        talk("- so...")
 
 
 def defeat_hemlick(player):

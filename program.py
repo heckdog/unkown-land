@@ -112,8 +112,6 @@ def main():
                     #     quests.clap_the_dragon(player)
                     if player.quest == "Dab on Turtles":
                         quests.battle_turtles(player, 3)
-                    elif player.quest == "Beat up the Developer":
-                        quests.beat_the_dev(player)
                     elif player.quest == "Mess with Goblins":
                         quests.mess_with_goblins(player)
                     elif player.quest == "Ryan's Battle":  # test battle - only accessable via debug mode
@@ -296,7 +294,7 @@ def info(player):
         print("You have no current task.")
     print("You have {}/{} HP and {}G".format(player.health, player.max_health, add_commas(player.money)))
     print("LEVEL {} ({} XP)".format(player.level, player.xp))
-    print("------------\n")
+    print("------------")
     sleep(1)
 
 
