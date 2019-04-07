@@ -61,7 +61,7 @@ def shop(player):
         else:
             print("-Aight then lad, come again some other time. I'm sure he's still out and about, robbin me mates' stores or sum'n."
                   "\n-Keep yer eye out tho, who knows where 'eel turn up next, I tell ye.")
-            
+
     elif option == "q" or option == "quest":
         print("-What? Quest? What do you think, this is some kind of game? That's mad, lad.")
 
@@ -158,19 +158,22 @@ def early_mel_shop(player):
 
 
 def buy(player, stock):
-    print("-Here's what I've got in stock:")
-    print("----------------")
-    for item in stock:
-        price = stock[item]
-        print("{} -- {}G".format(item, add_commas(price)))
-    print("----------------")
+    print("\n- Here's what I've got in stock:")
+    # print("----------------")
+    # for item in stock:
+    #     price = stock[item]
+    #     print("{} -- {}G".format(item, add_commas(price)))
+    # print("----------------")
     print("You have {}G".format(add_commas(player.money)))
-    choice = input("What would you like?\n>>>")
+
+    choice = select(stock, buy_mode=True)  # buymode is just formatting
+
     if choice in stock:
         price = stock[choice]
         try:
             amount = int(input("How many?\n>>>"))
-        except TypeError:
+        except:
+            print("One it is!")
             amount = 1  # if u dunno how to put numbers u get one deal with it
         total = amount * price
 
@@ -189,25 +192,27 @@ def buy(player, stock):
         else:
             print("-ok then nvm u wont get it smh")
     else:
-        print("[!] \"{}\" is not available!".format(choice))
+        if choice:  # prevents message -> "None" is not available!
+            print("[!] \"{}\" is not available!".format(choice))
 
 
 def sell(player, stock, modifier=.75):
-    print("-What are you selling?")
-    view_inventory(player)
-    choice = input(">>>").strip()
+    print("\n- What are you selling?")
+    # view_inventory(player)  # deprecated now. select() is a way better function
+    choice = select(player.inventory)
 
     if choice in player.inventory and choice in stock:
         try:
             amount = int(input("How many?\n>>>"))
-        except TypeError:
+        except:
+            print("One it is!")
             amount = 1
 
         if amount > player.inventory[choice]:
             print("Entered too high of a value!")
             return "HighValue"
 
-        base_price = stock[choice] * modifier
+        base_price = int(stock[choice] * modifier)
         price = int(base_price * amount)
         if amount == 1:
             print("Sell a {} for {}G?".format(choice, base_price))
@@ -226,3 +231,32 @@ def sell(player, stock, modifier=.75):
             return "Cancel"
     else:
         print("This store doesn't purchase that!")
+
+
+def select(item_list, buy_mode=False):
+    check = True
+    inv_list = list(item_list.keys())
+    while check:
+        print("Choose your selection (type 'cancel' to cancel)")
+        for item in item_list:
+            if buy_mode:
+                print("[{}] {} - {}G".format(inv_list.index(item) + 1, item, item_list[item]))
+            else:
+                print("[{}] {} ({})".format(inv_list.index(item) + 1, item, item_list[item]))
+
+        target = input(">>>").strip()
+
+        if target in inv_list:
+            return target
+        else:
+            try:
+                if target.lower() == "cancel":
+                    return None
+                elif int(target) <= len(item_list) and int(target) > 0:  # check if its within 0-len of targets
+                    target = inv_list[int(target) - 1]
+                    check = False
+                else:
+                    print("'{}' isn't valid.\n".format(target))
+            except ValueError:
+                print("'{}' isn't a valid item.\n".format(target))
+    return target

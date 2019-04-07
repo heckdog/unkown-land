@@ -63,7 +63,7 @@ class Boss(Enemy):
         # its dumb but it works
 
 
-def battle(player, enemies):
+def battle(player, enemies, boss=False):
     print("\n---{BATTLE START}---")
     try:
         if player.health > 0:
@@ -160,7 +160,7 @@ def battle(player, enemies):
         elif choice == "s" or choice == "special":
             print("Perform Special on who?")
             target = select(enemies)
-            if target:
+            if target and target.has_special:
                 target.special(player)
                 # if enemy.health <= 0:  # if enemy dead
                 #     break  # break just makes it go to win sequence
@@ -178,19 +178,24 @@ def battle(player, enemies):
                     if len(enemies) == 0:
                         player.xp_check()
                         return "Won"
+            else:
+                print("You can't do anything!")
 
         # Escape # TODO: add ability to disable this option before a battle
         elif choice == "e" or choice == "escape":
-            escape_number = randint(1, 100)
-            if escape_number < 50:
-                print("[!] You escaped from {}".format(enemy.name))
-                return "Escaped"
+            if not boss:
+                escape_number = randint(1, 100)
+                if escape_number < 50:
+                    print("[!] You escaped from {}".format(enemy.name))
+                    return "Escaped"
+                else:
+                    print("[!] You couldn't escape!")
+                    for enemy in enemies:
+                        print("{} attacked!".format(enemy.name))
+                        damage(player, enemy.damage)
+                        print()
             else:
-                print("[!] You couldn't escape!")
-                for enemy in enemies:
-                    print("{} attacked!".format(enemy.name))
-                    damage(player, enemy.damage)
-                    print()
+                print("You aren't getting out of here...")
 
         # Unknown Command
         else:
@@ -285,9 +290,10 @@ class EvilTurtle(Enemy):
 
     def special(self, player):
         print("\n----{SPECIAL}----")
-        print("[DAB] [DEFAULT DANCE]")
+        print("[1] Dab "
+              "\n[2] Default Dance")
         choice = input(">>>").strip().lower()
-        if choice == "dab" or choice == "d":
+        if choice == "dab" or choice == "d" or choice == "1":
             print("ooh my god you just dabbed on that turtle")
             chance = randint(1, 10)
             if chance > 7:  # just a random chance of dab back
@@ -295,7 +301,7 @@ class EvilTurtle(Enemy):
                 damage(player, int(player.health / 4))  # TODO: if something ever breaks, its this int
             else:
                 self.health = -9999
-        elif choice == "default dance" or choice == "dance" or choice == "dd":
+        elif choice == "default dance" or choice == "dance" or choice == "dd" or choice == "2":
             print("The Turtle is unfazed by your smooth moves!")
             damage(player, 5)
         else:
@@ -303,6 +309,8 @@ class EvilTurtle(Enemy):
 
 
 class PtonioOutlaw(Enemy):
+    has_special = False
+
     def __init__(self, name):
         self.name = name
         Enemy.__init__(self, self.name,
@@ -322,6 +330,8 @@ class PtonioOutlaw(Enemy):
 
 
 class Longworm(Enemy):
+    has_special = False
+
     def __init__(self):
         self.name = "Longworm"
         Enemy.__init__(self, self.name, 40, 10, 10, [
@@ -379,6 +389,7 @@ class Ryan(Boss):
 
 
 class Wendt(Boss):
+    has_special = True
 
     def __init__(self):
         Boss.__init__(self, "Wendt, Leader of the Longbois",
