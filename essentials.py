@@ -7,6 +7,7 @@ class Settings:
     def __init__(self):
         self.enter_dialog = True
         self.test_setting = True
+        self.quickdeath = True
 
 
 settings = data.load_settings()
@@ -38,6 +39,8 @@ quest_items = ["Burnt Popcorn", "UNKOWN", "Nap Time"]
 
 
 def add_commas(number):
+    number = round(number)  # should drop any decimals
+    number = int(number)  # if broke, this is why
     # variables
     count = 0
     withcommas = ""
@@ -73,10 +76,29 @@ def add_commas(number):
 
 
 def talk(dialog, time: float=1):
-    print(dialog)
     if settings.enter_dialog:
-        input()
+        input(dialog)
     else:
+        print(dialog)
         wait(time)
+
+
+def choose(question, choices: list):
+    check = True
+    while check:
+        print(question)
+        # Show Choices
+        for c in choices:
+            print("[{}] {}".format(choices.index(c)+1, c))  # give index+1 number and choice
+        choice = input(">>>").lower().strip()  # standard input icon
+
+        if choice in choices:  # if the string is in the list
+            return choice  # just plop it back as a string
+        else:
+            try:  # have to do it this way bc it's very error prone
+                if int(choice) <= len(choices):  # this is hoping that the choice is an int at all
+                    return choices[int(choice)-1]
+            except ValueError:  # we know it will happen. no doubt
+                print("'{}' is not a valid option, please try again.".format(choice))
 
 
