@@ -1,6 +1,7 @@
 from essentials import *
 
 
+# view_inventory is actually not used anymore...
 def view_inventory(player):
     print("\n----{INVENTORY}----")
     if not player.inventory:  # if nothing exists in the inventory
