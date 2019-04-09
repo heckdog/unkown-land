@@ -360,8 +360,44 @@ def ptonio(player):
                         o_check = False
 
                 elif choice == "3":
-                    talk("No missions right now... damn.", 3)
-                    o_check = False
+                    if not player.quest:
+                        # Quest Lore: Quest ID <-- goes to program.py, which sends it to quests.py
+                        bulletin = {
+                            "Some kid took my lunch money, looking for beat up guy. Reward: lunch money": "Acquire Lunch Money"
+                        }
+
+                        talk("You go up to the bulletin...", 1.5)
+
+                        # Add quest lore to a list to cycle it + index it
+                        quest_list = []
+                        for quest in bulletin:
+                            if bulletin[quest] not in player.completed:  # check to see if player has done quest before
+                                quest_list.append(quest)
+
+                        # Quest Choice
+                        chosen = False
+                        while not chosen:
+                            for quest in quest_list:
+                                print("\n")
+                                print(quest)
+                                choice = ""
+                                while choice != "y" and choice != "n" and choice != "cancel":  # auto exits if good answer
+                                    choice = input("Choose this Quest? (y/n/cancel)").strip().lower()
+                                if choice == "cancel" or choice == "x":
+                                    o_check = False  # leave "other" loop
+                                    chosen = True  # exit bulletin loop
+                                elif choice == "y":
+                                    talk("[!] Accepted quest to {}!".format(bulletin[quest]))  # set quest to ID
+                                    player.quest = bulletin[quest]
+                                    chosen = True
+                                    o_check = False
+                                elif choice == "n":
+                                    print("Next...")
+                                    sleep(.75)
+
+                    else:
+                        talk("[!] You already have a quest!")
+
                 elif choice.lower() == "cancel":
                     o_check = False
 

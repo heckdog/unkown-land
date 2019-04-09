@@ -124,6 +124,8 @@ def main():
                         quests.pest_control(player)
                     elif player.quest == "Teach Hemlick a Lesson":
                         quests.defeat_hemlick(player)
+                    elif player.quest == "Acquire Lunch Money":
+                        quests.lunchmoney(player)
                     else:
                         print("You don't have a quest!")
                 else:

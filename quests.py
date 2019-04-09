@@ -1,7 +1,7 @@
 from random import randint
 import random
 from time import sleep
-from essentials import weapons, talk, settings
+from essentials import weapons, talk, settings, choose
 import inventory
 import data
 
@@ -343,6 +343,34 @@ class Longworm(Enemy):
             "munches on dirt."])
 
 
+class Timmy(Enemy):
+    has_special = True
+
+    def __init__(self):
+        self.name = "Little Timmy"
+        Enemy.__init__(self, self.name, 50, 5, 5, [
+            "cries.",
+            "offers you a granola bar.",
+            "wants his mama.",
+            "trips.",
+            "looks suspiciously like an egg."
+        ])
+
+    def special(self, player):
+        choice = choose("----{SPECIAL}----", "Cry", "Slap")
+
+        if choice == "Cry":
+            talk("-[TIMMY] damn dude, here's the money. I didn't really need it that much...")
+            self.health = 0
+            player.traits.append("crybaby")
+
+        elif choice == "Slap":
+            talk("-[TIMMY] OOF *drops money*")
+            self.health = 0
+            player.metadata.append("slapped Timmy")
+
+
+
 class Dragon(Boss):
     has_special = True
 
@@ -590,3 +618,16 @@ def pest_control(player):
         talk("dam...", 1.5)
     else:
         talk("Maybe another time...", 2)
+
+
+def lunchmoney(player):
+    kid = Timmy()
+
+    status = battle(player, kid)
+    if status == "Won":
+        talk("Wow, you just beat up a kid for his lunch money. Wonderful. Great job.", 2.5)
+        player.money += 5
+        print("[!] You got 5G!")
+        player.completed.append("Acquire Lunch Money")
+    elif status == "Lose":
+        print("damn, a 12 year old beat you up.")

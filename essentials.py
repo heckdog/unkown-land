@@ -85,15 +85,19 @@ def talk(dialog, time: float=1):
 
 def choose(question, choices: list):
     check = True
+    lower_choices = [c.lower() for c in choices]
+
     while check:
         print(question)
         # Show Choices
         for c in choices:
             print("[{}] {}".format(choices.index(c)+1, c))  # give index+1 number and choice
-        choice = input(">>>").lower().strip()  # standard input icon
+        choice = input(">>>").strip()  # standard input icon
 
         if choice in choices:  # if the string is in the list
             return choice  # just plop it back as a string
+        elif choice in lower_choices:
+            return choices[lower_choices.index(choice)]  # return the choice that was in the same index as lower_choices
         else:
             try:  # have to do it this way bc it's very error prone
                 if int(choice) <= len(choices):  # this is hoping that the choice is an int at all
