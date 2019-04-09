@@ -38,8 +38,6 @@ quest_items = ["Burnt Popcorn", "UNKOWN", "Nap Time"]
 
 
 def add_commas(number):
-    number = round(number)  # should drop any decimals
-    number = int(number)  # if broke, this is why
     # variables
     count = 0
     withcommas = ""
@@ -75,10 +73,10 @@ def add_commas(number):
 
 
 def talk(dialog, time: float=1):
+    print(dialog)
     if settings.enter_dialog:
-        input(dialog)
+        input()
     else:
-        print(dialog)
         wait(time)
 
 

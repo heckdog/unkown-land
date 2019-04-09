@@ -64,7 +64,8 @@ def test_world(player):
 
 
 def start_world(player):
-    talk("You arrive at Start Town. A friendly local waves hello.", 1)
+    print("You arrive at Start Town. A friendly local waves hello.")
+    sleep(1)
     talk("- Oi mate! Welcome to Start Town! We don't get many new folk here, stay a while!", 1)
     dialog = ["I heard sometimes weapons land critical hits that do 3x damage!",
               "I wish I was a pegasus. What? You weren't supposed to hear that! Go away!",
@@ -87,7 +88,7 @@ def start_world(player):
         elif action == "inventory":
             inventory.use_item(player)
         elif action == "talk":
-            talk("- " + random.choice(dialog) + "\n", 2)
+            print("- " + random.choice(dialog))
         elif action == "exit":
             active = False
 
@@ -138,11 +139,15 @@ def topshelf(player):
                     sleep(2)
                     if "tall" not in player.traits or "Longboi" not in player.traits:
                         talk("-[THE EVALUATOR] Well, what have we here?", 1.5)
-
-                        talk("- I assume you are looking to get evaluated, yes?", 2)
-                        talk("- Hmmm...", 1.75)
-                        talk("- Uh huh...", 2)
-                        talk("- Well, you seem to be quite short by Longboi standards.", 1)
+                        # TODO: redo the print/sleeps with talk()s
+                        print("- I assume you are looking to get evaluated, yes?")
+                        sleep(2)
+                        print("- Hmmm...")
+                        sleep(1.5)
+                        print("- Uh huh...")
+                        sleep(2)
+                        print("- Well, you seem to be quite short by Longboi standards.")
+                        sleep(1)
                         talk("- We require a certain height that you must achieve. I do admire"
                              " your determination, however...", 4)
                         talk("- Tell you what, small one. I happen to know of a town nearby that has a special "
@@ -150,68 +155,23 @@ def topshelf(player):
                         player.metadata.append("Ptonio")
                         print("[!] You have learned about Ptonio!")
                         sleep(1.5)
-                        talk("- Yes... Ptonio is a short ways away, but they have some potions."
-                             " Try it out, you may find something good over there...", 3.5)
+                        print("- Yes... Ptonio is a short ways away, but they have some potions."
+                              " Try it out, you may find something good over there...")
                         o_check = False
+                        sleep(3)
                     elif "Longboi" not in player.traits:
-                        # TODO: longboi evaluation
-                        talk("-[THE EVALUATOR] Why, look at that!", 1.5)
-                        talk("- That right there is some fine Longboi material. Let me just have a glance at your other stats.", 3)
-                        talk("- Hmm...", 2)
-                        talk("- Uh huh...", 2.5)
-                        talk("- Yep, yep...", 3)
-                        talk("Well {}, you did it. I hereby declare you a Longboi. Welcome to Topshelf.".format(player.name), 4)
+                        print("[INSERT EVALUATION]")
                         print("[!] You are now a Longboi!")
-                        sleep(.5)
                         player.traits.append("Longboi")
                     else:
-                        talk("-[THE EVALUATOR] Why hello there fellow Longboi. I hope you enjoy "
-                             "your stay here at Topshelf.", 3)
-
+                        print("-[THE EVALUATOR] Why hello there fellow Longboi. I hope you enjoy "
+                              "your stay here at Topshelf.")
+                        sleep(3)
                 elif choice == "2":
                     print("[UNDER CONSTRUCTION]")
-
                 elif choice == "3":
-                    if not player.quest:
-                        # Quest Lore: Quest ID <-- goes to program.py, which sends it to quests.py
-                        # TODO: make the IDs valid in program.py
-                        bulletin = {
-                            "SEEKING PEST EXPERT TO EXTERMINATE LONGWORMS INFESTING FIELD. PAY: 500G.": "do Pest Control",
-                            "Wanted: Hemlick, Ptonian Outlaw. Owes me money. 600G Reward.": "Teach Hemlick a Lesson"
-                        }
-
-                        talk("You go up to the bulletin...", 1.5)
-
-                        # Add quest lore to a list to cycle it + index it
-                        quest_list = []
-                        for quest in bulletin:
-                            if bulletin[quest] not in player.completed:  # check to see if player has done quest before
-                                quest_list.append(quest)
-
-                        # Quest Choice
-                        chosen = False
-                        while not chosen:
-                            for quest in quest_list:
-                                print("\n")
-                                print(quest)
-                                choice = ""
-                                while choice != "y" and choice != "n" and choice != "cancel":  # auto exits if good answer
-                                    choice = input("Choose this Quest? (y/n/cancel)").strip().lower()
-                                if choice == "cancel" or choice == "x":
-                                    o_check = False  # leave "other" loop
-                                    chosen = True  # exit bulletin loop
-                                elif choice == "y":
-                                    talk("[!] Accepted quest to {}!".format(bulletin[quest]))  # set quest to ID
-                                    player.quest = bulletin[quest]
-                                    chosen = True
-                                    o_check = False
-                                elif choice == "n":
-                                    print("Next...")
-                                    sleep(.75)
-
-                    else:
-                        talk("[!] You already have a quest!")
-
+                    print("No quests it seems...")
+                    sleep(1)
                 elif choice == "cancel":
                     o_check = False
                 else:
@@ -265,41 +225,37 @@ def ptonio(player):
                             talk("-[MEL] Eh? Who's that?", 1.5)
                             talk("- Oh. I've seen you before. Come on in.", 3)
                         talk("- So, what're you lookin for?")
-                        sleep(.5)
-
-                        choice = ""
-                        while choice != "1" and choice != "2":
-                            choice = input("[1] A tall potion?\n"
-                                           "[2] Nothing, just seeing what you have.\n"
+                        choice = input("[1] A tall potion?\n"
+                                       "[2] Nothing, just seeing what you have.\n"
+                                       ">>>")
+                        if choice == "1":
+                            choice = input("- I don't produce that one anymore. If it's that you're lookin for, "
+                                           "you best leave.\n"
+                                           "[1] What if I did something for ya?\n"
+                                           "[2] Ok, bye.\n"
                                            ">>>")
-                            if choice == "1":
-                                choice = input("- I don't produce that one anymore. If it's that you're lookin for, "
-                                               "you best leave.\n"
-                                               "[1] What if I did something for ya?\n"
-                                               "[2] Ok, bye.\n"
-                                               ">>>")
-                                if choice == "2":
-                                    o_check = False
-                                elif choice == "1":
-                                    player.metadata.append("metMel")
-                                    talk("- Well, you COULD clear out some pests for me.", 2)
-                                    talk("- The outlaws are gettin a real mess. If you can clear em out, we can talk.", 3)
-                                    if player.quest:
-                                        if "MelQuestBacklog" not in player.metadata:
-                                            player.metadata.append("MelQuestBacklog")
-                                            print("[!] Already have quest! Come back after it's done.")
-                                        else:
-                                            print("[!] Come back without a quest!")
-                                    else:
-                                        player.quest = "Defeat the Outlaws"
-                            elif choice == "2":
-                                talk("- Oh, ok. Here you are, take a look.", 2)
-                                shop.early_mel_shop(player)
-                            else:
-                                print("-[DEV] you done broke something you buffoon! ")
+                            if choice == "2":
                                 o_check = False
+                            elif choice == "1":
+                                player.metadata.append("metMel")
+                                talk("- Well, you COULD clear out some pests for me.", 2)
+                                talk("- The outlaws are gettin a real mess. If you can clear em out, we can talk.", 3)
+                                if player.quest:
+                                    if "MelQuestBacklog" not in player.metadata:
+                                        player.metadata.append("MelQuestBacklog")
+                                        print("[!] Already have quest! Come back after it's done.")
+                                    else:
+                                        print("[!] Come back without a quest!")
+                                else:
+                                    player.quest = "Defeat the Outlaws"
+                        elif choice == "2":
+                            print("- Oh, ok. Here you are, take a look.")
+                            shop.early_mel_shop(player)
+                        else:
+                            print("you done broke it wow good job try again")
+                            o_check = False
                     else:
-                        talk("-[MEL] Oooh, is that {}? Yes, come in...".format(player.name), 1.5)
+                        print("-[MEL] Oooh, is that {}? Yes, come in...".format(player.name))
                         if "MelQuestBacklog" in player.metadata:
                             print("Start quest? Defeat the Outlaws (y/n)")
                             choice = input(">>>").strip().lower()
@@ -312,52 +268,12 @@ def ptonio(player):
                             shop.mel_shop(player)
 
                 elif choice == "2":
-                    talk("Nothing here...", 2)
+                    print("Nothing here...")
+                    sleep(2)
                     o_check = False
                 elif choice == "3":
-                    talk("No missions right now... damn.", 3)
+                    print("No missions right now... damn.")
+                    sleep(3)
                     o_check = False
                 elif choice.lower() == "cancel":
                     o_check = False
-
-
-def unkown_realm(player):
-    print("You arrive at a deep, daunting cave. You enter...")
-    sleep(1)
-    if "UNKOWN" in player.inventory:
-        print("-[?] !")
-    else:
-        print("-[?] ...?")
-    talk("", 2)
-    dialog = ["...",
-              "&&&Y!",
-              "§§§d2hhdCBhcmUgeW91IGRvaW5nPw==♣",
-              "ÖÉ╞ÑÑÑÑ««▐▐▐",
-              "EEEEEEEEEEEEEEEEEEEEEEEEEEEE",
-              "&&***********&%%%%",
-              "aGV5IHlvdSdyZSBub3Qgc3VwcG9zZWQgdG8gcmVhZCB0aGlzIHlldA==",
-              "ON2G64BANF2CAIBA"]
-
-    active = True
-    while active:
-        action = menu("UNKOWNREALM", options=False)
-        if action == "shop":
-            print("There is no shop...")
-        elif action == "inventory":
-            inventory.use_item(player)
-        elif action == "talk":
-            print("- " + random.choice(dialog))
-        elif action == "exit":
-            print("You leave. Things feel much more real again.")
-            active = False
-
-        elif action == "other":
-            o_check = True
-            while o_check:
-                print("----{UNKOWNLAND DIRECTORY}----\n")
-                #TODO: fill this in
-                # print("[1] The Evaluator's Hut\n"
-                #       "[2] Longboi Hall\n"
-                #       "[3] Bulletin Board\n")
-                print("\nWhere would you like to go? ('cancel' to cancel)")
-                choice = input(">>>")

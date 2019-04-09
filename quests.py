@@ -2,7 +2,6 @@ from random import randint
 import random
 from time import sleep
 from essentials import weapons
-from essentials import talk
 import inventory
 import data
 
@@ -50,7 +49,6 @@ class Enemy:
         print("You have successfully defeated the {}! Gained {} XP and {}G".format(self.name, xp_gain, money_gain))
         player.xp += xp_gain
         player.money += money_gain
-        sleep(3)  # todo: make this a toggle setting
 
     def special(self, player):
         print("\n----{SPECIAL}----\n")
@@ -63,7 +61,7 @@ class Boss(Enemy):
         # its dumb but it works
 
 
-def battle(player, enemies, boss=False):
+def battle(player, enemies):
     print("\n---{BATTLE START}---")
     try:
         if player.health > 0:
@@ -117,19 +115,8 @@ def battle(player, enemies, boss=False):
 
                 damage(target, dam)
                 sleep(1)
-
-                die_messages = ["got yeeted on!",
-                                "got RKO'd straight outta nowhere!",
-                                "got gamershotted!",
-                                "needs an F in the chat.",
-                                "= RIP",
-                                "is straight up not having a good time!",
-                                "is no more.",
-                                "just fricken dies.",
-                                "turned into dust."]
-
                 if target.health < 0:  # if you killed an enemy
-                    print("[!] {} {}".format(target.name, random.choice(die_messages)))  # hee hee funny
+                    print("[!] {} died!".format(target.name))
 
                 print()  # spacer
                 # Enemy Turn
@@ -160,7 +147,7 @@ def battle(player, enemies, boss=False):
         elif choice == "s" or choice == "special":
             print("Perform Special on who?")
             target = select(enemies)
-            if target and target.has_special:
+            if target:
                 target.special(player)
                 # if enemy.health <= 0:  # if enemy dead
                 #     break  # break just makes it go to win sequence
@@ -178,24 +165,19 @@ def battle(player, enemies, boss=False):
                     if len(enemies) == 0:
                         player.xp_check()
                         return "Won"
-            else:
-                print("You can't do anything!")
 
         # Escape # TODO: add ability to disable this option before a battle
         elif choice == "e" or choice == "escape":
-            if not boss:
-                escape_number = randint(1, 100)
-                if escape_number < 50:
-                    print("[!] You escaped from {}".format(enemy.name))
-                    return "Escaped"
-                else:
-                    print("[!] You couldn't escape!")
-                    for enemy in enemies:
-                        print("{} attacked!".format(enemy.name))
-                        damage(player, enemy.damage)
-                        print()
+            escape_number = randint(1, 100)
+            if escape_number < 50:
+                print("[!] You escaped from {}".format(enemy.name))
+                return "Escaped"
             else:
-                print("You aren't getting out of here...")
+                print("[!] You couldn't escape!")
+                for enemy in enemies:
+                    print("{} attacked!".format(enemy.name))
+                    damage(player, enemy.damage)
+                    print()
 
         # Unknown Command
         else:
@@ -290,10 +272,9 @@ class EvilTurtle(Enemy):
 
     def special(self, player):
         print("\n----{SPECIAL}----")
-        print("[1] Dab "
-              "\n[2] Default Dance")
+        print("[DAB] [DEFAULT DANCE]")
         choice = input(">>>").strip().lower()
-        if choice == "dab" or choice == "d" or choice == "1":
+        if choice == "dab" or choice == "d":
             print("ooh my god you just dabbed on that turtle")
             chance = randint(1, 10)
             if chance > 7:  # just a random chance of dab back
@@ -301,7 +282,7 @@ class EvilTurtle(Enemy):
                 damage(player, int(player.health / 4))  # TODO: if something ever breaks, its this int
             else:
                 self.health = -9999
-        elif choice == "default dance" or choice == "dance" or choice == "dd" or choice == "2":
+        elif choice == "default dance" or choice == "dance" or choice == "dd":
             print("The Turtle is unfazed by your smooth moves!")
             damage(player, 5)
         else:
@@ -309,8 +290,6 @@ class EvilTurtle(Enemy):
 
 
 class PtonioOutlaw(Enemy):
-    has_special = False
-
     def __init__(self, name):
         self.name = name
         Enemy.__init__(self, self.name,
@@ -329,15 +308,6 @@ class PtonioOutlaw(Enemy):
         self.doing = ["is passed out." for i in range(919)]
 
 
-class Longworm(Enemy):
-    has_special = False
-
-    def __init__(self):
-        self.name = "Longworm"
-        Enemy.__init__(self, self.name, 40, 10, 10, [
-            "wriggles around.",
-            "does some weird squiggly crap.",
-            "munches on dirt."])
 
 
 class Dragon(Boss):
@@ -389,7 +359,6 @@ class Ryan(Boss):
 
 
 class Wendt(Boss):
-    has_special = True
 
     def __init__(self):
         Boss.__init__(self, "Wendt, Leader of the Longbois",
@@ -457,6 +426,93 @@ def mess_with_goblins(player):
     return True
 
 
+# TODO: redo this gay battle its no fun.
+def beat_the_dev(player):  # fight is somewhat broke nibba
+    dev = Enemy("Heckin-doggo", 9999999, 1, 50000)
+    sleep(2)
+    print("\n-Heh...")
+    sleep(3)
+    print("-You think you can really clap me, eh?")
+    sleep(3)
+    print("-I created this world. You are but another player object. Watch this.")
+    sleep(3)
+    print("[!] Your Health and Max Health have dropped to 1!")
+    oldhealth = player.health
+    oldmax = player.max_health
+    oldweapon = player.weapon
+    player.health = 1
+    player.max_health = 1
+    sleep(1)
+    print("[!] You feel a noticeable lack of weapon...")
+    player.weapon = "Fists"
+    sleep(2)
+    if "UNKOWN" in player.inventory:
+        player.weapon = "UNKOWN"
+        print("")
+        print("[!] Equipped weapon.ERROR: Weapon Does not Exist!")
+    print("Let's fight, if that's what you're here for. :)")
+    result = battle(player, [dev])
+    if result == "Lost":
+        print("-Did you really think that was a good idea?  I didn't.")
+        sleep(0.5)
+        print("-Here's your stats back, by the way.")
+        print("[!] You feel whole and weighted again! Although you really didn't need those extra pounds back...")
+        player.health = oldhealth
+        player.max_health = oldmax
+        player.weapon = oldweapon
+        return False
+    elif result == "Won":
+        print("-Holy frick how did you manage to do that?!?!")
+        sleep(1)
+        print("-Do, do you have some unknown powers?")
+        sleep(1)
+        print("-WAIT!!")
+        sleep(3)
+        print("-Do you... do you have the powers of UNKOWN?")
+        sleep(2)
+        print("-I thought I sealed those powers away in the title screen."
+              "Apparently, I didn't do it that great, since here we are.")
+        sleep(3)
+        print("-I'll give you 50000 more XP and 100,000G not to tell anyone about it, deal?")
+        deal = input("(y/n) \n>>>").lower().strip()
+        if deal.find("ye") != -1 or deal == "y":
+            player.money += 100000
+            player.xp += 50000
+            player.inventory.pop("UNKOWN")
+            player.completed.append("Beat up the Developer")
+            print("-Cool, also I completed the mission for ya.")
+            print("-See ya later my guy")
+            return True
+        else:
+            print("-Well sucks to be you, I have the UNKOWN now. You need to pay attention to your pockets pal.")
+            print("[!] Everything in you inventory is missing! Maybe if you left now, you could retrieve your save.")
+            sleep(1)
+            print(
+                "-Wait, WHAT?! Don't leave the game! DONT! IM GONNA SAVE IT RIGHT NOW. "
+                "NO MONEY OR ANYTHING. ILL DELETE YOU!!!")
+            print("[!] The game froze. Now's your chance!")
+            sleep(5)
+            print("I'll...")
+            sleep(3)
+            print("...dab...on...")
+            sleep(7)
+            print("...YOUUUUUU!!@!!!23123#Fveqwy3543g?%%%% player.name!!!@313323")
+            sleep(1)
+            print("[!] PLAYER {} NOT FOUND. COMMENCING FILE REMOVAL.".format(player.name))
+            player.weapon = "Fists"
+            player.money = 0
+            player.health = 0
+            player.xp = -1
+            player.level = ": None!"
+            player.quest = "do nothing. You don't exist."
+            player.inventory = {"There's Nothing Here...": "You should just make a new save pal."}
+            data.save(player)
+            player.name = "DELETED"
+            print("----{GAME SAVED}----")
+            sleep(1)
+            print("----{WORLD DELETED}----")
+
+
 # Easter Egg Battle. Unobtainable via normal means.
 def ryans_battle(player):
     pheonix = Enemy("Pheonix", 1000000, 10000, 5000)  # health, damage, xp, "Lost" "Won"
@@ -514,76 +570,34 @@ def tutorial_mission(player):
                                       "exists patiently.",
                                       "waits...",
                                       "calls you 'nibba.'"])
-    talk("- ready?")
+    print("- ready?")
     status = battle(player, [steve])
     if status == "Won":
-        talk("- that's what i like to see. here, have some change i found on the ground", 3.1)
+        print("- that's what i like to see. here, have some change i found on the ground")
         player.money += 14
+        sleep(3.1)
         print("[!] Gained 14G.")
-        sleep(1)
-        talk("-oh, lemme heal dem boo boos of yours.", 2)
-        print("[!] Your HP has been restored")
+        sleep(2)
+        print("-oh, lemme heal dem boo boos of yours.")
         sleep(.5)
+        print("[!] Your HP has been restored")
         player.health = 100
         player.completed.append("Tutorial")
 
     elif status == "Lose":
         sleep(1)
-        talk("- {}...".format(player.name), 4)
-        talk("- that was absolutely retarded. how did you lose? i didn't even try? cmon nibba.", 5)
-        talk("- yo ass lucky im a doctor. i might not have a degree but....", 3)
+        print("- {}...".format(player.name))
+        sleep(4)
+        print("- that was absolutely retarded. how did you lose? i didn't even try? cmon nibba.")
+        sleep(5)
+        print("- yo ass lucky im a doctor. i might not have a degree but....")
+        sleep(3)
         print("[!] Your HP has been restored.")
-        sleep(.5)
         player.health = 100
-        talk("- so...")
+        print("- so...")
 
 
-def defeat_hemlick(player):
-    hemlick = PtonioOutlaw("Hemlick")
-
-    status = battle(player, [hemlick])
-    if status == "Won":
-        sleep(.2)  # this sleep is just to help with continuity
-        talk("- Woah there partner, you did it! Yeeehaw!", 3.5)
-        player.money += 600
-        print("[!] You gained 600G!")
-        sleep(.5)
-        talk("- That bandit won't be botherin' me no more. Here, this drink's on me.", 4)
-        player.health = player.max_health
-        print("[!] Your HP was restored!")
-        sleep(.5)
-
-        player.completed.append("Teach Hemlick a Lesson")
-        player.quest = None
-
-    elif status == "Lose":
-        talk("-[HEMLICK] Ain't no finer bandit in Ptonio than I. Get outta here, {}".format(player.name), 3)
-    else:
-        talk("You decide you don't wanna die today.")
 
 
-def pest_control(player):
-    worms = []
-    for i in range(5):
-        worms.append(Longworm())
 
-    status = battle(player, worms)
 
-    if status == "Won":
-        if "tall" not in player.metadata:
-            talk("- Thanks, little one. I shall pay you for your service.", 3)
-        elif "Longboi" in player.metadata:
-            talk("- Thank you, Longboi {}, for the kind service. Here's your money.".format(player.name), 4)
-        else:
-            talk("- Thank you my friend. Here is some money for your troubles.", 4)
-
-        print("[!] You got 500G!")
-        sleep(.5)
-        player.money += 500
-
-        player.completed.append("do Pest Control")
-        player.quest = None
-    elif status == "Lose":
-        talk("dam...", 1.5)
-    else:
-        talk("Maybe another time...", 2)
