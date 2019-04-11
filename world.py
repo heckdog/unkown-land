@@ -336,24 +336,44 @@ def ptonio(player):
                     check = True
                     choice = choose("Search the dump?", ["yes", "no"])
                     if choice == "y" or choice == "yes":
-                        # litterally the only animation in this entire game
+                        # literally the only animation in this entire game
                         print("Searching.", end="")
                         for i in range(3):
-                            sleep(.5)
+                            sleep(.8)
                             print(".", end="")
                         print(".")
 
-                        luck = random.randint(1,100)
+                        luck = random.randint(1, 100)
+
+                        # bad luck
                         if luck < 20:
                             hurt_dialog = {"[!] You cut yourself on loose glass shards! -5HP": 5,
                                            "[!] You step on a rusty iron spike. -20HP": 20,
                                            "[!] You fall off a loose pile of garbage 5 feet up. -10HP": 10,
                                            "[!] You trip, and a rat laughs. -1HP just out of embarrassment.": 1,
-                                           "[!] An old rigged trap goes off with your finger in it. -15HP": 15}
+                                           "[!] An old rigged trap goes off with your finger in it. -15HP": 15,
+                                           "[!] As you searched a trash can, a feral cat scratches you. -10HP": 10}
                             hurt = random.choice(list(hurt_dialog))
                             print(hurt)
                             player.health -= hurt_dialog[hurt]  # i may have mixed something up here
                             talk("[!] HP: ({}/{})".format(player.health, player.max_health), 3)
+
+                        # Decent luck, some money found
+                        elif luck >= 20 and luck <= 50:
+                            money_dialog = {"[!] There was 3G in an abandoned piggy bank.": 3,
+                                            "[!] You found an old money press! But it only had 40G in it.": 40,
+                                            "[!] Something sparkles on the dirt. Hey! It's 1G.": 1,
+                                            "[!] You found some stupid bracelet, which some guy paid you 50G for.": 50,
+                                            "[!] You found a couch. There is 6G of loose change within. You take it.": 6,
+                                            "[!] You found 5G. Nothing special about it, but money's money.": 5,
+                                            "[!] Some strange figure paid you 10G to come up with better dialog \n"
+                                            "ideas. This was the best you had.": 10}
+
+                            moneytext = random.choice(list(money_dialog))
+                            print(moneytext)
+                            player.money += money_dialog[moneytext]
+                            talk("[!] MONEY: {}G (+{}G)".format(player.money, money_dialog[moneytext]), 3)
+
                         else:
                             print("No luck today...")
                     else:

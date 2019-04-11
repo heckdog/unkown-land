@@ -47,7 +47,7 @@ class Player:
         self.completed = []
         self.xp = 0
         self.level = 1
-        self.inventory = {"Test Item": 100, "bread": 3}  # TODO The actual v.1.0 release should remove this
+        self.inventory = {"Test Item": 10, "bread": 3}  # TODO The actual v.1.0 release should remove this
         self.money = 0
 
         self.crit_chance = crit_chance
