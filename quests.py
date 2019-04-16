@@ -11,7 +11,7 @@ import data
 
 
 class Enemy:
-    def __init__(self, name, health, damage, xp, doing_plus=[], is_boss=False, item_trigger=None):
+    def __init__(self, name, health, damage, xp, doing_plus=[], is_boss=False, item_trigger=None, has_special=False):
         self.name = name
         self.health = health
         self.max_health = health
@@ -41,7 +41,7 @@ class Enemy:
         for thing in doing_plus:
             self.doing.append(thing)
 
-        self.has_special = False
+        self.has_special = has_special
 
     def gain(self, player):
         xp_gain = self.xp + int((randint(0, self.xp) / 2))  # Give player Enemy XP + up to 0.5x more
@@ -61,8 +61,9 @@ class Enemy:
 
 
 class Boss(Enemy):
-    def __init__(self, name, health, damage, xp, doing_plus=[], item_trigger=None):
-        Enemy.__init__(self, name, health, damage, xp, doing_plus, is_boss=True, item_trigger=item_trigger)
+    def __init__(self, name, health, damage, xp, doing_plus=[], item_trigger=None, has_special=False):
+        Enemy.__init__(self, name, health, damage, xp, doing_plus,
+                       is_boss=True, item_trigger=item_trigger, has_special=has_special)
         # its dumb but it works
 
 
@@ -163,7 +164,7 @@ def battle(player, enemies, boss=False):
         elif choice == "s" or choice == "special":
             print("Perform Special on who?")
             target = select(enemies)
-            if target and target.has_special:
+            if target.has_special:
                 target.special(player)
                 # if enemy.health <= 0:  # if enemy dead
                 #     break  # break just makes it go to win sequence
@@ -283,12 +284,10 @@ def select(enemies):
 
 
 class EvilTurtle(Enemy):
-    has_special = True
-
     # THIS IS HOW TO CALL OTHER STATS FROM ENEMY CLASS
     def __init__(self, name):
         Enemy.__init__(self, "EvilTurtle", 30, 5, 10, ["rolls around in its shell.",
-                                                       "fails to dab."])
+                                                       "fails to dab."], has_special=True)
         self.name = name
 
     def special(self, player):
@@ -312,8 +311,6 @@ class EvilTurtle(Enemy):
 
 
 class PtonioOutlaw(Enemy):
-    has_special = False
-
     def __init__(self, name):
         self.name = name
         Enemy.__init__(self, self.name,
@@ -333,8 +330,6 @@ class PtonioOutlaw(Enemy):
 
 
 class Longworm(Enemy):
-    has_special = False
-
     def __init__(self):
         self.name = "Longworm"
         Enemy.__init__(self, self.name, 40, 10, 10, [
@@ -344,8 +339,6 @@ class Longworm(Enemy):
 
 
 class Timmy(Enemy):
-    has_special = True
-
     def __init__(self):
         self.name = "Little Timmy"
         Enemy.__init__(self, self.name, 50, 5, 5, [
@@ -354,7 +347,7 @@ class Timmy(Enemy):
             "wants his mama.",
             "trips.",
             "looks suspiciously like an egg."
-        ])
+        ], has_special=True)
 
     def special(self, player):
         choice = choose("----{SPECIAL}----", "Cry", "Slap")
@@ -370,31 +363,6 @@ class Timmy(Enemy):
             player.metadata.append("slapped Timmy")
 
 
-
-class Dragon(Boss):
-    has_special = True
-
-    def special(self, player):
-        print("\n----{SPECIAL}----")
-        print("[Clap] [Talk]")
-        choice = input(">>>").lower().strip()
-        if choice == "c" or choice == "clap":
-            print("OOF you done CLAPPED that dragon. He lost half his HP!")
-            damage(self, int(self.health / 2))
-        elif choice == "t" or choice == "talk":  # TODO: add more talking options, dialog choices
-            print("You talk to the dragon...")
-            sleep(1)
-            print("-huh? you wanna talk to me b?")
-            sleep(2)
-            if "knows Bob" in player.traits:
-                print("-yo, you know my nibba bob! aight man thats cool. i'll leave ya alone. tell em ya won.")
-                self.health = 0
-                self.doing = ["is ready to talk to bob."]
-            else:
-                print("-welp, nice chat but im s'posed to beat yo ass so...")
-                self.doing.append("thinks about that chat you just had.")
-
-
 class Ryan(Boss):
     has_special = True
 
@@ -406,22 +374,24 @@ class Ryan(Boss):
         Boss.__init__(self, "Ryan, Consumer of the Cosmos", 10000000, 1, 15000, ["craves the finest burnt popcorn.",
                                                                                  "prepares for a feast.",
                                                                                  "revs up his Beyblade."],
-                      item_trigger="Burnt Popcorn")
+                      item_trigger="Burnt Popcorn",
+                      has_special=True)
 
     def special(self, player):
         if "Burnt Popcorn" in player.inventory:
-            print("-[RYAN] *sniff* What is that delectable smell?")
-            print("[!] Ryan lost 1000 HP!")
+            talk("-[RYAN] *sniff* What is that delectable smell?")
+            print("[!] Ryan lost 1000 HP from the smell of your popcorn!")
             self.health += -1000
+        else:
+            talk("[!] You slap Ryan! He loses 5HP")
+            talk("-[RYAN] wtf man")
 
     def trigger(self):
-        print("-[RYAN] Oh man, I love me some Popcorn! MMMMMMMMMMM *dies*")
+        talk("-[RYAN] Oh man, I love me some Popcorn! MMMMMMMMMMM *dies*")
         self.health = 0
 
 
 class Wendt(Boss):
-    has_special = True
-
     def __init__(self):
         Boss.__init__(self, "Wendt, Leader of the Longbois",
                       600000, 400, 10434,
@@ -430,7 +400,8 @@ class Wendt(Boss):
                        "casts a long shadow."
                        "creates a tornado via the power of Orange Justice.",
                        "breathes in the clouds.",
-                       "stands ominously."])
+                       "stands ominously."],
+                      has_special=True)
 
     def special(self, player):
         print("----{SPECIAL}----")
