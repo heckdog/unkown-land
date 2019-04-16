@@ -6,7 +6,7 @@ import inventory
 import data
 
 
-# below is deprecated
+# below is deprecated 
 # Enemy = namedtuple("Enemy", "name health max_health damage")
 
 
