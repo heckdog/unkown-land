@@ -363,6 +363,22 @@ class Timmy(Enemy):
             player.metadata.append("slapped Timmy")
 
 
+class Casey(Boss):
+    has_special = False
+
+    def __init__(self):
+        self.name = "Casey, Thiccus of the Thicc,"
+        self.damage = 25
+        self.health = 5000
+        self.xp = 5000
+        Boss.__init__(self, self.name, self.health, self.damage, self.xp, doing_plus=[
+            "plays the trombone.",
+            "drinks Baja-Blast.",
+            "yeets.",
+            "gets gas, eats ass."
+        ])
+
+
 class Ryan(Boss):
     has_special = True
 
@@ -602,3 +618,16 @@ def lunchmoney(player):
         player.completed.append("Acquire Lunch Money")
     elif status == "Lose":
         print("damn, a 12 year old beat you up.")
+
+
+def casey_battle(player):
+    casey = Casey()
+
+    status = battle(player, [casey])
+    if status == "Won":
+        talk("You defeated the Thicc Casey!", 2.5)
+        player.money += 420
+        print("[!] You earned 420G!")
+        sleep(.5)
+    else:
+        talk("It was too thicc for you...",3)

@@ -126,6 +126,8 @@ def main():
                         quests.defeat_hemlick(player)
                     elif player.quest == "Acquire Lunch Money":
                         quests.lunchmoney(player)
+                    elif player.quest == "Defeat Thicc Casey":
+                        quests.casey_battle(player)
                     else:
                         print("You don't have a quest!")
                 else:
