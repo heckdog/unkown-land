@@ -44,6 +44,7 @@ def use_item(player, battle=False):
             print("You are already at max health!")
 
     # Quest Items
+    # TODO: check for enemy, then check their item_trigger before using.
     elif choice in quest_items and choice in player.inventory:
         if battle:
             use = input("Use the {}? (y/n)\n>>>".format(choice)).strip().lower()

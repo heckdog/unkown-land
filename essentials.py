@@ -5,9 +5,9 @@ import data
 # default settings
 class Settings:
     def __init__(self):
-        self.enter_dialog = True
+        self.enter_dialog = False
         self.test_setting = True
-        self.quickdeath = True
+        self.quickdeath = False
 
 
 settings = data.load_settings()
@@ -22,10 +22,12 @@ weapons = {"Sword": 70,
            "Fists": 10,
            "UNKOWN": 123918312,
            "digional sword": 1000,
-           "Beyblade" : 1500,
+           "Beyblade" : 500,
            "Longsword": 300,
            "Rusty Sword": 30,
-           "Longbow": 275}
+           "Longbow": 275,
+           "Polished Stone Sword": 50,
+           "Pokey Stick": 25}
 
 # below are health values of healing items
 health_items = {"bread": 15,

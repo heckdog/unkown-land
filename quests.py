@@ -198,6 +198,7 @@ def battle(player, enemies, boss=False):
                         print("{} attacked!".format(enemy.name))
                         damage(player, enemy.damage)
                         print()
+                        sleep(1)
             else:
                 print("You aren't getting out of here...")
 
@@ -299,8 +300,8 @@ class EvilTurtle(Enemy):
             print("ooh my god you just dabbed on that turtle")
             chance = randint(1, 10)
             if chance > 7:  # just a random chance of dab back
-                print("BUT IT DABS BACK OH MY GOD!!!!!")
-                damage(player, int(player.health / 4))  # TODO: if something ever breaks, its this int
+                talk("BUT IT DABS BACK OH MY GOD!!!!!")
+                damage(player, int(player.health / 4))  # if something ever breaks, its this int. prolly wont tho
             else:
                 self.health = -9999
         elif choice == "default dance" or choice == "dance" or choice == "dd" or choice == "2":

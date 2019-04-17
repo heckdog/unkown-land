@@ -114,12 +114,12 @@ def start_world(player):
 
 
 def topshelf(player):
-    print("You arrive at Topshelf. A local towers above and you waves hello.")
+    print("[!] You arrive at Topshelf. A local towers above and you waves hello.")
     sleep(1)
     if "tall" not in player.traits:
-        print("- Welcome, small one, to Topshelf, realm of the Longbois.")
+        talk("- Welcome, small one, to Topshelf, realm of the Longbois.", 1.5)
     else:
-        print("- Welcome to Topshelf, realm of the Longbois.")
+        talk("- Welcome to Topshelf, realm of the Longbois.", 1.5)
     sleep(2)
     dialog = ["One must be considered quite tall to join the Longbois. Visit the evaluator if you wish to be judged.",
               "Jacob is the current leader of the Longbois. He's served us well.",
@@ -170,7 +170,7 @@ def topshelf(player):
                              "something that could boost you a bit. I'll show you on this map...", 4)
                         player.metadata.append("Ptonio")
                         print("[!] You have learned about Ptonio!")
-                        sleep(1.5)
+                        sleep(.25)
                         talk("- Yes... Ptonio is a short ways away, but they have some potions."
                              " Try it out, you may find something good over there...", 3.5)
                         o_check = False
@@ -239,12 +239,14 @@ def topshelf(player):
 
 
 def ptonio(player):
-    talk("Howdy there! Welcome to Ptonio, home of UNKOWNLAND's finest potion breweries!",3)
+    talk("- Howdy there! Welcome to Ptonio, home of UNKOWNLAND's finest potion breweries!",3)
     dialog = ["Howdy, pardner!",
               "Business out here's interestin', ya know. We live on the edge of the law round here.",
               "Safe-tee pro-toe-calls? I ain't heard nothin' like that before 'round here.",
               "Any potion is legal if nobody catches you with em.",
-              "Yeehaw!"]
+              "Yeehaw!",
+              "There's a snake in my boot!",
+              "Man, I could really go for a nice glass o' Ptonian Whiskey right now. That stuff gives you the buzz."]
     active = True
     while active:
         action = menu("Ptonio")
@@ -305,6 +307,7 @@ def ptonio(player):
                                     player.metadata.append("metMel")
                                     talk("- Well, you COULD clear out some pests for me.", 2)
                                     talk("- The outlaws are gettin a real mess. If you can clear em out, we can talk.", 3)
+                                    input("[1] Ok.\n[2] Sounds good!\n>>>")  # this input is extra bull crap
                                     if player.quest:
                                         if "MelQuestBacklog" not in player.metadata:
                                             player.metadata.append("MelQuestBacklog")
@@ -319,6 +322,18 @@ def ptonio(player):
                             else:
                                 print("-[DEV] you done broke something you buffoon! ")
                                 o_check = False
+                    elif "Defeat the Outlaws" in player.completed and "melComplete" not in player.metadata:
+                        talk("-[MEL] Huh? What's that? You got the outlaws? Thank God for that...", 2.5)
+                        talk("- Yep, those no-good nincompoops came in and stole my favorite moonshine. It ain't cheap"
+                             " you see...", 4.20)  # haha weed
+                        talk("- Anyways, thanks. Here's that Tall Potion, by the way. Drink up.")
+                        print("[!] You drink the Tall Potion!")
+                        sleep(.25)
+                        talk("- Woah, you're a good 6 and a half feet now. They'll surely let you in."
+                             " Good luck {}".format(player.name), 5)
+                        player.traits.append("tall")
+                        player.metadata.append("melComplete")
+
                     else:
                         talk("-[MEL] Oooh, is that {}? Yes, come in...".format(player.name), 1.5)
                         if "MelQuestBacklog" in player.metadata:
@@ -373,6 +388,27 @@ def ptonio(player):
                             print(moneytext)
                             player.money += money_dialog[moneytext]
                             talk("[!] MONEY: {}G (+{}G)".format(player.money, money_dialog[moneytext]), 3)
+
+                        elif luck > 85:
+                            # there are duplicates to make the weapons harder to get
+                            item_dialog = {"[!] You find a Polished Stone Sword!": "Polished Stone Sword",
+                                           "[!] You found some bread. It's still wrapped nicely.": "bread",
+                                           "[!] You found some bread. It's still wrapped nicely.": "bread",
+                                           "[!] You found some bread. It's still wrapped nicely.": "bread",
+                                           "[!] You found some bread. It's still wrapped nicely.": "bread",
+                                           "[!] You found some bread. It's still wrapped nicely.": "bread",
+                                           "[!] You discovered a sharp Pokey Stick.": "Pokey Stick",
+                                           "[!] You found a nice Health Potion! Cool beans.": "Health Potion",
+                                           "[!] You found a nice Health Potion! Cool beans.": "Health Potion",
+                                           "[!] You found a nice Health Potion! Cool beans.": "Health Potion"}
+
+                            itemtext = random.choice(list(item_dialog))
+                            talk(itemtext, 3)
+                            item = item_dialog[itemtext]  # grabs the value attached to "itemtext"
+                            if item in player.inventory:
+                                player.inventory[item] += 1  # adds to item if it already exists
+                            else:  # if not exist in inv
+                                player.inventory.update({item: 1})  # create new key-value, set to 1
 
                         else:
                             print("No luck today...")
